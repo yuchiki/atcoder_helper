@@ -1,8 +1,8 @@
 """atcoder_helperコマンドのエントリポイント."""
 import argparse
 
-from services.execute_test import execute_test
-from services.fetch_task import fetch_task
+from atcoder_helper.services.execute_test import execute_test
+from atcoder_helper.services.fetch_task import fetch_task
 
 
 def _main() -> None:

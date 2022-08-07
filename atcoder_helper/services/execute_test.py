@@ -3,10 +3,10 @@
 from textwrap import indent
 from typing import List
 
-from models.test_case import TestCase
-from models.test_case import TestResult
-from models.test_case import TestStatus
-from repositories.test_case_repo import TestCaseRepository
+from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.models.test_case import TestResult
+from atcoder_helper.models.test_case import TestStatus
+from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 
 
 def execute_test() -> None:
@@ -18,7 +18,7 @@ def execute_test() -> None:
     _show_summary(results)
 
 
-def _execute_and_show(test_cases: List[TestCase]) -> List[TestResult]:
+def _execute_and_show(test_cases: List[AtcoderTestCase]) -> List[TestResult]:
 
     results = []
     for test_case in test_cases:

@@ -1,8 +1,8 @@
 """testcasesを取得し、指定したtestcasesファイルに書き込むサービス."""
 import sys
 
-from repositories.atcoder_repo import AtCoderRepository
-from repositories.test_case_repo import TestCaseRepository
+from atcoder_helper.repositories.atcoder_repo import AtCoderRepository
+from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 
 
 def fetch_task(contest: str, task: str) -> None:

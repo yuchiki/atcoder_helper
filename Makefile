@@ -1,7 +1,12 @@
+check-all: test lint
+
 lint:
 	isort .
 	black .
 	flake8
 	mypy .
 
-.PHONY: lint
+test:
+	pytest tests
+
+.PHONY: lint test check-all

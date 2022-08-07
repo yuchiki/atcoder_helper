@@ -46,7 +46,7 @@ class TestResult:
 
 
 @dataclass
-class TestCase(YAMLObject):
+class AtcoderTestCase(YAMLObject):
     """テストケースを表す."""
 
     name: str
@@ -61,9 +61,9 @@ class TestCase(YAMLObject):
             return {"name": self.name, "input": self.given, "expected": self.expected}
 
     @classmethod
-    def from_dict(cls, test_case_dict: Dict[str, str]) -> "TestCase":
+    def from_dict(cls, test_case_dict: Dict[str, str]) -> "AtcoderTestCase":
         """辞書からテストケース型に変換する."""
-        return TestCase(
+        return AtcoderTestCase(
             test_case_dict["name"],
             test_case_dict["input"] + "\n",
             test_case_dict["expected"] + "\n" if "expected" in test_case_dict else None,

@@ -6,7 +6,7 @@ from typing import List
 from bs4 import BeautifulSoup
 import requests
 
-from models.test_case import TestCase
+from atcoder_helper.models.test_case import AtcoderTestCase
 
 
 class AlreadyLoggedIn(Exception):
@@ -105,7 +105,7 @@ class AtCoderRepository:
         res = self._session.get(self._submit_url("abc001"), allow_redirects=0)
         return res.status_code == 200  # login していなければ302 redirect になる
 
-    def fetch_test_cases(self, contest: str, task: str) -> List[TestCase]:
+    def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
         """テストケーススイートを取得する.
 
         Args:
@@ -145,6 +145,6 @@ class AtCoderRepository:
         }
 
         return [
-            TestCase(f"case-{name}", given, output_sections[name])
+            AtcoderTestCase(f"case-{name}", given, output_sections[name])
             for (name, given) in input_sections.items()
         ]

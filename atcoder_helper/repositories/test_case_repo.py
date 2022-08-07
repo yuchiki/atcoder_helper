@@ -4,7 +4,7 @@ from typing import List
 
 import yaml
 
-from models.test_case import TestCase
+from atcoder_helper.models.test_case import AtcoderTestCase
 
 
 class TestCaseRepository:
@@ -18,7 +18,7 @@ class TestCaseRepository:
         """
         self._filename = filename
 
-    def write(self, test_cases: List[TestCase]) -> None:
+    def write(self, test_cases: List[AtcoderTestCase]) -> None:
         """書き込みを行う.
 
         Args:
@@ -37,7 +37,7 @@ class TestCaseRepository:
         with open(self._filename, "w") as file:
             yaml.dump(test_case_dicts, file, sort_keys=False)
 
-    def read(self) -> List[TestCase]:
+    def read(self) -> List[AtcoderTestCase]:
         """読み込みを行う.
 
         Returns:
@@ -45,4 +45,4 @@ class TestCaseRepository:
         """
         with open(self._filename) as file:
             objects = yaml.safe_load(file)
-            return [TestCase.from_dict(object) for object in objects]
+            return [AtcoderTestCase.from_dict(object) for object in objects]
