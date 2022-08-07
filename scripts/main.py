@@ -1,5 +1,4 @@
 import argparse
-from typing import List
 
 from atcoder_helper.services.execute_test import execute_test
 from atcoder_helper.services.fetch_task import fetch_task
@@ -24,11 +23,11 @@ def main():
         root_parser.print_help()
 
 
-def execute_test_handler(args: List[str]):
+def execute_test_handler(_: argparse.Namespace):
     execute_test()
 
 
-def fetch_task_handler(args: List[str]):
+def fetch_task_handler(args: argparse.Namespace):
     fetch_task(args.contest, args.task)
 
 

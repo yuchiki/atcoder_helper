@@ -1,13 +1,9 @@
-from copyreg import pickle
-from fileinput import filename
-import sys
-from pkg_resources import require
-import requests
-from textwrap import indent
-from typing import List
-import pickle
 import os
+import pickle
+from typing import List
+
 from bs4 import BeautifulSoup
+import requests
 
 from atcoder_helper.models.test_case import TestCase
 
@@ -75,7 +71,8 @@ class AtCoderRepository:
         self.write_session()
 
     def is_logged_in(self) -> bool:
-        # たたもさんの https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46　を参考にしている
+        # たたもさんの atcoder-cli を参考にしている
+        #  https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46
 
         res = self._session.get(self.submit_url("abc001"), allow_redirects=0)
         return res.status_code == 200  # login していなければ302 redirect になる
@@ -113,22 +110,3 @@ class AtCoderRepository:
             TestCase(f"case-{name}", given, output_sections[name])
             for (name, given) in input_sections.items()
         ]
-
-
-def main():
-    args = sys.argv
-
-    atcoder_repository = AtCoderRepository("session/session_dump.pkl")
-    # test_cases = atcoder_repository.fetch_test_cases(args[1], args[2])
-
-    return
-    for case in test_cases:
-        print(f"CASE-{case.name}")
-        print("    input:")
-        print(indent(case.given, "        "))
-        print("    expected:")
-        print(indent(case.expected, "        "))
-
-
-if __name__ == "__main__":
-    main()

@@ -2,7 +2,10 @@
 
 from textwrap import indent
 from typing import List
-from atcoder_helper.models.test_case import TestCase, TestStatus, TestResult
+
+from atcoder_helper.models.test_case import TestCase
+from atcoder_helper.models.test_case import TestResult
+from atcoder_helper.models.test_case import TestStatus
 from atcoder_helper.repositories.test_case import TestCaseRepository
 
 
@@ -20,6 +23,9 @@ def execute_and_show(test_cases: List[TestCase]) -> List[TestResult]:
         if result.status == TestStatus.ERROR:
             print(result.error)
         if result.status == TestStatus.WA:
+            if result.expected is None:
+                raise Exception("internal error")
+
             print("    expected:")
             print(indent(result.expected, "       >"))
             print("    but got:")

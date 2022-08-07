@@ -1,6 +1,8 @@
-import yaml
-from atcoder_helper.models.test_case import TestCase
 from typing import List
+
+import yaml
+
+from atcoder_helper.models.test_case import TestCase
 
 
 class TestCaseRepository:

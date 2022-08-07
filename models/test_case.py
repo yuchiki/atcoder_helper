@@ -1,9 +1,11 @@
-from colorama import Fore, Style
-import subprocess
-from enum import Enum
-from typing import Dict, Optional, List
 from dataclasses import dataclass
+from enum import Enum
+import subprocess
+from typing import Dict
+from typing import Optional
 
+from colorama import Fore
+from colorama import Style
 from yaml import YAMLObject
 
 
@@ -46,7 +48,10 @@ class TestCase(YAMLObject):
     expected: Optional[str]
 
     def to_dict(self) -> Dict[str, str]:
-        return {"name": self.name, "input": self.given, "expected": self.expected}
+        if self.expected is None:
+            return {"name": self.name, "input": self.given}
+        else:
+            return {"name": self.name, "input": self.given, "expected": self.expected}
 
     @classmethod
     def from_dict(cls, test_case_dict: Dict[str, str]) -> "TestCase":
