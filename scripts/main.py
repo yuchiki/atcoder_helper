@@ -1,8 +1,8 @@
 import argparse
 from typing import List
 
-from atcoder_ctl.services.execute_test import execute_test
-from atcoder_ctl.services.fetch_task import fetch_task
+from atcoder_helper.services.execute_test import execute_test
+from atcoder_helper.services.fetch_task import fetch_task
 
 
 def main():
