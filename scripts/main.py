@@ -18,7 +18,7 @@ def main():
     parser_fetch.add_argument("task")
 
     args = root_parser.parse_args()
-    if hasattr(args, 'handler'):
+    if hasattr(args, "handler"):
         args.handler(args)
     else:
         root_parser.print_help()

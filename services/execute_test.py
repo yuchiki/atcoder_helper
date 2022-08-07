@@ -43,5 +43,5 @@ def execute_test():
     show_summary(results)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     execute_test()
