@@ -1,0 +1,10 @@
+colorama
+beautifulsoup4
+requests
+pyyaml
+black
+types-setuptools
+types-requests
+isort
+flake8-docstrings
+hacking
