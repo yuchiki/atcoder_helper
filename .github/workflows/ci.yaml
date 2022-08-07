@@ -14,5 +14,5 @@ jobs:
         with:
           python-version: "3.10"
       - run: pip install -r requirements.txt
-      - run: mypy --install-types
+      - run: mypy --install-types .
       - run: make lint
