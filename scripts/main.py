@@ -1,18 +1,19 @@
+"""atcoder_helperコマンドのエントリポイント."""
 import argparse
 
-from atcoder_helper.services.execute_test import execute_test
-from atcoder_helper.services.fetch_task import fetch_task
+from services.execute_test import execute_test
+from services.fetch_task import fetch_task
 
 
-def main():
+def _main() -> None:
     root_parser = argparse.ArgumentParser(description="atcoder の手助けをするコマンド")
     root_subparsers = root_parser.add_subparsers()
 
     parser_exec = root_subparsers.add_parser("exec")
-    parser_exec.set_defaults(handler=execute_test_handler)
+    parser_exec.set_defaults(handler=_execute_test_handler)
 
     parser_fetch = root_subparsers.add_parser("fetch")
-    parser_fetch.set_defaults(handler=fetch_task_handler)
+    parser_fetch.set_defaults(handler=_fetch_task_handler)
     parser_fetch.add_argument("contest")
     parser_fetch.add_argument("task")
 
@@ -23,12 +24,12 @@ def main():
         root_parser.print_help()
 
 
-def execute_test_handler(_: argparse.Namespace):
+def _execute_test_handler(_: argparse.Namespace) -> None:
     execute_test()
 
 
-def fetch_task_handler(args: argparse.Namespace):
+def _fetch_task_handler(args: argparse.Namespace) -> None:
     fetch_task(args.contest, args.task)
 
 
-main()
+_main()

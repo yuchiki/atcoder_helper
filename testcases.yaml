@@ -1,0 +1,9 @@
+- name: case-1
+  input: '117'
+  expected: 'Yes'
+- name: case-2
+  input: '123'
+  expected: 'No'
+- name: case-3
+  input: '777'
+  expected: 'Yes'

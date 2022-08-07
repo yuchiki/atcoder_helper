@@ -4,5 +4,4 @@ lint:
 	flake8
 	mypy .
 
-
 .PHONY: lint

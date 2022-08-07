@@ -1,10 +1,17 @@
+"""testcasesを取得し、指定したtestcasesファイルに書き込むサービス."""
 import sys
 
-from atcoder_helper.repositories.atcoder import AtCoderRepository
-from atcoder_helper.repositories.test_case import TestCaseRepository
+from repositories.atcoder_repo import AtCoderRepository
+from repositories.test_case_repo import TestCaseRepository
 
 
-def fetch_task(contest: str, task: str):
+def fetch_task(contest: str, task: str) -> None:
+    """testcasesを取得し、指定したtestcasesファイルに書き込む.
+
+    Args:
+        contest (str): コンテスト名。AtCoderのコンテストページのURLに現れる形式で渡す
+        task (str): タスク名。AtCoderのコンテストページのURLに現れる形から、"コンテスト名_"の部分を除いたもの
+    """
     atcoder_repo = AtCoderRepository("session/session_dump.pkl")
     test_case_repo = TestCaseRepository("testcases.yaml")
 

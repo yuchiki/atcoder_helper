@@ -1,3 +1,4 @@
+"""テストケースにまつわるデータ構造を定義する."""
 from dataclasses import dataclass
 from enum import Enum
 import subprocess
@@ -10,16 +11,19 @@ from yaml import YAMLObject
 
 
 class TestStatus(Enum):
+    """テスト結果の状態を保持する."""
+
     AC = 1
     WA = 2
     ERROR = 3
     JUSTSHOW = 4
 
-    def _dye(self, message: str, color: Fore) -> str:
+    def _dye(self, message: str, color: str) -> str:
         return color + message + Style.RESET_ALL
 
     @property
     def dyed(self) -> str:
+        """テスト結果の状態をふさわしい色に染めた文字列を返す."""
         table = {
             TestStatus.AC: Fore.GREEN,
             TestStatus.WA: Fore.YELLOW,
@@ -32,6 +36,8 @@ class TestStatus(Enum):
 
 @dataclass
 class TestResult:
+    """入力と出力からなる一度のテストに対して、テスト実行にまつわる結果を保持する."""
+
     name: str
     status: TestStatus
     actual: str
@@ -41,13 +47,14 @@ class TestResult:
 
 @dataclass
 class TestCase(YAMLObject):
-    """テストケース"""
+    """テストケースを表す."""
 
     name: str
     given: str
     expected: Optional[str]
 
     def to_dict(self) -> Dict[str, str]:
+        """テストケースを辞書型に変換する."""
         if self.expected is None:
             return {"name": self.name, "input": self.given}
         else:
@@ -55,6 +62,7 @@ class TestCase(YAMLObject):
 
     @classmethod
     def from_dict(cls, test_case_dict: Dict[str, str]) -> "TestCase":
+        """辞書からテストケース型に変換する."""
         return TestCase(
             test_case_dict["name"],
             test_case_dict["input"] + "\n",
@@ -62,7 +70,7 @@ class TestCase(YAMLObject):
         )
 
     def execute(self) -> TestResult:
-        """テストを実行して結果を返します"""
+        """テストを実行する."""
         completed_process = subprocess.run(
             ["make", "-s", "run"], input=self.given, text=True, capture_output=True
         )

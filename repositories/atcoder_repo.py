@@ -1,3 +1,4 @@
+"""atcoderとの通信を行う層."""
 import os
 import pickle
 from typing import List
@@ -5,27 +6,36 @@ from typing import List
 from bs4 import BeautifulSoup
 import requests
 
-from atcoder_helper.models.test_case import TestCase
+from models.test_case import TestCase
 
 
 class AlreadyLoggedIn(Exception):
+    """既にログインしているエラー."""
+
     pass
 
 
 class AtCoderRepository:
-    atcoder_url = "https://atcoder.jp"
-    login_url = f"{atcoder_url}/login"
+    """AtCoderとの通信を抽象化するためのクラス."""
 
-    def contest_url(self, contest: str) -> str:
-        return f"{self.atcoder_url}/contests/{contest}"
+    _atcoder_url = "https://atcoder.jp"
+    _login_url = f"{_atcoder_url}/login"
 
-    def task_url(self, contest: str, task: str) -> str:
-        return f"{self.contest_url(contest)}/tasks/{contest}_{task}"
+    def _contest_url(self, contest: str) -> str:
+        return f"{self._atcoder_url}/contests/{contest}"
 
-    def submit_url(self, contest: str) -> str:
-        return f"{self.contest_url(contest)}/submit"
+    def _task_url(self, contest: str, task: str) -> str:
+        return f"{self._contest_url(contest)}/tasks/{contest}_{task}"
 
-    def __init__(self, session_filename):
+    def _submit_url(self, contest: str) -> str:
+        return f"{self._contest_url(contest)}/submit"
+
+    def __init__(self, session_filename: str):
+        """__init__.
+
+        Args:
+            session_filename (str): セッションを保存しておくファイル名
+        """
         self._session_filename = session_filename
         if os.path.isfile(session_filename):
             with open(session_filename, "rb") as file:
@@ -33,25 +43,37 @@ class AtCoderRepository:
         else:
             self._session = requests.session()
 
-    def write_session(self):
+    def _write_session(self) -> None:
         with open(self._session_filename, "wb") as file:
             pickle.dump(self._session, file)
 
     def _get_csrf_token(self) -> str:
-        login_page = self._session.get(self.login_url, cookies="")
+        login_page = self._session.get(self._login_url, cookies="")
         html = BeautifulSoup(login_page.text, "html.parser")
 
         token = html.find("input").attrs["value"]
         return token
 
     def login(self, username: str, password: str) -> bool:
+        """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Raises:
+            AlreadyLoggedIn: 既にログインしていたとき
+
+        Returns:
+            bool: ログインに成功したかどうかを返す
+        """
         if self.is_logged_in():
             raise AlreadyLoggedIn("すでにloginしています")
 
         csrf_token = self._get_csrf_token()
 
         res = self._session.post(
-            self.login_url,
+            self._login_url,
             params={
                 "username": username,
                 "password": password,
@@ -61,27 +83,43 @@ class AtCoderRepository:
         )
 
         if res.headers["Location"] == "/home":
-            self.write_session()
+            self._write_session()
             return True
         else:
             return False
 
-    def logout(self):
+    def logout(self) -> None:
+        """logoutする.loginしていない状態でも何も検査しない."""
         self._session = requests.session()
-        self.write_session()
+        self._write_session()
 
     def is_logged_in(self) -> bool:
+        """loginしているかどうかを判定する.
+
+        Returns:
+            bool: loginしているか否か
+        """
         # たたもさんの atcoder-cli を参考にしている
         #  https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46
 
-        res = self._session.get(self.submit_url("abc001"), allow_redirects=0)
+        res = self._session.get(self._submit_url("abc001"), allow_redirects=0)
         return res.status_code == 200  # login していなければ302 redirect になる
 
     def fetch_test_cases(self, contest: str, task: str) -> List[TestCase]:
+        """テストケーススイートを取得する.
+
+        Args:
+            contest (str): コンテスト名
+            task (str): タスク名
+
+        Returns:
+            List[TestCase]: テストケーススイート
+        """
+
         def normalize_newline(text: str) -> str:
             return "\n".join(text.splitlines())
 
-        task_page = self._session.get(self.task_url(contest, task))
+        task_page = self._session.get(self._task_url(contest, task))
         html = BeautifulSoup(task_page.text, "html.parser")
 
         sections = (
