@@ -1,9 +1,10 @@
 """テストケースにまつわるデータ構造を定義する."""
+import subprocess
 from dataclasses import dataclass
 from enum import Enum
-import subprocess
 from typing import Dict
 from typing import Optional
+from typing import cast
 
 from colorama import Fore
 from colorama import Style
@@ -19,7 +20,7 @@ class TestStatus(Enum):
     JUSTSHOW = 4
 
     def _dye(self, message: str, color: str) -> str:
-        return color + message + Style.RESET_ALL
+        return cast(str, color + message + Style.RESET_ALL)
 
     @property
     def dyed(self) -> str:

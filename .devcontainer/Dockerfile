@@ -19,5 +19,6 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
-
+COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+RUN mypy --install-types --non-interactive .

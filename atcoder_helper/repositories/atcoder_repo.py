@@ -1,10 +1,12 @@
 """atcoderとの通信を行う層."""
 import os
 import pickle
+from typing import Final
 from typing import List
+from typing import cast
 
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
 from atcoder_helper.models.test_case import AtcoderTestCase
 
@@ -18,8 +20,8 @@ class AlreadyLoggedIn(Exception):
 class AtCoderRepository:
     """AtCoderとの通信を抽象化するためのクラス."""
 
-    _atcoder_url = "https://atcoder.jp"
-    _login_url = f"{_atcoder_url}/login"
+    _atcoder_url: Final[str] = "https://atcoder.jp"
+    _login_url: Final[str] = f"{_atcoder_url}/login"
 
     def _contest_url(self, contest: str) -> str:
         return f"{self._atcoder_url}/contests/{contest}"
@@ -52,7 +54,7 @@ class AtCoderRepository:
         html = BeautifulSoup(login_page.text, "html.parser")
 
         token = html.find("input").attrs["value"]
-        return token
+        return cast(str, token)  # TODO(ちゃんと例外処理をする)
 
     def login(self, username: str, password: str) -> bool:
         """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
@@ -102,7 +104,10 @@ class AtCoderRepository:
         # たたもさんの atcoder-cli を参考にしている
         #  https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46
 
-        res = self._session.get(self._submit_url("abc001"), allow_redirects=0)
+        res = cast(
+            requests.Response,
+            self._session.get(self._submit_url("abc001"), allow_redirects=0),
+        )  # TODO(any処理)
         return res.status_code == 200  # login していなければ302 redirect になる
 
     def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:

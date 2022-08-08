@@ -25,7 +25,7 @@ class TestCaseRepository:
             test_cases (List[TestCase]): 取得したテストスイート
         """
 
-        def str_representer(dumper: Any, data: Any) -> yaml.Node:
+        def str_representer(dumper: yaml.dumper.Dumper, data: Any) -> yaml.Node:
             if len(data.splitlines()) > 1:  # check for multiline string
                 return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
             return dumper.represent_scalar("tag:yaml.org,2002:str", data)
