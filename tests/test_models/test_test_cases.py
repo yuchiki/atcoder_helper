@@ -54,5 +54,5 @@ def test_atcoder_test_case_from_dict() -> None:
 
 @pytest.mark.skip(reason="難しいので後でテストを書く")
 def test_atcoder_test_case_execute() -> None:
-    """Test for AtcoderTestCase.execute()"""
+    """Test for AtcoderTestCase.execute() works."""
     pass
