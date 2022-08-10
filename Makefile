@@ -4,7 +4,8 @@ lint:
 	isort .
 	black .
 	flake8
-	mypy .
+	mypy --install-types --non-interactive .
+
 
 test:
 	pytest tests
