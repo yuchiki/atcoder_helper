@@ -4,7 +4,9 @@ atcoder出場を手助けするCLIツールです。
 
 # install
 
-`make install`
+`pip install atcoder-helper`
+
+PyPI: https://pypi.org/project/atcoder-helper/
 
 # 使い方
 
