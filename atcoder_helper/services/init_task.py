@@ -1,6 +1,4 @@
 """Taskディレクトリを初期化するためのservice."""
-
-
 import os
 import shutil
 from typing import List
@@ -39,9 +37,8 @@ def _init_task(
 
 def init_task() -> None:
     """taskディレクトリを初期化します."""
-
     _init_task(
-        os.path.join(os.getcwd(), "hoge"),
+        os.path.join(os.getcwd()),
         ["g++", "main.cpp", "-o", "main"],
         ["./main"],
         os.path.join(

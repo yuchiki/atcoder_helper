@@ -3,6 +3,7 @@ import argparse
 
 from atcoder_helper.services.execute_test import execute_test
 from atcoder_helper.services.fetch_task import fetch_task
+from atcoder_helper.services.init_task import init_task
 
 
 def main() -> None:
@@ -18,11 +19,18 @@ def main() -> None:
     parser_fetch.add_argument("contest")
     parser_fetch.add_argument("task")
 
+    parser_init_task = root_subparsers.add_parser("init_task")
+    parser_init_task.set_defaults(handler=_init_task_handler)
+
     args = root_parser.parse_args()
     if hasattr(args, "handler"):
         args.handler(args)
     else:
         root_parser.print_help()
+
+
+def _init_task_handler(_: argparse.Namespace) -> None:
+    init_task()
 
 
 def _execute_test_handler(_: argparse.Namespace) -> None:

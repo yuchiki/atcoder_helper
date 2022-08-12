@@ -11,11 +11,16 @@ function installed() {
     echo "OK"
 }
 
+function can_init_task() {
+    echo "タスクディレクトリが初期化できることを確かめる"
+    atcoder_helper init_task
+}
+
 function can_fetch() {
     echo "タスクがfetchできることを確認する"
 
     echo "このテストでは実際にatcoderのページをたたいている。早急にmockに切り替えないといけない"
-    atcoder_helper fetch abc160 a
+    atcoder_helper fetch abc102 a
     ls testcases.yaml
     echo "OK"
 }
@@ -29,10 +34,14 @@ function can_execute() {
 
 function main() {
     installed
-
-    cd integration_test/sample_task
+    mkdir sample_task
+    cd sample_task
+    can_init_task
     can_fetch
     can_execute
+    cd ..
+
+    rm -r sample_task
 
     echo "integration test succeeded."
 }
