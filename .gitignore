@@ -1,10 +1,5 @@
 __pycache__
 atcoder_helper.egg-info
+/integration_test/sample_task/main
 
-
-
-# for 実行時テスト用. installable コマンド化したら不要にできそう
-/testcases.yaml
-/.atcoder_helper_task_config.yaml
-/main.cpp
 

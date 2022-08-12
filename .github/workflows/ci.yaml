@@ -25,3 +25,12 @@ jobs:
           python-version: "3.10"
       - run: pip install -r requirements.txt
       - run: make test
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - run: pip install -r requirements.txt
+      - run: make integration-test
