@@ -11,6 +11,11 @@ function installed() {
     echo "OK"
 }
 
+function can_config_init() {
+    echo "atcoder_helper config initができることを確認する"
+    atcoder_helper config init
+}
+
 function can_init_task() {
     echo "タスクディレクトリが初期化できることを確かめる"
     atcoder_helper init_task
@@ -33,18 +38,21 @@ function can_execute() {
 }
 
 function main() {
-    rm -rf sample_task
+    cd integration_test
 
-    export ATCODER_HELPER_CONFIG_FILEPATH="$(pwd)"/integration_test/config.yaml
+    rm -rf workdir
+    mkdir workdir
+    cd workdir
+
+    export ATCODER_HELPER_CONFIG_FILEPATH="$(pwd)"/config.yaml
+
     installed
-    mkdir  -p sample_task
+    can_config_init
+    mkdir sample_task
     cd sample_task
     can_init_task
     can_fetch
     can_execute
-    cd ..
-
-    rm -r sample_task
 
     echo "integration test succeeded."
 }

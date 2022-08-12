@@ -1,5 +1,7 @@
 """AtcoderHelperConfigを永続化する層."""
 
+import os
+
 import yaml
 
 from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
@@ -26,6 +28,8 @@ class AtCoderHelperConfigRepository:
 
     def write(self, config: AtCoderHelperConfig) -> None:
         """書き込みを行う."""
+        os.makedirs(name=os.path.dirname(self._filename), exist_ok=True)
+
         with open(self._filename, "w") as file:
             config_dict = config.to_dict()
             yaml.dump(config_dict, file)
