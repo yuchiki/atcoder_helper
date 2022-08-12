@@ -33,4 +33,4 @@ jobs:
         with:
           python-version: "3.10"
       - run: pip install -r requirements.txt
-      - run: make integration-test
+      - run: make integration

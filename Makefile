@@ -13,7 +13,7 @@ install:
 	pip install -e .
 	which atcoder_helper
 
-integration-test: install
+integration: install
 	integration_test/integration_test.sh
 
-.PHONY: lint test check-all
+.PHONY: lint test check-all integration

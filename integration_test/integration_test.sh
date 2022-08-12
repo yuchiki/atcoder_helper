@@ -22,13 +22,23 @@ function can_task_init() {
 }
 
 function can_fetch() {
-    contest=$1
-    task=$2
-
     echo "タスクがfetchできることを確認する"
 
     echo "このテストでは実際にatcoderのページをたたいている。早急にmockに切り替えないといけない"
-    atcoder_helper fetch $contest $task
+
+    if [ -v 1 ]; then
+        contest_flag="--contest $1"
+    else
+        contest_flag=""
+    fi
+
+    if [ -v 2 ]; then
+        task_flag="--task $2"
+    else
+        task_flag=""
+    fi
+
+    atcoder_helper fetch $contest_flag $task_flag
     ls testcases.yaml
     echo "OK"
 }
@@ -62,15 +72,17 @@ function main() {
     can_config_init
     mkdir sample_task
 
+    # 既存のディレクトリを初期化して使うケース
     cd sample_task
     can_task_init
     can_fetch abc102 a
     can_execute
     cd ..
 
+    # 新規にディレクトリを作成して使うケース
     can_task_create abc102 a
     cd abc102/a
-    can_fetch abc102 a
+    can_fetch
     can_execute
 
 

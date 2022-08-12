@@ -19,8 +19,8 @@ def main() -> None:
 
     parser_fetch = root_subparsers.add_parser("fetch")
     parser_fetch.set_defaults(handler=_fetch_task_handler, parser=parser_fetch)
-    parser_fetch.add_argument("contest")
-    parser_fetch.add_argument("task")
+    parser_fetch.add_argument("--contest")
+    parser_fetch.add_argument("--task")
 
     parser_task = root_subparsers.add_parser("task")
     parser_task.set_defaults(parser=parser_task)
