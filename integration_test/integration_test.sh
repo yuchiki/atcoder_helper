@@ -26,16 +26,16 @@ function can_fetch() {
 
     echo "このテストでは実際にatcoderのページをたたいている。早急にmockに切り替えないといけない"
 
-    if [ -v 1 ]; then
-        contest_flag="--contest $1"
-    else
+    if [ -z "${1+UNDEF}" ]; then
         contest_flag=""
+    else
+        contest_flag="--contest $1"
     fi
 
-    if [ -v 2 ]; then
-        task_flag="--task $2"
-    else
+    if [ -z "${2+UNDEF}" ]; then
         task_flag=""
+    else
+        task_flag="--task $2"
     fi
 
     atcoder_helper fetch $contest_flag $task_flag
