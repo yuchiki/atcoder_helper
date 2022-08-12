@@ -30,6 +30,24 @@ class LanguageConfig:
             run=language_dict["run"],
         )
 
+    def to_dict(self) -> dict[str, Any]:
+        """LanguageConfig型から辞書型へ変換する."""
+        if self.template_dir is None:
+            return {
+                "name": self.name,
+                "use_default_template": self.use_default_template,
+                "build": self.build,
+                "run": self.run,
+            }
+        else:
+            return {
+                "name": self.name,
+                "template_dir": self.template_dir,
+                "use_default_template": self.use_default_template,
+                "build": self.build,
+                "run": self.run,
+            }
+
     @property
     def resolved_template_dir(self) -> Optional[str]:
         """実際に使用するtemplate_directory."""
@@ -62,6 +80,13 @@ class AtCoderHelperConfig:
             },
             default_language=config_dict["default_language"],
         )
+
+    def to_dict(self) -> dict[str, Any]:
+        """AtCoderHelperConfig型から辞書型へ変換する."""
+        return {
+            "languages": [language.to_dict() for language in self.languages.values()],
+            "default_language": self.default_language,
+        }
 
     @property
     def default_language_config(self) -> LanguageConfig:
