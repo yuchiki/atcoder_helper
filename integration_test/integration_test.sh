@@ -33,8 +33,11 @@ function can_execute() {
 }
 
 function main() {
+    rm -rf sample_task
+
+    export ATCODER_HELPER_CONFIG_FILEPATH="$(pwd)"/integration_test/config.yaml
     installed
-    mkdir sample_task
+    mkdir  -p sample_task
     cd sample_task
     can_init_task
     can_fetch

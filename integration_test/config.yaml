@@ -1,0 +1,11 @@
+languages:
+  - name: cpp
+    use_default_template: true,
+    build:
+      - g++
+      - -o
+      - main
+      - main.cpp
+    run:
+      - ./main
+default_language: cpp
