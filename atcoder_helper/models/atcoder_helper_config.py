@@ -1,9 +1,12 @@
 """AtcoderHelperConfigを定義する."""
 
+import os
 from dataclasses import dataclass
 from typing import Any
 from typing import List
 from typing import Optional
+
+import atcoder_helper
 
 
 @dataclass
@@ -27,21 +30,54 @@ class LanguageConfig:
             run=language_dict["run"],
         )
 
+    @property
+    def resolved_template_dir(self) -> Optional[str]:
+        """実際に使用するtemplate_directory."""
+        if self.use_default_template:
+            return os.path.join(
+                atcoder_helper.__path__[0],
+                "sample_configs",
+                ".atcoder_helper",
+                "templates",
+                self.name,
+            )
+        else:
+            return self.template_dir
+
 
 @dataclass
 class AtCoderHelperConfig:
     """atcoder_helper アプリ全体の設定を保持する."""
 
-    languages: List[LanguageConfig]
+    languages: dict[str, LanguageConfig]
     default_language: str
 
     @classmethod
     def from_dict(cls, config_dict: dict[str, Any]) -> "AtCoderHelperConfig":
         """辞書型からAtCoderHelperConfig型に変換する."""
         return AtCoderHelperConfig(
-            languages=[
-                LanguageConfig.from_dict(language)
+            languages={
+                language["name"]: LanguageConfig.from_dict(language)
                 for language in config_dict["languages"]
-            ],
+            },
             default_language=config_dict["default_language"],
         )
+
+    @property
+    def default_language_config(self) -> LanguageConfig:
+        """デフォルトの言語設定."""
+        return self.languages[self.default_language]
+
+
+default_atcoder_config = AtCoderHelperConfig(
+    languages={
+        "cpp": LanguageConfig(
+            name="cpp",
+            template_dir=None,
+            use_default_template=True,
+            build=["g++", "-o", "main", "main.cpp"],
+            run=["./main"],
+        )
+    },
+    default_language="cpp",
+)
