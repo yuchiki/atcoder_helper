@@ -8,6 +8,7 @@ from atcoder_helper.models.atcoder_helper_config import LanguageConfig
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     AtCoderHelperConfigRepository,
 )
+from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
 class DirectoryNotEmpty(Exception):
@@ -36,17 +37,9 @@ def _init_task(task_dir: str, languageConfig: LanguageConfig) -> None:
         yaml.dump(task_config_dict, file, sort_keys=False)
 
 
-def _get_atcoder_helper_config_filepath() -> str:
-    filepath = os.environ.get("ATCODER_HELPER_CONFIG_FILEPATH")
-    if filepath:
-        return filepath
-    else:
-        return os.path.join(os.path.expanduser("~"), ".atcoder_helper", "config.yaml")
-
-
 def init_task() -> None:
     """taskディレクトリを初期化します."""
-    config_repo = AtCoderHelperConfigRepository(_get_atcoder_helper_config_filepath())
+    config_repo = AtCoderHelperConfigRepository(get_atcoder_helper_config_filepath())
     config = config_repo.read()
 
     _init_task(os.path.join(os.getcwd()), config.default_language_config)

@@ -23,3 +23,9 @@ class AtCoderHelperConfigRepository:
         with open(self._filename) as file:
             config_dict = yaml.safe_load(file)
             return AtCoderHelperConfig.from_dict(config_dict)
+
+    def write(self, config: AtCoderHelperConfig) -> None:
+        """書き込みを行う."""
+        with open(self._filename, "w") as file:
+            config_dict = config.to_dict()
+            yaml.dump(config_dict, file)
