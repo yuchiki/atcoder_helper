@@ -8,25 +8,20 @@ atcoder出場を手助けするCLIツールです。
 
 # 使い方
 
+## 最初の初期化
+
+`atcoder_helper config init`コマンドにより、 `$HOME/.atcoder_helper` 以下に設定ファイルが作成されます。
+
 
 ## 準備
 
-問題を解くディレクトリの中で以下の準備をします
+問題を解くディレクトリの中で以下の準備をします。
 
-### テストランナーの設定
+### ディレクトリの初期化
 
-.atcoder_helper_task_configにビルドコマンドと実行コマンドをyamlで定義します。以下は定義の例です。
+`atcoder_helper init_task` コマンドを実行し、ディレクトリを初期化します。
 
-```yaml
-build:
-  - g++
-  - main.cpp
-  - -o
-  - main
-run:
-  - ./main
-```
-
+問題を解くための雛型が生成されます。また、ビルドコマンド・実行コマンドなどの情報を記したタスク設定ファイル`.atcoder_helper_task_config.yaml`が生成されます。
 
 ### テストケースの取得
 
@@ -43,3 +38,4 @@ run:
 
 # tips
 - testcases.yamlのtestcaseにexpectedを指定しないテストケースを作成すると、そのケースはJUSTSHOW扱いになり、正答との比較はスキップされ、出力結果の表示だけが行われます。
+- 古い時代のコンテストには対応していないことを把握しています。
