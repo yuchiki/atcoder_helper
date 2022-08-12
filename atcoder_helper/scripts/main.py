@@ -1,5 +1,6 @@
 """atcoder_helperコマンドのエントリポイント."""
 import argparse
+import os
 
 from atcoder_helper.services.execute_test import execute_test
 from atcoder_helper.services.fetch_task import fetch_task
@@ -21,8 +22,20 @@ def main() -> None:
     parser_fetch.add_argument("contest")
     parser_fetch.add_argument("task")
 
-    parser_init_task = root_subparsers.add_parser("init_task")
-    parser_init_task.set_defaults(handler=_init_task_handler, parser=parser_init_task)
+    parser_task = root_subparsers.add_parser("task")
+    parser_task.set_defaults(parser=parser_task)
+
+    parser_task_subparsers = parser_task.add_subparsers()
+
+    parser_task_init = parser_task_subparsers.add_parser("init")
+    parser_task_init.set_defaults(handler=_task_init_handler, parser=parser_task_init)
+
+    parser_task_create = parser_task_subparsers.add_parser("create")
+    parser_task_create.set_defaults(
+        handler=_task_create_handler, parser=parser_task_create
+    )
+    parser_task_create.add_argument("contest")
+    parser_task_create.add_argument("task")
 
     parser_config = root_subparsers.add_parser("config")
     parser_config.set_defaults(parser=parser_config)
@@ -41,8 +54,12 @@ def main() -> None:
         args.parser.print_help()
 
 
-def _init_task_handler(_: argparse.Namespace) -> None:
-    init_task()
+def _task_init_handler(_: argparse.Namespace) -> None:
+    init_task(None, None, None)
+
+
+def _task_create_handler(args: argparse.Namespace) -> None:
+    init_task(os.path.join(args.contest, args.task), args.contest, args.task)
 
 
 def _execute_test_handler(_: argparse.Namespace) -> None:

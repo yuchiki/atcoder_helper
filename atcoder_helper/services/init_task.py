@@ -1,6 +1,8 @@
 """Taskディレクトリを初期化するためのservice."""
 import os
 import shutil
+from typing import Any
+from typing import Optional
 
 import yaml
 
@@ -21,7 +23,13 @@ def _is_empty(dir: str) -> bool:
     return len(os.listdir(dir)) == 0
 
 
-def _init_task(task_dir: str, languageConfig: LanguageConfig) -> None:
+def _init_task(
+    task_dir: str,
+    languageConfig: LanguageConfig,
+    contest: Optional[str],
+    task: Optional[str],
+) -> None:
+    os.makedirs(task_dir, exist_ok=True)
     if not _is_empty(task_dir):
         raise DirectoryNotEmpty(f"directory {task_dir} is not empty")
 
@@ -31,15 +39,27 @@ def _init_task(task_dir: str, languageConfig: LanguageConfig) -> None:
                 os.path.join(languageConfig.resolved_template_dir, filename), task_dir
             )
 
-    task_config_dict = {"build": languageConfig.build, "run": languageConfig.run}
+    task_config_dict: dict[str, Any] = {
+        "build": languageConfig.build,
+        "run": languageConfig.run,
+    }
+
+    if contest is not None:
+        task_config_dict["contest"] = contest
+
+    if task is not None:
+        task_config_dict["task"] = task
 
     with open(os.path.join(task_dir, ".atcoder_helper_task_config.yaml"), "w") as file:
         yaml.dump(task_config_dict, file, sort_keys=False)
 
 
-def init_task() -> None:
+def init_task(dir: Optional[str], contest: Optional[str], task: Optional[str]) -> None:
     """taskディレクトリを初期化します."""
     config_repo = AtCoderHelperConfigRepository(get_atcoder_helper_config_filepath())
     config = config_repo.read()
 
-    _init_task(os.path.join(os.getcwd()), config.default_language_config)
+    if dir is None:
+        dir = os.getcwd()
+
+    _init_task(dir, config.default_language_config, contest, task)
