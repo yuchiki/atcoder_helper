@@ -102,7 +102,14 @@ default_atcoder_config = AtCoderHelperConfig(
             use_default_template=True,
             build=["g++", "-o", "main", "main.cpp"],
             run=["./main"],
-        )
+        ),
+        "python": LanguageConfig(
+            name="python",
+            template_dir=None,
+            use_default_template=True,
+            build=[],
+            run=["python main.py"],
+        ),
     },
     default_language="cpp",
 )
