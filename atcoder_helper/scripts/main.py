@@ -5,7 +5,7 @@ from atcoder_helper.services.execute_test import execute_test
 from atcoder_helper.services.fetch_task import fetch_task
 
 
-def _main() -> None:
+def main() -> None:
     root_parser = argparse.ArgumentParser(description="atcoder の手助けをするコマンド")
     root_subparsers = root_parser.add_subparsers()
 
@@ -30,6 +30,3 @@ def _execute_test_handler(_: argparse.Namespace) -> None:
 
 def _fetch_task_handler(args: argparse.Namespace) -> None:
     fetch_task(args.contest, args.task)
-
-
-_main()
