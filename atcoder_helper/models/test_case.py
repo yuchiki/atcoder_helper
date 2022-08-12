@@ -3,6 +3,7 @@ import subprocess
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import cast
 
@@ -70,10 +71,10 @@ class AtcoderTestCase(YAMLObject):
             test_case_dict["expected"] + "\n" if "expected" in test_case_dict else None,
         )
 
-    def execute(self) -> TestResult:
+    def execute(self, run_command: List[str]) -> TestResult:
         """テストを実行する."""
         completed_process = subprocess.run(
-            ["make", "-s", "run"], input=self.given, text=True, capture_output=True
+            run_command, input=self.given, text=True, capture_output=True
         )
 
         if completed_process.returncode != 0:
