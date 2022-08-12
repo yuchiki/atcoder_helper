@@ -35,11 +35,16 @@ jobs:
     needs: ["lint", "test", "integration"]
     runs-on: ubuntu-latest
     steps:
+      - id: get_tag
+        run: echo "::set-output name=version::${GITHUB_REF##*/v}"
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:
           python-vesrsion: "3.10"
       - run: pip install -r requirements.txt
+      - run: sed -i -e 's/__version__ = ".*"/__version__ = "$VERSION"/' atcoder_helper/_version.py
+        env:
+          VERSION: ${{ steps.get_tag.outputs.version}}
       - run: make build
       - run: twine upload dist/*
         env:
