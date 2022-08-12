@@ -16,4 +16,12 @@ install:
 integration: install
 	integration_test/integration_test.sh
 
-.PHONY: lint test check-all integration
+
+build:
+	python setup.py sdist
+	python setup.py bdist_wheel
+
+upload-test: build
+	twine upload --repository testpypi dist/*
+
+.PHONY: lint test check-all integration build upload-test

@@ -4,22 +4,30 @@ import setuptools
 with open("README.md", "r") as readme:
     long_description = readme.read()
 
+AUTHOR = "yuchiki"
+EMAIL = "yuki.imai77@gmail.com"
+URL = "https://github.com/yuchiki/atcoder_helper"
+
 setuptools.setup(
     name="atcoder_helper",
-    version="0.0.0",
-    install_requires=["colorama", "beautifulsoup4", "requests", "pyyaml"],
-    entry_points={"console_scripts": "atcoder_helper=atcoder_helper.scripts.main:main"},
-    author="Yuchiki",
-    author_email="yuki.imai77@gmail.com",
+    author=AUTHOR,
+    author_email=EMAIL,
+    maintainer=AUTHOR,
+    maintainer_email=EMAIL,
     description="automation cli tools for AtCoder",
     long_description=long_description,
-    long_description_content_type="test/markdown",
-    url="https://github.com/yuchiki/atcoder_helper",
+    long_description_content_type="text/markdown",
+    license="MIT LICENSE",
+    version="0.0.1-pre1",
+    url=URL,
+    download_url=URL,
+    python_requires=">=3.10",
+    install_requires=["colorama", "beautifulsoup4", "requests", "pyyaml"],
+    entry_points={"console_scripts": "atcoder_helper=atcoder_helper.scripts.main:main"},
     packages=setuptools.find_packages(),
-    classfiers=[
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.10",
 )

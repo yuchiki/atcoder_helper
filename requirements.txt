@@ -8,3 +8,5 @@ flake8-docstrings
 hacking
 mypy
 pytest
+twine
+wheel
