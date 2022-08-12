@@ -1,9 +1,0 @@
-- name: case-1
-  input: sippuu
-  expected: 'Yes'
-- name: case-2
-  input: iphone
-  expected: 'No'
-- name: case-3
-  input: coffee
-  expected: 'Yes'

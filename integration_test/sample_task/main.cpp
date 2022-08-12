@@ -3,12 +3,12 @@ using namespace std;
 
 
 int main() {
-    string S;
+    long S;
     cin >> S;
 
-    if (S[2] == S[3] && S[4] == S[5]) {
-        cout << "Yes" << endl;
+    if (S % 2 == 0) {
+        cout << S << endl;
     } else {
-        cout << "No" << endl;
+        cout << S * 2 << endl;
     }
 }
