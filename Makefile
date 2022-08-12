@@ -10,4 +10,8 @@ lint:
 test:
 	pytest tests
 
+install:
+	pip install -e .
+	which atcoder_helper
+
 .PHONY: lint test check-all

@@ -6,6 +6,7 @@ from atcoder_helper.services.fetch_task import fetch_task
 
 
 def main() -> None:
+    """main."""
     root_parser = argparse.ArgumentParser(description="atcoder の手助けをするコマンド")
     root_subparsers = root_parser.add_subparsers()
 
