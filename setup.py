@@ -1,6 +1,8 @@
 """Description of this package."""
 import setuptools
 
+from atcoder_helper._version import __version__
+
 with open("README.md", "r") as readme:
     long_description = readme.read()
 
@@ -18,7 +20,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT LICENSE",
-    version="0.0.1-pre1",
+    version=__version__,
     url=URL,
     download_url=URL,
     python_requires=">=3.10",

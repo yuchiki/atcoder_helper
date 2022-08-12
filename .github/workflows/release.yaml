@@ -1,0 +1,46 @@
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - run: pip install -r requirements.txt
+      - run: mypy --install-types --non-interactive .
+      - run: make lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - run: pip install -r requirements.txt
+      - run: make test
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - run: pip install -r requirements.txt
+      - run: make integration
+  release:
+    needs: ["lint", "test", "integration"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-vesrsion: "3.10"
+      - run: pip install -r requirements.txt
+      - run: twine upload dist/*
+        env:
+          TWINE_USERNAME: ${{secrets.PYPI_USERNAME}}
+          TWINE_PASWORD: ${{secrets.PYPI_PASSWORD}}
