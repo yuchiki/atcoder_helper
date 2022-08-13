@@ -1,0 +1,72 @@
+# https://atcoder.jp/contests/language-test-202001
+default_language: cpp-gcc
+languages:
+  - name: cpp-gcc
+    build:
+      - g++
+      - -std=gnu++17
+      - -Wall
+      - -Wextra
+      - -O2
+      # - -DONLINE_JUDGE
+      # - -I/opt/boost/gcc/include
+      # - -L/opt/boost/gcc/lib
+      # - -I/opt/ac-library
+      - -omain
+      - main.cpp
+    run:
+      - ./main
+    use_default_template: true
+  - name: cpp-clang
+    build:
+      - clang++
+      - -std=c++17
+      - -stdlib=libc++
+      - Wall
+      - -O2
+      # - -DNDEBUG
+      # - -DONLINE_JUDGE
+      # - -I/opt/boost/clang/include
+      # - -L/opt/boost/clang/lib
+      # - -I/opt/ac-library
+      - -omain
+      - main.cpp
+    run:
+      - ./main
+    use_default_template: true
+  - name: python-pypy3
+    build: []
+    run:
+      - pypy3
+      - main.py
+    use_default_template: true
+  - name: python
+    build: []
+    run:
+      - python
+      - main.py
+    use_default_template: true
+  - name: csharp
+    build:
+      - dotnet
+      - publish
+      - outputs/main
+      - -cRelease
+      # -rubuntu.18.04-x64
+      - -p:PublishReadyuToRun=true
+      - -ooutputs
+      -  # -vq
+      - --nologo
+    run:
+      - ./outputs/main
+  - name: rust
+    build: cargo build --release --offline --quiet
+    run: ./a.out
+  - name: ruby
+    build:
+      - ruby
+      - -w
+      - -cmain.rb
+    run:
+      - ruby
+      - main.rb

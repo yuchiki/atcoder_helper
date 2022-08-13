@@ -13,7 +13,10 @@ install:
 	pip install -e .
 	which atcoder_helper
 
-integration: install
+uninstall:
+	pip uninstall -y atcoder_helper
+
+integration: uninstall install
 	integration_test/integration_test.sh
 
 
@@ -24,4 +27,4 @@ build:
 upload-test: build
 	twine upload --repository testpypi dist/*
 
-.PHONY: lint test check-all integration build upload-test
+.PHONY: lint test check-all integration build upload-test uninstall install

@@ -54,8 +54,7 @@ class LanguageConfig:
         if self.use_default_template:
             return os.path.join(
                 atcoder_helper.__path__[0],
-                "sample_configs",
-                ".atcoder_helper",
+                "default_settings",
                 "templates",
                 self.name,
             )
@@ -92,24 +91,3 @@ class AtCoderHelperConfig:
     def default_language_config(self) -> LanguageConfig:
         """デフォルトの言語設定."""
         return self.languages[self.default_language]
-
-
-default_atcoder_config = AtCoderHelperConfig(
-    languages={
-        "cpp": LanguageConfig(
-            name="cpp",
-            template_dir=None,
-            use_default_template=True,
-            build=["g++", "-o", "main", "main.cpp"],
-            run=["./main"],
-        ),
-        "python": LanguageConfig(
-            name="python",
-            template_dir=None,
-            use_default_template=True,
-            build=[],
-            run=["python main.py"],
-        ),
-    },
-    default_language="cpp",
-)
