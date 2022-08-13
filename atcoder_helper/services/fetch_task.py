@@ -3,7 +3,7 @@ import sys
 from typing import Optional
 
 from atcoder_helper.repositories.atcoder_repo import AtCoderRepository
-from atcoder_helper.repositories.task_conifg_repo import TaskConfigRepository
+from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 
 
