@@ -17,6 +17,11 @@ class AlreadyLoggedIn(Exception):
     pass
 
 
+_default_session_file = os.path.join(
+    os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
+)
+
+
 class AtCoderRepository:
     """AtCoderとの通信を抽象化するためのクラス."""
 
@@ -32,7 +37,7 @@ class AtCoderRepository:
     def _submit_url(self, contest: str) -> str:
         return f"{self._contest_url(contest)}/submit"
 
-    def __init__(self, session_filename: str):
+    def __init__(self, session_filename: str = _default_session_file):
         """__init__.
 
         Args:
@@ -46,6 +51,8 @@ class AtCoderRepository:
             self._session = requests.session()
 
     def _write_session(self) -> None:
+        os.makedirs(os.path.dirname(self._session_filename))
+
         with open(self._session_filename, "wb") as file:
             pickle.dump(self._session, file)
 

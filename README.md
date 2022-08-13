@@ -26,6 +26,10 @@ PyPI: https://pypi.org/project/atcoder-helper/
 
 このコマンドにより、問題を解くための雛型が生成されます。また、ビルドコマンド・実行コマンド、問題などの情報を記したタスク設定ファイル`.atcoder_helper_task_config.yaml`が生成されます。
 
+### atcoderにログイン
+
+`atcoder_helper auth login` でatcoderにログインしてください。
+
 ### テストケースの取得
 作成されたディレクトリに移動し、`atcoder_helper fetch`コマンドを実行します。
 取得したテストケースはtestcases.yamlに保存されます。

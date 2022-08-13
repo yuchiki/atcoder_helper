@@ -1,7 +1,10 @@
 """atcoder_helperコマンドのエントリポイント."""
 import argparse
+import getpass
 import os
+import sys
 
+from atcoder_helper.services.auth import login
 from atcoder_helper.services.confg_use import config_use
 from atcoder_helper.services.config_default_language import config_default_language
 from atcoder_helper.services.config_languages import config_languages
@@ -17,15 +20,41 @@ def main() -> None:
     root_parser.set_defaults(parser=root_parser)
     root_subparsers = root_parser.add_subparsers()
 
-    parser_exec = root_subparsers.add_parser("exec")
+    _set_auth_parser(root_subparsers.add_parser("auth"))
+    _set_exec_parser(root_subparsers.add_parser("exec"))
+    _set_fetch_parser(root_subparsers.add_parser("fetch"))
+    _set_task_pasrer(root_subparsers.add_parser("task"))
+    _set_config_parser(root_subparsers.add_parser("config"))
+
+    args = root_parser.parse_args()
+    if hasattr(args, "handler"):
+        args.handler(args)
+    else:
+        args.parser.print_help()
+
+
+def _set_auth_parser(parser_auth: argparse.ArgumentParser) -> None:
+    parser_auth.set_defaults(parser=parser_auth)
+
+    parser_auth_subparsers = parser_auth.add_subparsers()
+
+    parser_auth_login = parser_auth_subparsers.add_parser("login")
+    parser_auth_login.set_defaults(
+        handler=_auth_login_handler, parser=parser_auth_login
+    )
+
+
+def _set_exec_parser(parser_exec: argparse.ArgumentParser) -> None:
     parser_exec.set_defaults(handler=_execute_test_handler, parser=parser_exec)
 
-    parser_fetch = root_subparsers.add_parser("fetch")
+
+def _set_fetch_parser(parser_fetch: argparse.ArgumentParser) -> None:
     parser_fetch.set_defaults(handler=_fetch_task_handler, parser=parser_fetch)
     parser_fetch.add_argument("--contest")
     parser_fetch.add_argument("--task")
 
-    parser_task = root_subparsers.add_parser("task")
+
+def _set_task_pasrer(parser_task: argparse.ArgumentParser) -> None:
     parser_task.set_defaults(parser=parser_task)
 
     parser_task_subparsers = parser_task.add_subparsers()
@@ -40,7 +69,8 @@ def main() -> None:
     parser_task_create.add_argument("contest")
     parser_task_create.add_argument("task")
 
-    parser_config = root_subparsers.add_parser("config")
+
+def _set_config_parser(parser_config: argparse.ArgumentParser) -> None:
     parser_config.set_defaults(parser=parser_config)
 
     parser_config_subparsers = parser_config.add_subparsers()
@@ -66,11 +96,16 @@ def main() -> None:
     )
     parser_config_use.add_argument("language")
 
-    args = root_parser.parse_args()
-    if hasattr(args, "handler"):
-        args.handler(args)
+
+def _auth_login_handler(_: argparse.Namespace) -> None:
+    name = input("name:")
+    password = getpass.getpass("password:")
+
+    if login(name, password):
+        print("logged in.")
     else:
-        args.parser.print_help()
+        print("fail to log in.")
+        sys.exit(1)
 
 
 def _task_init_handler(_: argparse.Namespace) -> None:
