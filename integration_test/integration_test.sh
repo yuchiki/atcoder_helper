@@ -16,6 +16,11 @@ function can_config_init() {
     atcoder_helper config init
 }
 
+function can_logout() {
+    echo "logoutがfailしない"
+    atcoder_helper auth logout
+}
+
 function can_show_languages() {
     echo "atcoder_helper config languagesは動く"
     atcoder_helper config languages
@@ -92,6 +97,7 @@ function main() {
 
     # 初期設定
     installed
+    can_logout
     can_config_init
     can_show_languages
         can_show_default_language cpp-gcc
