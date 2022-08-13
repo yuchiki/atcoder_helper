@@ -2,6 +2,8 @@
 import argparse
 import os
 
+from atcoder_helper.services.config_default_language import config_default_language
+from atcoder_helper.services.config_languages import config_languages
 from atcoder_helper.services.execute_test import execute_test
 from atcoder_helper.services.fetch_task import fetch_task
 from atcoder_helper.services.init_config import init_config
@@ -47,6 +49,16 @@ def main() -> None:
         handler=_config_init_handler, parser=parser_config_init
     )
 
+    parser_config_languages = parser_config_subparsers.add_parser("languages")
+    parser_config_languages.set_defaults(
+        handler=_config_languages_handler, parser=parser_config_languages
+    )
+
+    parser_config_default_language = parser_config_subparsers.add_parser("default")
+    parser_config_default_language.set_defaults(
+        handler=_config_default_language_handler, parser=parser_config_default_language
+    )
+
     args = root_parser.parse_args()
     if hasattr(args, "handler"):
         args.handler(args)
@@ -72,3 +84,14 @@ def _fetch_task_handler(args: argparse.Namespace) -> None:
 
 def _config_init_handler(_: argparse.Namespace) -> None:
     init_config()
+
+
+def _config_languages_handler(_: argparse.Namespace) -> None:
+    languages = config_languages()
+    for language_name in languages:
+        print(language_name)
+
+
+def _config_default_language_handler(_: argparse.Namespace) -> None:
+    default_language = config_default_language()
+    print(default_language.name)
