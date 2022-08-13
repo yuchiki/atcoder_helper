@@ -6,6 +6,7 @@ import sys
 
 from atcoder_helper.services.auth import login
 from atcoder_helper.services.auth import logout
+from atcoder_helper.services.auth import status
 from atcoder_helper.services.confg_use import config_use
 from atcoder_helper.services.config_default_language import config_default_language
 from atcoder_helper.services.config_languages import config_languages
@@ -48,6 +49,9 @@ def _set_auth_parser(parser_auth: argparse.ArgumentParser) -> None:
     parser_auth_logout.set_defaults(
         handler=_auth_logout_handler, parser=parser_auth_logout
     )
+
+    parser_auth_status = parser_auth_subparsers.add_parser("status")
+    parser_auth_status.set_defaults(handler=_auth_status, parser=parser_auth_status)
 
 
 def _set_exec_parser(parser_exec: argparse.ArgumentParser) -> None:
@@ -116,6 +120,13 @@ def _auth_login_handler(_: argparse.Namespace) -> None:
 
 def _auth_logout_handler(_: argparse.Namespace) -> None:
     logout()
+
+
+def _auth_status(_: argparse.Namespace) -> None:
+    if status():
+        print("logged in.")
+    else:
+        print("logged out.")
 
 
 def _task_init_handler(_: argparse.Namespace) -> None:

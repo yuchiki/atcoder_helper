@@ -26,7 +26,7 @@ def login(username: str, password: str) -> bool:
     atcoder_repo = AtCoderRepository()
 
     if atcoder_repo.is_logged_in():
-        raise AlreadyLoggedIn("既にログインしています")
+        raise Exception("ログイン失敗")
 
     return atcoder_repo.login(username, password)
 
@@ -36,3 +36,13 @@ def logout() -> None:
     atcoder_repo = AtCoderRepository()
 
     atcoder_repo.logout()
+
+
+def status() -> bool:
+    """loginしているかどうかを返す.
+
+    Returns:
+        bool: loginしているか
+    """
+    atcoder_repo = AtCoderRepository()
+    return atcoder_repo.is_logged_in()
