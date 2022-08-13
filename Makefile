@@ -1,4 +1,4 @@
-check-all: test lint
+check-all: test lint integration
 
 lint:
 	isort .
