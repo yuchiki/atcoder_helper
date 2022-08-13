@@ -21,6 +21,11 @@ function can_logout() {
     atcoder_helper auth logout
 }
 
+function can_show_auth_status(){
+    echo "atcoder_helper auth statusは動く"
+    test "$(atcoder_helper auth status)" == "logged out."
+}
+
 function can_show_languages() {
     echo "atcoder_helper config languagesは動く"
     atcoder_helper config languages
@@ -98,9 +103,10 @@ function main() {
     # 初期設定
     installed
     can_logout
+    can_show_auth_status
     can_config_init
     can_show_languages
-        can_show_default_language cpp-gcc
+    can_show_default_language cpp-gcc
 
     can_set_default_language python
     can_show_default_language python
