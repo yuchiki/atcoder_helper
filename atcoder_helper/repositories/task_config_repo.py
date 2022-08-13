@@ -30,5 +30,5 @@ class TaskConfigRepository:
             TaskConfig: 読み込んだTaskConfig
         """
         with open(self._filename) as file:
-            object = yaml.safe_load(file)
+            object = yaml.safe_load(file)  # TODO(validate)
             return TaskConfig.from_dict(object)

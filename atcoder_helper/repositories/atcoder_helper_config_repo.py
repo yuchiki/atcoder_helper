@@ -23,7 +23,7 @@ class AtCoderHelperConfigRepository:
             AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
         """
         with open(self._filename) as file:
-            config_dict = yaml.safe_load(file)
+            config_dict = yaml.safe_load(file)  # TODO(validate)
             return AtCoderHelperConfig.from_dict(config_dict)
 
     def write(self, config: AtCoderHelperConfig) -> None:

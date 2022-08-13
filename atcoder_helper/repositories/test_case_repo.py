@@ -46,5 +46,5 @@ class TestCaseRepository:
             List[TestCase]: 読み込まれたテストスイート
         """
         with open(self._filename) as file:
-            objects = yaml.safe_load(file)
+            objects = yaml.safe_load(file)  # TODO(validate)
             return [AtcoderTestCase.from_dict(object) for object in objects]
