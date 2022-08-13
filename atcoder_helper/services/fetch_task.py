@@ -15,8 +15,8 @@ def fetch_task(contest: Optional[str], task: Optional[str]) -> None:
         task (str): タスク名。AtCoderのコンテストページのURLに現れる形から、"コンテスト名_"の部分を除いたもの
     """
     atcoder_repo = AtCoderRepository()
-    task_config_repo = TaskConfigRepository(".atcoder_helper_task_config.yaml")
-    test_case_repo = TestCaseRepository("testcases.yaml")
+    task_config_repo = TaskConfigRepository()
+    test_case_repo = TestCaseRepository()
 
     task_config = task_config_repo.read()
 
@@ -29,16 +29,14 @@ def fetch_task(contest: Optional[str], task: Optional[str]) -> None:
     if contest is None:
         print("contest is None. use --contest <contest>", file=sys.stderr)
         print(
-            "or add `contest: <contest>` in .atcoder_helper_task_config.yaml",
+            "or add `contest: <contest>` in the task config file",
             file=sys.stderr,
         )
         sys.exit(1)
 
     if task is None:
         print("task is None. use --task <contest>", file=sys.stderr)
-        print(
-            "or add `task: <task>` in .atcoder_helper_task_config.yaml", file=sys.stderr
-        )
+        print("or add `task: <task>` in the task config file", file=sys.stderr)
         sys.exit(1)
 
     test_cases = atcoder_repo.fetch_test_cases(contest, task)

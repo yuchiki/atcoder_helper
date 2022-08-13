@@ -1,4 +1,5 @@
 """テストケースの永続化を行う."""
+from typing import Final
 from typing import List
 
 import yaml
@@ -9,7 +10,9 @@ from atcoder_helper.models.test_case import AtcoderTestCase
 class TestCaseRepository:
     """テストケースの永続化を行う."""
 
-    def __init__(self, filename: str):
+    default_testcase_file: Final[str] = "testcases.yaml"
+
+    def __init__(self, filename: str = default_testcase_file):
         """__init__.
 
         Args:

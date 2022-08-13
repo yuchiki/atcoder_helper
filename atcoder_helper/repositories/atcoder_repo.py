@@ -17,13 +17,12 @@ class AlreadyLoggedIn(Exception):
     pass
 
 
-_default_session_file = os.path.join(
-    os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
-)
-
-
 class AtCoderRepository:
     """AtCoderとの通信を抽象化するためのクラス."""
+
+    _default_session_file: Final[str] = os.path.join(
+        os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
+    )
 
     _atcoder_url: Final[str] = "https://atcoder.jp"
     _login_url: Final[str] = f"{_atcoder_url}/login"

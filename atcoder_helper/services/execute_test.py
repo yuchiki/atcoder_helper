@@ -13,8 +13,8 @@ from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 
 def execute_test() -> None:
     """testcaseに基づき、テストを実行する関数."""
-    test_case_repo = TestCaseRepository("testcases.yaml")
-    task_config_repo = TaskConfigRepository(".atcoder_helper_task_config.yaml")
+    test_case_repo = TestCaseRepository()
+    task_config_repo = TaskConfigRepository()
     task_config = task_config_repo.read()
 
     subprocess.run(task_config.build)

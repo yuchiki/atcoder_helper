@@ -10,6 +10,7 @@ from atcoder_helper.models.task_config import TaskConfigDict
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     AtCoderHelperConfigRepository,
 )
+from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
@@ -23,6 +24,7 @@ def _is_empty(dir: str) -> bool:
     return len(os.listdir(dir)) == 0
 
 
+# TODO(ここにあるのはおかしいのでrepoに移動)
 def _init_task(
     task_dir: str,
     languageConfig: LanguageConfig,
@@ -50,7 +52,9 @@ def _init_task(
     if task is not None:
         task_config_dict["task"] = task
 
-    with open(os.path.join(task_dir, ".atcoder_helper_task_config.yaml"), "w") as file:
+    with open(
+        os.path.join(task_dir, TaskConfigRepository.default_filename), "w"
+    ) as file:
         yaml.dump(task_config_dict, file, sort_keys=False)
 
 
