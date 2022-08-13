@@ -15,7 +15,7 @@ PyPI: https://pypi.org/project/atcoder-helper/
 `atcoder_helper config init`コマンドにより、 `$HOME/.atcoder_helper` 以下に設定ファイルが作成されます。
 
 
-## 準備
+## 問題を解くときの流れ
 
 問題を解くディレクトリの中で以下の準備をします。
 
@@ -30,11 +30,21 @@ PyPI: https://pypi.org/project/atcoder-helper/
 作成されたディレクトリに移動し、`atcoder_helper fetch`コマンドを実行します。
 取得したテストケースはtestcases.yamlに保存されます。
 
-## 問題を解いているとき
+### 問題を解いているとき
 
 `atcoder_helper exec` で以下のような実行結果を得ることができます。
 
 ![出力画像](docs/exec_result.png)
+
+
+## 言語設定ファイルについて
+
+デフォルトでは、~/.atcoder_helper/config.yaml に設定ファイルが作成されます。ここに追記することにより、自分独自の言語設定を追加することができます。
+各言語設定は template_dir フィールドを持つことができます。template_dirフィールドが設定されている場合、初期化時に、template_dirに指定されたディレクトリ内のファイルが初期化中のディレクトリに展開されます。
+
+- 使用可能な言語の一覧は`atcoder_helper config languages` で取得できます
+- 現在デフォルトの言語は`atcoder_helper config default` で取得できます
+- デフォルトの言語の変更は`atcoder_helper config use <language>` で可能です
 
 
 # tips
