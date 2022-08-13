@@ -1,12 +1,12 @@
 """Taskディレクトリを初期化するためのservice."""
 import os
 import shutil
-from typing import Any
 from typing import Optional
 
 import yaml
 
 from atcoder_helper.models.atcoder_helper_config import LanguageConfig
+from atcoder_helper.models.task_config import TaskConfigDict
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     AtCoderHelperConfigRepository,
 )
@@ -39,7 +39,7 @@ def _init_task(
                 os.path.join(languageConfig.resolved_template_dir, filename), task_dir
             )
 
-    task_config_dict: dict[str, Any] = {
+    task_config_dict: TaskConfigDict = {
         "build": languageConfig.build,
         "run": languageConfig.run,
     }

@@ -2,11 +2,23 @@
 
 import os
 from dataclasses import dataclass
-from typing import Any
 from typing import List
 from typing import Optional
+from typing import TypedDict
+
+from typing_extensions import NotRequired
 
 import atcoder_helper
+
+
+class LanguageConfigDict(TypedDict):
+    """LanguageConfigのdict版."""
+
+    name: str
+    template_dir: NotRequired[str]
+    use_default_template: bool
+    build: List[str]
+    run: List[str]
 
 
 @dataclass
@@ -20,7 +32,7 @@ class LanguageConfig:
     run: List[str]
 
     @classmethod
-    def from_dict(cls, language_dict: dict[str, Any]) -> "LanguageConfig":
+    def from_dict(cls, language_dict: LanguageConfigDict) -> "LanguageConfig":
         """辞書型からLanguageConfig型に変換する."""
         return LanguageConfig(
             name=language_dict["name"],
@@ -30,7 +42,7 @@ class LanguageConfig:
             run=language_dict["run"],
         )
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> LanguageConfigDict:
         """LanguageConfig型から辞書型へ変換する."""
         if self.template_dir is None:
             return {
@@ -62,6 +74,13 @@ class LanguageConfig:
             return self.template_dir
 
 
+class AtCoderHelperConfigDict(TypedDict):
+    """AtcCoderHelperConfig の　辞書版."""
+
+    languages: List[LanguageConfigDict]
+    default_language: str
+
+
 @dataclass
 class AtCoderHelperConfig:
     """atcoder_helper アプリ全体の設定を保持する."""
@@ -70,7 +89,7 @@ class AtCoderHelperConfig:
     default_language: str
 
     @classmethod
-    def from_dict(cls, config_dict: dict[str, Any]) -> "AtCoderHelperConfig":
+    def from_dict(cls, config_dict: AtCoderHelperConfigDict) -> "AtCoderHelperConfig":
         """辞書型からAtCoderHelperConfig型に変換する."""
         return AtCoderHelperConfig(
             languages={
@@ -80,7 +99,7 @@ class AtCoderHelperConfig:
             default_language=config_dict["default_language"],
         )
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> AtCoderHelperConfigDict:
         """AtCoderHelperConfig型から辞書型へ変換する."""
         return {
             "languages": [language.to_dict() for language in self.languages.values()],

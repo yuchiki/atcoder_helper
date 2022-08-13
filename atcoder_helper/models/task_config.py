@@ -1,10 +1,20 @@
 """TaskConfigを定義する."""
 
 from dataclasses import dataclass
-from typing import Any
-from typing import Dict
 from typing import List
 from typing import Optional
+from typing import TypedDict
+
+from typing_extensions import NotRequired
+
+
+class TaskConfigDict(TypedDict):
+    """TaskConfigの辞書版."""
+
+    contest: NotRequired[str]
+    task: NotRequired[str]
+    build: List[str]
+    run: List[str]
 
 
 @dataclass
@@ -17,7 +27,7 @@ class TaskConfig:
     run: List[str]
 
     @classmethod
-    def from_dict(cls, task_config_dict: Dict[str, Any]) -> "TaskConfig":
+    def from_dict(cls, task_config_dict: TaskConfigDict) -> "TaskConfig":
         """辞書からTaskConfig型に変換する."""
         return TaskConfig(
             contest=task_config_dict["contest"]
