@@ -1,4 +1,6 @@
-check-all: test lint integration
+check-light: tests lint
+
+check-all: check-light integration
 
 lint:
 	isort .
