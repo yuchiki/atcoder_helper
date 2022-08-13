@@ -30,8 +30,12 @@ function can_show_default_language() {
 
         test "$(atcoder_helper config default)" = $1
     fi
+}
 
-
+function can_set_default_language() {
+    language=$1
+    echo "atcoder_helper config useが動く"
+    atcoder_helper config use $language
 }
 
 function can_task_init() {
@@ -90,6 +94,12 @@ function main() {
     installed
     can_config_init
     can_show_languages
+        can_show_default_language cpp-gcc
+
+    can_set_default_language python
+    can_show_default_language python
+
+    can_set_default_language cpp-gcc
     can_show_default_language cpp-gcc
 
     # 既存のディレクトリを初期化して使うケース
