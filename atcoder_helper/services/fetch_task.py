@@ -14,7 +14,7 @@ def fetch_task(contest: Optional[str], task: Optional[str]) -> None:
         contest (str): コンテスト名。AtCoderのコンテストページのURLに現れる形式で渡す
         task (str): タスク名。AtCoderのコンテストページのURLに現れる形から、"コンテスト名_"の部分を除いたもの
     """
-    atcoder_repo = AtCoderRepository("session/session_dump.pkl")
+    atcoder_repo = AtCoderRepository()
     task_config_repo = TaskConfigRepository(".atcoder_helper_task_config.yaml")
     test_case_repo = TestCaseRepository("testcases.yaml")
 

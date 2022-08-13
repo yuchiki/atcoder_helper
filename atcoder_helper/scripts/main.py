@@ -5,6 +5,7 @@ import os
 import sys
 
 from atcoder_helper.services.auth import login
+from atcoder_helper.services.auth import logout
 from atcoder_helper.services.confg_use import config_use
 from atcoder_helper.services.config_default_language import config_default_language
 from atcoder_helper.services.config_languages import config_languages
@@ -41,6 +42,11 @@ def _set_auth_parser(parser_auth: argparse.ArgumentParser) -> None:
     parser_auth_login = parser_auth_subparsers.add_parser("login")
     parser_auth_login.set_defaults(
         handler=_auth_login_handler, parser=parser_auth_login
+    )
+
+    parser_auth_logout = parser_auth_subparsers.add_parser("logout")
+    parser_auth_logout.set_defaults(
+        handler=_auth_logout_handler, parser=parser_auth_logout
     )
 
 
@@ -106,6 +112,10 @@ def _auth_login_handler(_: argparse.Namespace) -> None:
     else:
         print("fail to log in.")
         sys.exit(1)
+
+
+def _auth_logout_handler(_: argparse.Namespace) -> None:
+    logout()
 
 
 def _task_init_handler(_: argparse.Namespace) -> None:

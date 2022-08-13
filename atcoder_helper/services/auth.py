@@ -29,3 +29,10 @@ def login(username: str, password: str) -> bool:
         raise AlreadyLoggedIn("既にログインしています")
 
     return atcoder_repo.login(username, password)
+
+
+def logout() -> None:
+    """logout."""
+    atcoder_repo = AtCoderRepository()
+
+    atcoder_repo.logout()

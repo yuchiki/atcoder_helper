@@ -51,7 +51,7 @@ class AtCoderRepository:
             self._session = requests.session()
 
     def _write_session(self) -> None:
-        os.makedirs(os.path.dirname(self._session_filename))
+        os.makedirs(os.path.dirname(self._session_filename), exist_ok=True)
 
         with open(self._session_filename, "wb") as file:
             pickle.dump(self._session, file)
