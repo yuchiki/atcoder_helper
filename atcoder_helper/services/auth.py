@@ -1,6 +1,8 @@
 """認証周りのサービス."""
 
 
+from typing import Protocol
+
 import atcoder_helper.repositories.errors as repository_error
 from atcoder_helper.repositories.atcoder_repo import AtCoderRepository
 from atcoder_helper.repositories.atcoder_repo import get_default_atcoder_repository
@@ -9,7 +11,48 @@ from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
 
 
-class AuthService:
+class AuthService(Protocol):
+    """auth を扱うサービスのプロトコル."""
+
+    def login(self, username: str, password: str) -> bool:
+        """ログインする.
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Raises:
+            AlreadyLoggedIn: 既にログインしている
+            ConfigAccessError: 設定ファイルのエラー
+            AtcoderAccessError: atcoderから情報を取得する際のエラー
+        Returns:
+            bool: ログインに成功できたかどうか
+        """
+
+    def logout(self) -> None:
+        """logout.
+
+        Raises:
+            ConfigAccessError: 設定ファイル読み書きのエラー
+        """
+
+    def status(self) -> bool:
+        """loginしているかどうかを返す.
+
+        Returns:
+            bool: loginしているか
+
+        Raises:
+            AtcoderAccessError: atcoder access error
+        """
+
+
+def get_default_auth_service() -> AuthService:
+    """AuthServiceの標準実装を返す."""
+    return AuthServiceImpl()
+
+
+class AuthServiceImpl:
     """auth を扱うサービス."""
 
     atcoder_repo: AtCoderRepository

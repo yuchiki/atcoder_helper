@@ -8,6 +8,7 @@ import traceback
 from atcoder_helper.services import errors as service_errors
 from atcoder_helper.services.atcoder_helper_config import AtCoderHelperConfigService
 from atcoder_helper.services.auth import AuthService
+from atcoder_helper.services.auth import get_default_auth_service
 from atcoder_helper.services.execute_test import execute_test
 from atcoder_helper.services.fetch_task import fetch_task
 from atcoder_helper.services.init_task import init_task
@@ -27,7 +28,7 @@ class EntryPoint:
 
     def __init__(self) -> None:
         """__init__."""
-        self._auth_service = AuthService()
+        self._auth_service = get_default_auth_service()
         self._atcoder_helper_config = AtCoderHelperConfigService()
 
     def main(self) -> None:
@@ -52,11 +53,8 @@ class EntryPoint:
     def _auth_login_handler(self, args: argparse.Namespace) -> None:
         name = input("name:")
         password = getpass.getpass("password:")
-
-        auth_service = AuthService()
-
         try:
-            status = auth_service.login(name, password)
+            status = self._auth_service.login(name, password)
         except service_errors.AlreadyLoggedIn:
             print("既にログインしています.")
             if args.verbose:
@@ -80,9 +78,8 @@ class EntryPoint:
             sys.exit(1)
 
     def _auth_logout_handler(self, args: argparse.Namespace) -> None:
-        auth_service = AuthService()
         try:
-            auth_service.logout()
+            self._auth_service.logout()
         except service_errors.ConfigAccessError:
             print("設定ファイルを正しく読み込めません.")
             if args.verbose:
@@ -90,9 +87,8 @@ class EntryPoint:
             sys.exit(1)
 
     def _auth_status(self, args: argparse.Namespace) -> None:
-        auth_service = AuthService()
         try:
-            stat = auth_service.status()
+            stat = self._auth_service.status()
         except service_errors.AtcoderAccessError:
             print("atcoderと通信できません")
             if args.verbose:
