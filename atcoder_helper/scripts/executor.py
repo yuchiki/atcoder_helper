@@ -39,7 +39,8 @@ class Executor:
         self._fetch_task_service = get_default_fetch_task_service()
         self._init_task_dir_service = get_default_init_task_dir_service()
 
-    def _auth_login_handler(self, args: argparse.Namespace) -> None:
+    def auth_login_handler(self, args: argparse.Namespace) -> None:
+        """ログインする."""
         name = input("name:")
         password = getpass.getpass("password:")
         try:
@@ -66,7 +67,12 @@ class Executor:
             print("fail to log in.")
             sys.exit(1)
 
-    def _auth_logout_handler(self, args: argparse.Namespace) -> None:
+    def auth_logout_handler(self, args: argparse.Namespace) -> None:
+        """ログアウトする.
+
+        Args:
+            args (argparse.Namespace): _description_
+        """
         try:
             self._auth_service.logout()
         except service_errors.ConfigAccessError:
@@ -75,7 +81,8 @@ class Executor:
                 print(traceback.format_exc())
             sys.exit(1)
 
-    def _auth_status(self, args: argparse.Namespace) -> None:
+    def auth_status(self, args: argparse.Namespace) -> None:
+        """現在ログインしているかどうかを確認する."""
         try:
             stat = self._auth_service.status()
         except service_errors.AtcoderAccessError:
@@ -89,7 +96,12 @@ class Executor:
         else:
             print("logged out.")
 
-    def _task_init_handler(self, args: argparse.Namespace) -> None:
+    def task_init_handler(self, args: argparse.Namespace) -> None:
+        """既存のディレクトリをタスク用に初期化する.
+
+        Args:
+            args (argparse.Namespace): 引数
+        """
         try:
             self._init_task_dir_service.init_task()
         except service_errors.ConfigAccessError:
@@ -101,7 +113,12 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
-    def _task_create_handler(self, args: argparse.Namespace) -> None:
+    def task_create_handler(self, args: argparse.Namespace) -> None:
+        """新規にディレクトリを作り、タスク用に初期化する.
+
+        Args:
+            args (argparse.Namespace): コマンドライン引数
+        """
         try:
             self._init_task_dir_service.init_task(
                 dir=os.path.join(args.contest, args.task),
@@ -117,7 +134,12 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
-    def _execute_test_handler(self, args: argparse.Namespace) -> None:
+    def execute_test_handler(self, args: argparse.Namespace) -> None:
+        """テストスイートを実行する.
+
+        Args:
+            args (argparse.Namespace): コマンドライン引数
+        """
         try:
             self._execute_test_service.execute_test()
         except service_errors.ConfigAccessError:
@@ -125,7 +147,12 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
-    def _fetch_task_handler(self, args: argparse.Namespace) -> None:
+    def fetch_task_handler(self, args: argparse.Namespace) -> None:
+        """テストケースをフェッチする.
+
+        Args:
+            args (argparse.Namespace): コマンドライン引数
+        """
         try:
             self._fetch_task_service.fetch_task(args.contest, args.task)
         except service_errors.AtcoderAccessError:
@@ -133,7 +160,12 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
-    def _config_init_handler(self, args: argparse.Namespace) -> None:
+    def config_init_handler(self, args: argparse.Namespace) -> None:
+        """atcoder_helper全体設定ファイルを初期化する.
+
+        Args:
+            args (argparse.Namespace): 引数
+        """
         try:
             self._atcoder_helper_config_service.init_config()
         except service_errors.ConfigAccessError:
@@ -141,8 +173,12 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
-    def _config_languages_handler(self, args: argparse.Namespace) -> None:
+    def config_languages_handler(self, args: argparse.Namespace) -> None:
+        """使用可能な言語一覧を表示する.
 
+        Args:
+            args (argparse.Namespace): 引数
+        """
         try:
             languages = self._atcoder_helper_config_service.config_languages()
         except service_errors.ConfigAccessError:
@@ -153,7 +189,12 @@ class Executor:
         for language_name in languages:
             print(language_name)
 
-    def _config_default_language_handler(self, args: argparse.Namespace) -> None:
+    def config_default_language_handler(self, args: argparse.Namespace) -> None:
+        """デフォルトの言語を表示する.
+
+        Args:
+            args (argparse.Namespace): 引数
+        """
         try:
             default_language = (
                 self._atcoder_helper_config_service.config_default_language()
@@ -165,7 +206,12 @@ class Executor:
 
         print(default_language.name)
 
-    def _config_use_handler(self, args: argparse.Namespace) -> None:
+    def config_use_handler(self, args: argparse.Namespace) -> None:
+        """デフォルトの言語を設定する.
+
+        Args:
+            args (argparse.Namespace): 引数
+        """
         try:
             self._atcoder_helper_config_service.config_use(args.language)
         except service_errors.UndefinedLanguage:
