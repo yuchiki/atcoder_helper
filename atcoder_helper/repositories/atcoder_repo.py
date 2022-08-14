@@ -3,6 +3,7 @@ import os
 import pickle
 from typing import Final
 from typing import List
+from typing import Protocol
 from typing import cast
 
 import requests
@@ -15,8 +16,64 @@ from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 
 
-class AtCoderRepository:
-    """AtCoderとの通信を抽象化するためのクラス."""
+class AtCoderRepository(Protocol):
+    """AtCoderとの通信を抽象化するためのプロトコル."""
+
+    def login(self, username: str, password: str) -> bool:
+        """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Raises:
+            AlreadyLoggedIn: 既にログインしていたとき
+            WriteError: POSTに失敗
+
+        Returns:
+            bool: ログインに成功したかどうかを返す
+        """
+
+    def logout(self) -> None:
+        """logoutする. loginしていない状態でも何も検査しない.
+
+        Raises:
+            WriteError: セッションの初期化に失敗
+        """
+
+    def is_logged_in(self) -> bool:
+        """loginしているかどうかを判定する.
+
+        Raises:
+            ReadError: タスクGETに失敗
+
+        Returns:
+            bool: loginしているか否か
+        """
+
+    def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
+        """テストケーススイートを取得する.
+
+        Args:
+            contest (str): コンテスト名
+            task (str): タスク名
+
+        Raises:
+            ReadError: GETに失敗
+            ParseError: Parseに失敗
+
+        Returns:
+            List[TestCase]: テストケーススイート
+        """
+
+
+def get_default_atcoder_repository() -> AtCoderRepository:
+    """AtCoderRepositoryの 標準実装を返す."""
+    return AtCoderRepositoryImpl()
+
+
+class AtCoderRepositoryImpl:
+    """AtCoderと通信するためのクラス."""
 
     _session: requests.Session
 

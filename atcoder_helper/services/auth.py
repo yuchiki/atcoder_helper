@@ -3,6 +3,7 @@
 
 import atcoder_helper.repositories.errors as repository_error
 from atcoder_helper.repositories.atcoder_repo import AtCoderRepository
+from atcoder_helper.repositories.atcoder_repo import get_default_atcoder_repository
 from atcoder_helper.services.errors import AlreadyLoggedIn
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
@@ -13,7 +14,9 @@ class AuthService:
 
     atcoder_repo: AtCoderRepository
 
-    def __init__(self, atcoder_repo: AtCoderRepository = AtCoderRepository()):
+    def __init__(
+        self, atcoder_repo: AtCoderRepository = get_default_atcoder_repository()
+    ):
         """__init__."""
         self.atcoder_repo = atcoder_repo
 

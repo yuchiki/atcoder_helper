@@ -3,13 +3,18 @@ from typing import Optional
 
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.atcoder_repo import AtCoderRepository
+from atcoder_helper.repositories.atcoder_repo import get_default_atcoder_repository
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
 
 
-def fetch_task(contest: Optional[str], task: Optional[str]) -> None:
+def fetch_task(
+    contest: Optional[str],
+    task: Optional[str],
+    atcoder_repo: AtCoderRepository = get_default_atcoder_repository(),
+) -> None:
     """testcasesを取得し、指定したtestcasesファイルに書き込む.
 
     Raises:
@@ -24,7 +29,6 @@ def fetch_task(contest: Optional[str], task: Optional[str]) -> None:
     test_case_repo = TestCaseRepository()
 
     try:
-        atcoder_repo = AtCoderRepository()
         task_config = task_config_repo.read()
     except repository_error.ReadError as e:
         raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
