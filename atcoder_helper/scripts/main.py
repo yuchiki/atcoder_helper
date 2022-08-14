@@ -6,9 +6,7 @@ import sys
 import traceback
 
 from atcoder_helper.services import errors as service_error
-from atcoder_helper.services.auth import login
-from atcoder_helper.services.auth import logout
-from atcoder_helper.services.auth import status
+from atcoder_helper.services.auth import AuthService
 from atcoder_helper.services.confg_use import config_use
 from atcoder_helper.services.config_default_language import config_default_language
 from atcoder_helper.services.config_languages import config_languages
@@ -114,8 +112,10 @@ def _auth_login_handler(args: argparse.Namespace) -> None:
     name = input("name:")
     password = getpass.getpass("password:")
 
+    auth_service = AuthService()
+
     try:
-        status = login(name, password)
+        status = auth_service.login(name, password)
     except service_error.AlreadyLoggedIn:
         print("既にログインしています.")
         if args.verbose:
@@ -140,8 +140,9 @@ def _auth_login_handler(args: argparse.Namespace) -> None:
 
 
 def _auth_logout_handler(args: argparse.Namespace) -> None:
+    auth_service = AuthService()
     try:
-        logout()
+        auth_service.logout()
     except service_error.ConfigAccessError:
         print("設定ファイルを正しく読み込めません.")
         if args.verbose:
@@ -150,9 +151,9 @@ def _auth_logout_handler(args: argparse.Namespace) -> None:
 
 
 def _auth_status(args: argparse.Namespace) -> None:
-
+    auth_service = AuthService()
     try:
-        stat = status()
+        stat = auth_service.status()
     except service_error.AtcoderAccessError:
         print("atcoderと通信できません")
         if args.verbose:
@@ -180,7 +181,11 @@ def _task_init_handler(args: argparse.Namespace) -> None:
 
 def _task_create_handler(args: argparse.Namespace) -> None:
     try:
-        init_task(os.path.join(args.contest, args.task), args.contest, args.task)
+        init_task(
+            dir=os.path.join(args.contest, args.task),
+            contest=args.contest,
+            task=args.task,
+        )
     except service_error.ConfigAccessError:
         print("設定ファイルへの読み書きでエラーが発生しました")
         if args.verbose:

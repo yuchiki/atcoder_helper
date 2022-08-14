@@ -7,14 +7,13 @@ import yaml
 
 from atcoder_helper.models.atcoder_helper_config import LanguageConfig
 from atcoder_helper.models.task_config import TaskConfigDict
-from atcoder_helper.repositories.atcoder_helper_config_repo import (
-    AtCoderHelperConfigRepository,
-)
+from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
+from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.errors import DirectoryNotEmpty
-from atcoder_helper.services.util import get_atcoder_helper_config_filepath
+from atcoder_helper.services.util import default_atcoder_helper_config_file
 
 
 def _is_empty(dir: str) -> bool:
@@ -75,7 +74,12 @@ def _init_task(
 
 
 def init_task(
-    dir: Optional[str] = None, contest: Optional[str] = None, task: Optional[str] = None
+    atcoder_helper_config_repo: ConfigRepository = ConfigRepositoryImpl(
+        default_atcoder_helper_config_file
+    ),
+    dir: Optional[str] = None,
+    contest: Optional[str] = None,
+    task: Optional[str] = None,
 ) -> None:
     """taskディレクトリを初期化します.
 
@@ -83,9 +87,8 @@ def init_task(
         DirectoryNotEmpty: 作成しようとしているディレクトリが空でない
         ConfigAccessError: 設定ファイルの読み書きに失敗
     """
-    config_repo = AtCoderHelperConfigRepository(get_atcoder_helper_config_filepath())
     try:
-        config = config_repo.read()
+        config = atcoder_helper_config_repo.read()
     except ReadError as e:
         raise ConfigAccessError("全体設定ファイルの読み込みに失敗しました") from e
 

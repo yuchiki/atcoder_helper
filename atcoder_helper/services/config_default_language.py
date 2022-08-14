@@ -3,14 +3,17 @@
 
 from atcoder_helper.models.atcoder_helper_config import LanguageConfig
 from atcoder_helper.repositories import errors as repository_errors
-from atcoder_helper.repositories.atcoder_helper_config_repo import (
-    AtCoderHelperConfigRepository,
-)
+from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
+from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl
 from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
-def config_default_language() -> LanguageConfig:
+def config_default_language(
+    config_repo: ConfigRepository = ConfigRepositoryImpl(
+        get_atcoder_helper_config_filepath()
+    ),
+) -> LanguageConfig:
     """デフォルト言語を取得する.
 
     Raises:
@@ -19,8 +22,6 @@ def config_default_language() -> LanguageConfig:
     Returns:
         LanguageConfig: デフォルト言語
     """
-    config_repo = AtCoderHelperConfigRepository(get_atcoder_helper_config_filepath())
-
     try:
         config = config_repo.read()
     except repository_errors.ReadError as e:

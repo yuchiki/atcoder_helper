@@ -8,60 +8,63 @@ from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
 
 
-def login(username: str, password: str) -> bool:
-    """ログインする.
+class AuthService:
+    """auth を扱うサービス."""
 
-    Args:
-        username (str): username
-        password (str): password
+    atcoder_repo: AtCoderRepository
 
-    Raises:
-        AlreadyLoggedIn: 既にログインしている
-        ConfigAccessError: 設定ファイルのエラー
-        AtcoderAccessError: atcoderから情報を取得する際のエラー
-    Returns:
-        bool: ログインに成功できたかどうか
-    """
-    try:
-        atcoder_repo = AtCoderRepository()
-        status = atcoder_repo.login(username, password)
-    except repository_error.AlreadyLoggedIn as e:
-        raise AlreadyLoggedIn("既にログインしています") from e
-    except (repository_error.ReadError) as e:
-        raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
-    except (repository_error.WriteError) as e:
-        raise AtcoderAccessError("通信に失敗しました") from e
+    def __init__(self, atcoder_repo: AtCoderRepository = AtCoderRepository()):
+        """__init__."""
+        self.atcoder_repo = atcoder_repo
 
-    return status
+    def login(self, username: str, password: str) -> bool:
+        """ログインする.
 
+        Args:
+            username (str): username
+            password (str): password
 
-def logout() -> None:
-    """logout.
+        Raises:
+            AlreadyLoggedIn: 既にログインしている
+            ConfigAccessError: 設定ファイルのエラー
+            AtcoderAccessError: atcoderから情報を取得する際のエラー
+        Returns:
+            bool: ログインに成功できたかどうか
+        """
+        try:
+            status = self.atcoder_repo.login(username, password)
+        except repository_error.AlreadyLoggedIn as e:
+            raise AlreadyLoggedIn("既にログインしています") from e
+        except (repository_error.ReadError) as e:
+            raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
+        except (repository_error.WriteError) as e:
+            raise AtcoderAccessError("通信に失敗しました") from e
 
-    Raises:
-        ConfigAccessError: 設定ファイル読み書きのエラー
-    """
-    try:
-        atcoder_repo = AtCoderRepository()
+        return status
 
-        atcoder_repo.logout()
-    except (repository_error.ReadError, repository_error.WriteError) as e:
-        raise ConfigAccessError("設定ファイルの読み書きに失敗しました") from e
+    def logout(self) -> None:
+        """logout.
 
+        Raises:
+            ConfigAccessError: 設定ファイル読み書きのエラー
+        """
+        try:
+            self.atcoder_repo.logout()
+        except (repository_error.ReadError, repository_error.WriteError) as e:
+            raise ConfigAccessError("設定ファイルの読み書きに失敗しました") from e
 
-def status() -> bool:
-    """loginしているかどうかを返す.
+    def status(self) -> bool:
+        """loginしているかどうかを返す.
 
-    Returns:
-        bool: loginしているか
+        Returns:
+            bool: loginしているか
 
-    Raises:
-        AtcoderAccessError: atcoder access error
-    """
-    try:
-        atcoder_repo = AtCoderRepository()
-        status = atcoder_repo.is_logged_in()
-    except repository_error.ReadError as e:
-        raise AtcoderAccessError("atcoderのページとの通信に失敗しました") from e
+        Raises:
+            AtcoderAccessError: atcoder access error
+        """
+        try:
+            status = self.atcoder_repo.is_logged_in()
+        except repository_error.ReadError as e:
+            raise AtcoderAccessError("atcoderのページとの通信に失敗しました") from e
 
-    return status
+        return status
