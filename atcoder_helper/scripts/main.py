@@ -3,7 +3,9 @@ import argparse
 import getpass
 import os
 import sys
+import traceback
 
+from atcoder_helper.services import errors as service_error
 from atcoder_helper.services.auth import login
 from atcoder_helper.services.auth import logout
 from atcoder_helper.services.auth import status
@@ -20,6 +22,7 @@ def main() -> None:
     """main."""
     root_parser = argparse.ArgumentParser(description="atcoder の手助けをするコマンド")
     root_parser.set_defaults(parser=root_parser)
+    root_parser.add_argument("--verbose", action="store_true")
     root_subparsers = root_parser.add_subparsers()
 
     _set_auth_parser(root_subparsers.add_parser("auth"))
@@ -107,58 +110,146 @@ def _set_config_parser(parser_config: argparse.ArgumentParser) -> None:
     parser_config_use.add_argument("language")
 
 
-def _auth_login_handler(_: argparse.Namespace) -> None:
+def _auth_login_handler(args: argparse.Namespace) -> None:
     name = input("name:")
     password = getpass.getpass("password:")
 
-    if login(name, password):
+    try:
+        status = login(name, password)
+    except service_error.AlreadyLoggedIn:
+        print("既にログインしています.")
+        if args.verbose:
+            print(traceback.format_exc())
+        sys.exit(1)
+    except service_error.ConfigAccessError:
+        print("設定ファイルを正しく読み込めません.")
+        if args.verbose:
+            print(traceback.format_exc())
+        sys.exit(1)
+    except service_error.AtcoderAccessError:
+        print("AtCoderのサイトと正しく通信ができません.")
+        if args.verbose:
+            print(traceback.format_exc())
+        sys.exit(1)
+
+    if status:
         print("logged in.")
     else:
         print("fail to log in.")
         sys.exit(1)
 
 
-def _auth_logout_handler(_: argparse.Namespace) -> None:
-    logout()
+def _auth_logout_handler(args: argparse.Namespace) -> None:
+    try:
+        logout()
+    except service_error.ConfigAccessError:
+        print("設定ファイルを正しく読み込めません.")
+        if args.verbose:
+            print(traceback.format_exc())
+        sys.exit(1)
 
 
-def _auth_status(_: argparse.Namespace) -> None:
-    if status():
+def _auth_status(args: argparse.Namespace) -> None:
+
+    try:
+        stat = status()
+    except service_error.AtcoderAccessError:
+        print("atcoderと通信できません")
+        if args.verbose:
+            print(traceback.format_exc())
+        sys.exit(1)
+
+    if stat:
         print("logged in.")
     else:
         print("logged out.")
 
 
-def _task_init_handler(_: argparse.Namespace) -> None:
-    init_task(None, None, None)
+def _task_init_handler(args: argparse.Namespace) -> None:
+    try:
+        init_task()
+    except service_error.ConfigAccessError:
+        print("設定ファイルへの読み書きでエラーが発生しました")
+        if args.verbose:
+            print(traceback.format_exc())
+    except service_error.DirectoryNotEmpty:
+        print("初期化しようとしているディレクトリが空ではありません")
+        if args.verbose:
+            print(traceback.format_exc())
 
 
 def _task_create_handler(args: argparse.Namespace) -> None:
-    init_task(os.path.join(args.contest, args.task), args.contest, args.task)
+    try:
+        init_task(os.path.join(args.contest, args.task), args.contest, args.task)
+    except service_error.ConfigAccessError:
+        print("設定ファイルへの読み書きでエラーが発生しました")
+        if args.verbose:
+            print(traceback.format_exc())
+    except service_error.DirectoryNotEmpty:
+        print("初期化しようとしているディレクトリが空ではありません")
+        if args.verbose:
+            print(traceback.format_exc())
 
 
-def _execute_test_handler(_: argparse.Namespace) -> None:
-    execute_test()
+def _execute_test_handler(args: argparse.Namespace) -> None:
+    try:
+        execute_test()
+    except service_error.ConfigAccessError:
+        print("設定ファイルの読み書きに失敗しました")
+        if args.verbose:
+            print(traceback.format_exc())
 
 
 def _fetch_task_handler(args: argparse.Namespace) -> None:
-    fetch_task(args.contest, args.task)
+    try:
+        fetch_task(args.contest, args.task)
+    except service_error.AtcoderAccessError:
+        print("AtCoderサイトからデータを取得する過程でエラーが発生しました")
+        if args.verbose:
+            print(traceback.format_exc())
 
 
-def _config_init_handler(_: argparse.Namespace) -> None:
-    init_config()
+def _config_init_handler(args: argparse.Namespace) -> None:
+    try:
+        init_config()
+    except service_error.ConfigAccessError:
+        print("設定ファイルの読み書きに失敗しました")
+        if args.verbose:
+            print(traceback.format_exc())
 
 
-def _config_languages_handler(_: argparse.Namespace) -> None:
-    languages = config_languages()
+def _config_languages_handler(args: argparse.Namespace) -> None:
+
+    try:
+        languages = config_languages()
+    except service_error.ConfigAccessError:
+        print("設定ファイルの読み書きに失敗しました")
+        if args.verbose:
+            print(traceback.format_exc())
+
     for language_name in languages:
         print(language_name)
 
 
-def _config_default_language_handler(_: argparse.Namespace) -> None:
-    default_language = config_default_language()
+def _config_default_language_handler(args: argparse.Namespace) -> None:
+    try:
+        default_language = config_default_language()
+    except service_error.ConfigAccessError:
+        print("設定ファイルの読み書きに失敗しました")
+        if args.verbose:
+            print(traceback.format_exc())
+
     print(default_language.name)
 
 
 def _config_use_handler(args: argparse.Namespace) -> None:
-    config_use(args.language)
+    try:
+        config_use(args.language)
+    except service_error.UndefinedLanguage:
+        print(f"{args.language}は使用可能な言語の中に存在しません。設定ファイルを変更し、言語設定を追加してください。")
+        if args.verbose:
+            print(traceback.format_exc())
+    except service_error.ConfigAccessError:
+        print("設定ファイルの読み書きに失敗しました")
+        if args.verbose:
+            print(traceback.format_exc())

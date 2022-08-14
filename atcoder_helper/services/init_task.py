@@ -13,13 +13,8 @@ from atcoder_helper.repositories.atcoder_helper_config_repo import (
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.services.errors import DirectoryNotEmpty
 from atcoder_helper.services.util import get_atcoder_helper_config_filepath
-
-
-class DirectoryNotEmpty(Exception):
-    """Directoryが空でないエラー."""
-
-    pass
 
 
 def _is_empty(dir: str) -> bool:
@@ -79,7 +74,9 @@ def _init_task(
         raise ConfigAccessError("タスク設定ファイルの初期化中にエラーが発生しました") from e
 
 
-def init_task(dir: Optional[str], contest: Optional[str], task: Optional[str]) -> None:
+def init_task(
+    dir: Optional[str] = None, contest: Optional[str] = None, task: Optional[str] = None
+) -> None:
     """taskディレクトリを初期化します.
 
     Raises:

@@ -15,3 +15,9 @@ class AtcoderAccessError(Exception):
 
 class UndefinedLanguage(Exception):
     """未定義の言語."""
+
+
+class DirectoryNotEmpty(Exception):
+    """Directoryが空でないエラー."""
+
+    pass

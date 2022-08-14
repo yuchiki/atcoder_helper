@@ -13,7 +13,11 @@ from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
 def init_config() -> None:
-    """configを初期化するためのservice."""
+    """configを初期化するためのservice.
+
+    Raises:
+        ConfigAccessError:
+    """
     default_config_filepath = os.path.join(
         atcoder_helper.__path__[0], "default_settings", "default_config.yaml"
     )
