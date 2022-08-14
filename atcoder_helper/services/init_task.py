@@ -2,6 +2,7 @@
 import os
 import shutil
 from typing import Optional
+from typing import Protocol
 
 import yaml
 
@@ -17,81 +18,144 @@ from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.errors import DirectoryNotEmpty
 
 
-def _is_empty(dir: str) -> bool:
-    return len(os.listdir(dir)) == 0
+class InitTaskDirService(Protocol):
+    """TaskDirectoryを初期化するサービスのプロトコル."""
+
+    def init_task(
+        self,
+        dir: Optional[str] = None,
+        contest: Optional[str] = None,
+        task: Optional[str] = None,
+    ) -> None:
+        """taskディレクトリを初期化します.
+
+        Raises:
+            DirectoryNotEmpty: 作成しようとしているディレクトリが空でない
+            ConfigAccessError: 設定ファイルの読み書きに失敗
+        """
 
 
-# TODO(ここにあるのはおかしいのでrepoに移動)
-def _init_task(
-    task_dir: str,
-    languageConfig: LanguageConfig,
-    contest: Optional[str],
-    task: Optional[str],
-) -> None:
-    """_init_task.
+def get_default_init_task_dir_service() -> InitTaskDirService:
+    """InitTaskDirServiceの標準実装を返す.
 
-    Args:
-        task_dir (str):
-        languageConfig (LanguageConfig):
-        contest (Optional[str]):
-        task (Optional[str]):
-
-    Raises:
-        DirectoryNotEmpty:
-        ConfigAccessError:
+    Returns:
+        InitTaskDirService: _description_
     """
-    os.makedirs(task_dir, exist_ok=True)
-    if not _is_empty(task_dir):
-        raise DirectoryNotEmpty(f"directory {task_dir} is not empty")
+    return InitTaskDirServiceImpl()
 
-    if languageConfig.resolved_template_dir is not None:
+
+class InitTaskDirServiceImpl:
+    """TaskDirectoryを初期化するサービス."""
+
+    _atcoder_helper_config_repo: ConfigRepository
+
+    def __init__(
+        self,
+        atcoder_helper_config_repo: ConfigRepository = get_default_config_repository(),
+    ):
+        """__init.
+
+        Args:
+            atcoder_helper_config_repo (ConfigRepository, optional): Defaults to
+                get_default_config_repository().
+        """
+        self._atcoder_helper_config_repo = atcoder_helper_config_repo
+
+    def init_task(
+        self,
+        dir: Optional[str] = None,
+        contest: Optional[str] = None,
+        task: Optional[str] = None,
+    ) -> None:
+        """taskディレクトリを初期化します.
+
+        Raises:
+            DirectoryNotEmpty: 作成しようとしているディレクトリが空でない
+            ConfigAccessError: 設定ファイルの読み書きに失敗
+        """
         try:
-            for filename in os.listdir(languageConfig.resolved_template_dir):
-                shutil.copy(
-                    os.path.join(languageConfig.resolved_template_dir, filename),
-                    task_dir,
-                )
+            config = self._atcoder_helper_config_repo.read()
+        except ReadError as e:
+            raise ConfigAccessError("全体設定ファイルの読み込みに失敗しました") from e
+
+        if dir is None:
+            dir = os.getcwd()
+
+        self._init_task(dir, config.default_language_config, contest, task)
+
+    # TODO(ここにあるのはおかしい気がする。repoに移動するべきか？)
+    def _init_task(
+        self,
+        task_dir: str,
+        languageConfig: LanguageConfig,
+        contest: Optional[str],
+        task: Optional[str],
+    ) -> None:
+        """_init_task.
+
+        Args:
+            task_dir (str):
+            languageConfig (LanguageConfig):
+            contest (Optional[str]):
+            task (Optional[str]):
+
+        Raises:
+            DirectoryNotEmpty:
+            ConfigAccessError:
+        """
+
+        def _is_empty(dir: str) -> bool:
+            return len(os.listdir(dir)) == 0
+
+        os.makedirs(task_dir, exist_ok=True)
+        if not _is_empty(task_dir):
+            raise DirectoryNotEmpty(f"directory {task_dir} is not empty")
+
+        if languageConfig.resolved_template_dir is not None:
+            try:
+                for filename in os.listdir(languageConfig.resolved_template_dir):
+                    shutil.copy(
+                        os.path.join(languageConfig.resolved_template_dir, filename),
+                        task_dir,
+                    )
+            except OSError as e:
+                raise ConfigAccessError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
+
+        task_config_dict = self._build_config_dict(languageConfig, contest, task)
+
+        try:
+            with open(
+                os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
+            ) as file:
+                yaml.dump(task_config_dict, file, sort_keys=False)
         except OSError as e:
-            raise ConfigAccessError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
+            raise ConfigAccessError("タスク設定ファイルの初期化中にエラーが発生しました") from e
 
-    task_config_dict: TaskConfigDict = {
-        "build": languageConfig.build,
-        "run": languageConfig.run,
-    }
+    @staticmethod
+    def _build_config_dict(
+        languageConfig: LanguageConfig,
+        contest: Optional[str],
+        task: Optional[str],
+    ) -> TaskConfigDict:
+        """TaskConfigDictを生成する.
 
-    if contest is not None:
-        task_config_dict["contest"] = contest
+        Args:
+            languageConfig (LanguageConfig):
+            contest (str):
+            task (str):
 
-    if task is not None:
-        task_config_dict["task"] = task
+        Returns:
+            TaskConfigDict:
+        """
+        task_config_dict: TaskConfigDict = {
+            "build": languageConfig.build,
+            "run": languageConfig.run,
+        }
 
-    try:
-        with open(
-            os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
-        ) as file:
-            yaml.dump(task_config_dict, file, sort_keys=False)
-    except OSError as e:
-        raise ConfigAccessError("タスク設定ファイルの初期化中にエラーが発生しました") from e
+        if contest is not None:
+            task_config_dict["contest"] = contest
 
+        if task is not None:
+            task_config_dict["task"] = task
 
-def init_task(
-    dir: Optional[str] = None,
-    contest: Optional[str] = None,
-    task: Optional[str] = None,
-    atcoder_helper_config_repo: ConfigRepository = get_default_config_repository(),
-) -> None:
-    """taskディレクトリを初期化します.
-
-    Raises:
-        DirectoryNotEmpty: 作成しようとしているディレクトリが空でない
-        ConfigAccessError: 設定ファイルの読み書きに失敗
-    """
-    try:
-        config = atcoder_helper_config_repo.read()
-    except ReadError as e:
-        raise ConfigAccessError("全体設定ファイルの読み込みに失敗しました") from e
-
-    if dir is None:
-        dir = os.getcwd()
-
-    _init_task(dir, config.default_language_config, contest, task)
+        return task_config_dict

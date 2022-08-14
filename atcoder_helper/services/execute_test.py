@@ -57,7 +57,7 @@ class ExecuteTestServiceImpl:
             test_case_repo (TestCaseRepository, optional): Defaults to
                 get_default_test_case_repository().
         """
-        self._taskconfig_repo = task_config_repo
+        self._task_config_repo = task_config_repo
         self._test_case_repo = test_case_repo
 
     def execute_test(self) -> None:
