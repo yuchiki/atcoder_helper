@@ -12,7 +12,8 @@ from atcoder_helper.services.atcoder_helper_config import (
 )
 from atcoder_helper.services.auth import AuthService
 from atcoder_helper.services.auth import get_default_auth_service
-from atcoder_helper.services.execute_test import execute_test
+from atcoder_helper.services.execute_test import ExecuteTestService
+from atcoder_helper.services.execute_test import get_default_execute_test_service
 from atcoder_helper.services.fetch_task import fetch_task
 from atcoder_helper.services.init_task import init_task
 
@@ -27,12 +28,16 @@ class EntryPoint:
     """実行時に必要な情報を持ちまわるためのクラス."""
 
     _auth_service: AuthService
-    _atcoder_helper_config: AtCoderHelperConfigService
+    _atcoder_helper_config_service: AtCoderHelperConfigService
+    _execute_test_service: ExecuteTestService
 
     def __init__(self) -> None:
         """__init__."""
         self._auth_service = get_default_auth_service()
-        self._atcoder_helper_config = get_default_atcoder_helper_config_service()
+        self._atcoder_helper_config_service = (
+            get_default_atcoder_helper_config_service()
+        )
+        self._execute_test_service = get_default_execute_test_service()
 
     def main(self) -> None:
         """main."""
@@ -133,7 +138,7 @@ class EntryPoint:
 
     def _execute_test_handler(self, args: argparse.Namespace) -> None:
         try:
-            execute_test()
+            self._execute_test_service.execute_test()
         except service_errors.ConfigAccessError:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
@@ -149,7 +154,7 @@ class EntryPoint:
 
     def _config_init_handler(self, args: argparse.Namespace) -> None:
         try:
-            self._atcoder_helper_config.init_config()
+            self._atcoder_helper_config_service.init_config()
         except service_errors.ConfigAccessError:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
@@ -158,7 +163,7 @@ class EntryPoint:
     def _config_languages_handler(self, args: argparse.Namespace) -> None:
 
         try:
-            languages = self._atcoder_helper_config.config_languages()
+            languages = self._atcoder_helper_config_service.config_languages()
         except service_errors.ConfigAccessError:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
@@ -169,7 +174,9 @@ class EntryPoint:
 
     def _config_default_language_handler(self, args: argparse.Namespace) -> None:
         try:
-            default_language = self._atcoder_helper_config.config_default_language()
+            default_language = (
+                self._atcoder_helper_config_service.config_default_language()
+            )
         except service_errors.ConfigAccessError:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
@@ -179,7 +186,7 @@ class EntryPoint:
 
     def _config_use_handler(self, args: argparse.Namespace) -> None:
         try:
-            self._atcoder_helper_config.config_use(args.language)
+            self._atcoder_helper_config_service.config_use(args.language)
         except service_errors.UndefinedLanguage:
             print(f"{args.language}は使用可能な言語の中に存在しません。設定ファイルを変更し、言語設定を追加してください。")
             if args.verbose:
