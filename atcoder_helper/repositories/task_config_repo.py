@@ -1,9 +1,12 @@
 """TaskConfigを取得する."""
 from typing import Final
+from typing import cast
 
 import yaml
 
 from atcoder_helper.models.task_config import TaskConfig
+from atcoder_helper.models.task_config import TaskConfigDict
+from atcoder_helper.repositories.errors import ReadError
 
 
 class TaskConfigRepository:
@@ -28,7 +31,14 @@ class TaskConfigRepository:
 
         Returns:
             TaskConfig: 読み込んだTaskConfig
+
+        Raises:
+            ReadError: データの読み込みに失敗した
         """
-        with open(self._filename) as file:
-            object = yaml.safe_load(file)  # TODO(validate)
-            return TaskConfig.from_dict(object)
+        try:
+            with open(self._filename) as file:
+                object = cast(TaskConfigDict, yaml.safe_load(file))  # TODO(validate)
+        except OSError as e:
+            raise ReadError(f"cannot read from {file}") from e
+
+        return TaskConfig.from_dict(object)

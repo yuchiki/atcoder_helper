@@ -9,16 +9,16 @@ import requests
 from bs4 import BeautifulSoup
 
 from atcoder_helper.models.test_case import AtcoderTestCase
-
-
-class AlreadyLoggedIn(Exception):
-    """既にログインしているエラー."""
-
-    pass
+from atcoder_helper.repositories.errors import AlreadyLoggedIn
+from atcoder_helper.repositories.errors import ParseError
+from atcoder_helper.repositories.errors import ReadError
+from atcoder_helper.repositories.errors import WriteError
 
 
 class AtCoderRepository:
     """AtCoderとの通信を抽象化するためのクラス."""
+
+    _session: requests.Session
 
     _default_session_file: Final[str] = os.path.join(
         os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
@@ -41,22 +41,36 @@ class AtCoderRepository:
 
         Args:
             session_filename (str): セッションを保存しておくファイル名
+
+        Raises:
+            ReadError: 読み込みに失敗した
         """
         self._session_filename = session_filename
         if os.path.isfile(session_filename):
-            with open(session_filename, "rb") as file:
-                self._session = pickle.load(file)
+            try:
+                with open(session_filename, "rb") as file:
+                    self._session = pickle.load(file)
+            except OSError as e:
+                raise ReadError(f"cannot open {session_filename}") from e
         else:
             self._session = requests.session()
 
     def _write_session(self) -> None:
+        """_write_session.
+
+        Raises:
+            WriteError: 書き込みに失敗
+        """
         os.makedirs(os.path.dirname(self._session_filename), exist_ok=True)
 
-        with open(self._session_filename, "wb") as file:
-            pickle.dump(self._session, file)
+        try:
+            with open(self._session_filename, "wb") as file:
+                pickle.dump(self._session, file)
+        except OSError as e:
+            raise WriteError(f"cannot write to {self._session_filename}") from e
 
     def _get_csrf_token(self) -> str:
-        login_page = self._session.get(self._login_url, cookies="")
+        login_page = self._session.get(self._login_url)
         html = BeautifulSoup(login_page.text, "html.parser")
 
         token = html.find("input").attrs["value"]
@@ -71,6 +85,7 @@ class AtCoderRepository:
 
         Raises:
             AlreadyLoggedIn: 既にログインしていたとき
+            WriteError: POSTに失敗
 
         Returns:
             bool: ログインに成功したかどうかを返す
@@ -80,15 +95,18 @@ class AtCoderRepository:
 
         csrf_token = self._get_csrf_token()
 
-        res = self._session.post(
-            self._login_url,
-            params={
-                "username": username,
-                "password": password,
-                "csrf_token": csrf_token,
-            },
-            allow_redirects=0,
-        )
+        try:
+            res = self._session.post(
+                self._login_url,
+                params={
+                    "username": username,
+                    "password": password,
+                    "csrf_token": csrf_token,
+                },
+                allow_redirects=False,
+            )
+        except Exception as e:
+            raise WriteError(f"cannot post to {self._login_url}") from e
 
         if res.headers["Location"] == "/home":
             self._write_session()
@@ -97,12 +115,20 @@ class AtCoderRepository:
             return False
 
     def logout(self) -> None:
-        """logoutする.loginしていない状態でも何も検査しない."""
+        """logoutする. loginしていない状態でも何も検査しない.
+
+        Raises:
+            WriteError: セッションの初期化に失敗
+        """
         self._session = requests.session()
+
         self._write_session()
 
     def is_logged_in(self) -> bool:
         """loginしているかどうかを判定する.
+
+        Raises:
+            ReadError: タスクGETに失敗
 
         Returns:
             bool: loginしているか否か
@@ -110,10 +136,14 @@ class AtCoderRepository:
         # たたもさんの atcoder-cli を参考にしている
         #  https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46
 
-        res = cast(
-            requests.Response,
-            self._session.get(self._submit_url("abc001"), allow_redirects=0),
-        )  # TODO(any処理)
+        try:
+            res = self._session.get(
+                self._submit_url("abc001"),
+                allow_redirects=False,
+            )
+        except Exception as e:
+            raise ReadError(f"cannot GET {self._submit_url('abc001')}") from e
+
         return res.status_code == 200  # login していなければ302 redirect になる
 
     def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
@@ -123,6 +153,10 @@ class AtCoderRepository:
             contest (str): コンテスト名
             task (str): タスク名
 
+        Raises:
+            ReadError: GETに失敗
+            ParseError: Parseに失敗
+
         Returns:
             List[TestCase]: テストケーススイート
         """
@@ -130,30 +164,37 @@ class AtCoderRepository:
         def normalize_newline(text: str) -> str:
             return "\n".join(text.splitlines())
 
-        task_page = self._session.get(self._task_url(contest, task))
-        html = BeautifulSoup(task_page.text, "html.parser")
+        try:
+            task_page = self._session.get(self._task_url(contest, task))
+        except Exception as e:
+            raise ReadError(f"cannot GET {self._task_url(contest, task)}") from e
 
-        sections = (
-            html.find("div", id="task-statement")
-            .find("span", attrs={"class": "lang-ja"})
-            .find_all("section")
-        )
+        try:
+            html = BeautifulSoup(task_page.text, "html.parser")
 
-        input_sections = {
-            section.find("h3").text.split()[1]: normalize_newline(
-                section.find("pre").text
+            sections = (
+                html.find("div", id="task-statement")
+                .find("span", attrs={"class": "lang-ja"})
+                .find_all("section")
             )
-            for section in sections
-            if "入力例" in section.find("h3").text
-        }
 
-        output_sections = {
-            section.find("h3").text.split()[1]: normalize_newline(
-                section.find("pre").text
-            )
-            for section in sections
-            if "出力例" in section.find("h3").text
-        }
+            input_sections = {
+                section.find("h3").text.split()[1]: normalize_newline(
+                    section.find("pre").text
+                )
+                for section in sections
+                if "入力例" in section.find("h3").text
+            }
+
+            output_sections = {
+                section.find("h3").text.split()[1]: normalize_newline(
+                    section.find("pre").text
+                )
+                for section in sections
+                if "出力例" in section.find("h3").text
+            }
+        except Exception as e:
+            raise ParseError() from e
 
         return [
             AtcoderTestCase(f"case-{name}", given, output_sections[name])

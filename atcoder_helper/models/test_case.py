@@ -2,13 +2,14 @@
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict
 from typing import List
 from typing import Optional
+from typing import TypedDict
 from typing import cast
 
 from colorama import Fore
 from colorama import Style
+from typing_extensions import NotRequired
 from yaml import YAMLObject
 
 
@@ -47,6 +48,14 @@ class TestResult:
     expected: Optional[str] = None
 
 
+class AtcoderTestCaseDict(TypedDict):
+    """AtcoderTestCaseの辞書版."""
+
+    name: str
+    input: str
+    expected: NotRequired[str]
+
+
 @dataclass
 class AtcoderTestCase(YAMLObject):
     """テストケースを表す."""
@@ -55,7 +64,7 @@ class AtcoderTestCase(YAMLObject):
     given: str
     expected: Optional[str]
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> AtcoderTestCaseDict:
         """テストケースを辞書型に変換する."""
         if self.expected is None:
             return {"name": self.name, "input": self.given}
@@ -63,7 +72,7 @@ class AtcoderTestCase(YAMLObject):
             return {"name": self.name, "input": self.given, "expected": self.expected}
 
     @classmethod
-    def from_dict(cls, test_case_dict: Dict[str, str]) -> "AtcoderTestCase":
+    def from_dict(cls, test_case_dict: AtcoderTestCaseDict) -> "AtcoderTestCase":
         """辞書からテストケース型に変換する."""
         return AtcoderTestCase(
             test_case_dict["name"],

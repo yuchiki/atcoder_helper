@@ -5,6 +5,7 @@ from typing import List
 import yaml
 
 from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.repositories.errors import ReadError
 
 
 class TestCaseRepository:
@@ -36,7 +37,7 @@ class TestCaseRepository:
 
         test_case_dicts = [case.to_dict() for case in test_cases]
 
-        with open(self._filename, "w") as file:
+        with open(self._filename, "wt") as file:
             yaml.dump(test_case_dicts, file, sort_keys=False)
 
     def read(self) -> List[AtcoderTestCase]:
@@ -44,7 +45,13 @@ class TestCaseRepository:
 
         Returns:
             List[TestCase]: 読み込まれたテストスイート
+
+        Raises:
+            ReadError: データの読み込みに失敗した
         """
-        with open(self._filename) as file:
-            objects = yaml.safe_load(file)  # TODO(validate)
-            return [AtcoderTestCase.from_dict(object) for object in objects]
+        try:
+            with open(self._filename, "rt") as file:
+                objects = yaml.safe_load(file)  # TODO(validate)
+        except OSError as e:
+            raise ReadError(f"cannot open {self._filename}") from e
+        return [AtcoderTestCase.from_dict(object) for object in objects]

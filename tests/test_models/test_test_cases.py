@@ -5,6 +5,7 @@ from typing import cast
 import pytest
 
 from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.models.test_case import AtcoderTestCaseDict
 
 
 def test_atcoder_test_case_to_dict() -> None:
@@ -48,7 +49,9 @@ def test_atcoder_test_case_from_dict() -> None:
 
     for case in test_cases:
         print(case["name"])
-        actual = AtcoderTestCase.from_dict(cast(dict[str, str], case["input"]))
+        actual = AtcoderTestCase.from_dict(
+            cast(AtcoderTestCaseDict, case["input"])
+        )  # TODO(validation)
         assert actual == case["expected"]
 
 

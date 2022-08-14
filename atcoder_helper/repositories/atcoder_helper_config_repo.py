@@ -1,10 +1,14 @@
 """AtcoderHelperConfigを永続化する層."""
 
 import os
+from typing import cast
 
 import yaml
 
 from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
+from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfigDict
+from atcoder_helper.repositories.errors import ReadError
+from atcoder_helper.repositories.errors import WriteError
 
 
 class AtCoderHelperConfigRepository:
@@ -21,15 +25,34 @@ class AtCoderHelperConfigRepository:
 
         Returns:
             AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
+        Raises:
+            ReadError: 読み込みに失敗した
         """
-        with open(self._filename) as file:
-            config_dict = yaml.safe_load(file)  # TODO(validate)
-            return AtCoderHelperConfig.from_dict(config_dict)
+        try:
+            with open(self._filename, "rt") as file:
+                config_dict = cast(
+                    AtCoderHelperConfigDict, yaml.safe_load(file)
+                )  # TODO(validate)
+        except OSError as e:
+            raise ReadError(f"cannot read from {self._filename}.") from e
+
+        return AtCoderHelperConfig.from_dict(config_dict)
 
     def write(self, config: AtCoderHelperConfig) -> None:
-        """書き込みを行う."""
+        """書き込みを行う.
+
+        Args:
+            config (AtCoderHelperConfig): _description_
+
+        Raises:
+            WriteError: 書き込みに失敗した
+        """
         os.makedirs(name=os.path.dirname(self._filename), exist_ok=True)
 
-        with open(self._filename, "w") as file:
-            config_dict = config.to_dict()
-            yaml.dump(config_dict, file)
+        config_dict = config.to_dict()
+
+        try:
+            with open(self._filename, "wt") as file:
+                yaml.dump(config_dict, file)
+        except OSError as e:
+            raise WriteError("cannot write to {self._filename}.") from e
