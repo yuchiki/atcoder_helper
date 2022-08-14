@@ -29,15 +29,35 @@ class Executor:
     _fetch_task_service: FetchTaskService
     _init_task_dir_service: InitTaskDirService
 
-    def __init__(self) -> None:
-        """__init__."""
-        self._auth_service = get_default_auth_service()
-        self._atcoder_helper_config_service = (
+    def __init__(
+        self,
+        auth_service: AuthService = get_default_auth_service(),
+        atcoder_helper_config_service: AtCoderHelperConfigService = (
             get_default_atcoder_helper_config_service()
-        )
-        self._execute_test_service = get_default_execute_test_service()
-        self._fetch_task_service = get_default_fetch_task_service()
-        self._init_task_dir_service = get_default_init_task_dir_service()
+        ),
+        execute_test_service: ExecuteTestService = get_default_execute_test_service(),
+        fetch_task_service: FetchTaskService = get_default_fetch_task_service(),
+        init_task_dir_service: InitTaskDirService = get_default_init_task_dir_service(),
+    ) -> None:
+        """__init__.
+
+        Args:
+            auth_service (AuthService, optional): Defaults to
+                get_default_auth_service().
+            atcoder_helper_config_service (AtCoderHelperConfigService, optional): _
+                Defaults get_default_atcoder_helper_config_service().
+            execute_test_service (ExecuteTestService, optional): Defaults to
+                get_default_execute_test_service().
+            fetch_task_service (FetchTaskService, optional): Defaults to
+                get_default_fetch_task_service().
+            init_task_dir_service (InitTaskDirService, optional): Defaults to
+                get_default_init_task_dir_service().
+        """
+        self._auth_service = auth_service
+        self._atcoder_helper_config_service = atcoder_helper_config_service
+        self._execute_test_service = execute_test_service
+        self._fetch_task_service = fetch_task_service
+        self._init_task_dir_service = init_task_dir_service
 
     def auth_login_handler(self, args: argparse.Namespace) -> None:
         """ログインする."""
@@ -81,7 +101,7 @@ class Executor:
                 print(traceback.format_exc())
             sys.exit(1)
 
-    def auth_status(self, args: argparse.Namespace) -> None:
+    def auth_status_handler(self, args: argparse.Namespace) -> None:
         """現在ログインしているかどうかを確認する."""
         try:
             stat = self._auth_service.status()
@@ -108,10 +128,12 @@ class Executor:
             print("設定ファイルへの読み書きでエラーが発生しました")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)
         except service_errors.DirectoryNotEmpty:
             print("初期化しようとしているディレクトリが空ではありません")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)
 
     def task_create_handler(self, args: argparse.Namespace) -> None:
         """新規にディレクトリを作り、タスク用に初期化する.
@@ -146,6 +168,7 @@ class Executor:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)
 
     def fetch_task_handler(self, args: argparse.Namespace) -> None:
         """テストケースをフェッチする.
@@ -160,6 +183,8 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
+            sys.exit(1)
+
     def config_init_handler(self, args: argparse.Namespace) -> None:
         """atcoder_helper全体設定ファイルを初期化する.
 
@@ -173,6 +198,8 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
 
+            sys.exit(1)
+
     def config_languages_handler(self, args: argparse.Namespace) -> None:
         """使用可能な言語一覧を表示する.
 
@@ -185,6 +212,7 @@ class Executor:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)
 
         for language_name in languages:
             print(language_name)
@@ -203,6 +231,7 @@ class Executor:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)
 
         print(default_language.name)
 
@@ -218,7 +247,9 @@ class Executor:
             print(f"{args.language}は使用可能な言語の中に存在しません。設定ファイルを変更し、言語設定を追加してください。")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)
         except service_errors.ConfigAccessError:
             print("設定ファイルの読み書きに失敗しました")
             if args.verbose:
                 print(traceback.format_exc())
+            sys.exit(1)

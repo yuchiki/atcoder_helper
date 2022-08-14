@@ -42,7 +42,7 @@ def _set_auth_parser(parser_auth: argparse.ArgumentParser) -> None:
 
     parser_auth_status = parser_auth_subparsers.add_parser("status")
     parser_auth_status.set_defaults(
-        handler=Executor.auth_status, parser=parser_auth_status
+        handler=Executor.auth_status_handler, parser=parser_auth_status
     )
 
 
