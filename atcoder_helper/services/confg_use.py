@@ -3,17 +3,15 @@
 
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl
+from atcoder_helper.repositories.atcoder_helper_config_repo import (
+    get_default_config_repository,
+)
 from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.errors import UndefinedLanguage
-from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
 def config_use(
-    language: str,
-    config_repo: ConfigRepository = ConfigRepositoryImpl(
-        get_atcoder_helper_config_filepath()
-    ),
+    language: str, config_repo: ConfigRepository = get_default_config_repository()
 ) -> None:
     """デフォルト言語を変更する.
 

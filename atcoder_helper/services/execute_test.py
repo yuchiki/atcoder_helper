@@ -13,20 +13,19 @@ from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
+from atcoder_helper.repositories.test_case_repo import get_default_test_case_repository
 from atcoder_helper.services.errors import ConfigAccessError
 
 
 def execute_test(
     task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
+    test_case_repo: TestCaseRepository = get_default_test_case_repository(),
 ) -> None:
     """testcaseに基づき、テストを実行する関数.
 
     Raises:
         ConfigAccessError: 設定ファイル読み書きのエラー
-
     """
-    test_case_repo = TestCaseRepository()
-
     try:
         task_config = task_config_repo.read()
         test_cases = test_case_repo.read()

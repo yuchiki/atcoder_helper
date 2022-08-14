@@ -1,6 +1,7 @@
 """テストケースの永続化を行う."""
 from typing import Final
 from typing import List
+from typing import Protocol
 
 import yaml
 
@@ -9,7 +10,36 @@ from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 
 
-class TestCaseRepository:
+class TestCaseRepository(Protocol):
+    """テストケースの永続化を行うプロトコル."""
+
+    def write(self, test_cases: List[AtcoderTestCase]) -> None:
+        """書き込みを行う.
+
+        Args:
+            test_cases (List[TestCase]): 取得したテストスイート
+
+        Raises:
+            WriteError: 書き込み失敗
+        """
+
+    def read(self) -> List[AtcoderTestCase]:
+        """読み込みを行う.
+
+        Returns:
+            List[TestCase]: 読み込まれたテストスイート
+
+        Raises:
+            ReadError: データの読み込みに失敗した
+        """
+
+
+def get_default_test_case_repository() -> TestCaseRepository:
+    """TestCaseRepositoryの標準実装を返す."""
+    return TestCaseRepositoryImpl()
+
+
+class TestCaseRepositoryImpl:
     """テストケースの永続化を行う."""
 
     default_testcase_file: Final[str] = "testcases.yaml"

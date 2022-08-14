@@ -9,6 +9,7 @@ from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
+from atcoder_helper.repositories.test_case_repo import get_default_test_case_repository
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
 
@@ -18,6 +19,7 @@ def fetch_task(
     task: Optional[str],
     atcoder_repo: AtCoderRepository = get_default_atcoder_repository(),
     task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
+    test_case_repo: TestCaseRepository = get_default_test_case_repository(),
 ) -> None:
     """testcasesを取得し、指定したtestcasesファイルに書き込む.
 
@@ -29,8 +31,6 @@ def fetch_task(
         contest (str): コンテスト名。AtCoderのコンテストページのURLに現れる形式で渡す
         task (str): タスク名。AtCoderのコンテストページのURLに現れる形から、"コンテスト名_"の部分を除いたもの
     """
-    test_case_repo = TestCaseRepository()
-
     try:
         task_config = task_config_repo.read()
     except repository_error.ReadError as e:

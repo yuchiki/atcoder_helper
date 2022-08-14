@@ -7,8 +7,10 @@ import atcoder_helper
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl
+from atcoder_helper.repositories.atcoder_helper_config_repo import (
+    get_default_config_repository,
+)
 from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
 def init_config(
@@ -17,9 +19,7 @@ def init_config(
             atcoder_helper.__path__[0], "default_settings", "default_config.yaml"
         )
     ),
-    config_repo: ConfigRepository = ConfigRepositoryImpl(
-        get_atcoder_helper_config_filepath()
-    ),
+    config_repo: ConfigRepository = get_default_config_repository(),
 ) -> None:
     """configを初期化するためのservice.
 
