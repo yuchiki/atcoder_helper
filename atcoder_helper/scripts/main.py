@@ -14,7 +14,8 @@ from atcoder_helper.services.auth import AuthService
 from atcoder_helper.services.auth import get_default_auth_service
 from atcoder_helper.services.execute_test import ExecuteTestService
 from atcoder_helper.services.execute_test import get_default_execute_test_service
-from atcoder_helper.services.fetch_task import fetch_task
+from atcoder_helper.services.fetch_task import FetchTaskService
+from atcoder_helper.services.fetch_task import get_default_fetch_task_service
 from atcoder_helper.services.init_task import init_task
 
 
@@ -30,6 +31,7 @@ class EntryPoint:
     _auth_service: AuthService
     _atcoder_helper_config_service: AtCoderHelperConfigService
     _execute_test_service: ExecuteTestService
+    _fetch_task_service: FetchTaskService
 
     def __init__(self) -> None:
         """__init__."""
@@ -38,6 +40,7 @@ class EntryPoint:
             get_default_atcoder_helper_config_service()
         )
         self._execute_test_service = get_default_execute_test_service()
+        self._fetch_task_service = get_default_fetch_task_service()
 
     def main(self) -> None:
         """main."""
@@ -146,7 +149,7 @@ class EntryPoint:
 
     def _fetch_task_handler(self, args: argparse.Namespace) -> None:
         try:
-            fetch_task(args.contest, args.task)
+            self._fetch_task_service.fetch_task(args.contest, args.task)
         except service_errors.AtcoderAccessError:
             print("AtCoderサイトからデータを取得する過程でエラーが発生しました")
             if args.verbose:
