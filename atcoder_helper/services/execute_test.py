@@ -9,18 +9,22 @@ from atcoder_helper.models.test_case import TestResult
 from atcoder_helper.models.test_case import TestStatus
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
+from atcoder_helper.repositories.task_config_repo import (
+    get_default_task_config_repository,
+)
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 from atcoder_helper.services.errors import ConfigAccessError
 
 
-def execute_test() -> None:
+def execute_test(
+    task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
+) -> None:
     """testcaseに基づき、テストを実行する関数.
 
     Raises:
         ConfigAccessError: 設定ファイル読み書きのエラー
 
     """
-    task_config_repo = TaskConfigRepository()
     test_case_repo = TestCaseRepository()
 
     try:

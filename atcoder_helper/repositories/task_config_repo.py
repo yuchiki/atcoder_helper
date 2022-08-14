@@ -1,5 +1,6 @@
 """TaskConfigを取得する."""
 from typing import Final
+from typing import Protocol
 from typing import cast
 
 import yaml
@@ -9,7 +10,29 @@ from atcoder_helper.models.task_config import TaskConfigDict
 from atcoder_helper.repositories.errors import ReadError
 
 
-class TaskConfigRepository:
+class TaskConfigRepository(Protocol):
+    """TaskConfigを取得するプロトコル.
+
+    TaskConfig用ファイルは、Taskディレクトリにおかれていることを想定している.
+    """
+
+    def read(self) -> TaskConfig:
+        """読み込みを行う.
+
+        Returns:
+            TaskConfig: 読み込んだTaskConfig
+
+        Raises:
+            ReadError: 読み込みに失敗した
+        """
+
+
+def get_default_task_config_repository() -> TaskConfigRepository:
+    """TaskConfigRepositoryの標準実装."""
+    return TaskConfigRepositoryImpl()
+
+
+class TaskConfigRepositoryImpl:
     """TaskConfigを取得する.
 
     TaskConfig用ファイルは、Taskディレクトリにおかれていることを想定している.
@@ -33,7 +56,7 @@ class TaskConfigRepository:
             TaskConfig: 読み込んだTaskConfig
 
         Raises:
-            ReadError: データの読み込みに失敗した
+            ReadError: 読み込みに失敗した
         """
         try:
             with open(self._filename) as file:

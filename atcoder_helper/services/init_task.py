@@ -10,7 +10,7 @@ from atcoder_helper.models.task_config import TaskConfigDict
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl
 from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
+from atcoder_helper.repositories.task_config_repo import TaskConfigRepositoryImpl
 from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.errors import DirectoryNotEmpty
 from atcoder_helper.services.util import default_atcoder_helper_config_file
@@ -66,7 +66,7 @@ def _init_task(
 
     try:
         with open(
-            os.path.join(task_dir, TaskConfigRepository.default_filename), "wt"
+            os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
         ) as file:
             yaml.dump(task_config_dict, file, sort_keys=False)
     except OSError as e:
