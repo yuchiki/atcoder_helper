@@ -7,6 +7,9 @@ import traceback
 
 from atcoder_helper.services import errors as service_errors
 from atcoder_helper.services.atcoder_helper_config import AtCoderHelperConfigService
+from atcoder_helper.services.atcoder_helper_config import (
+    get_default_atcoder_helper_config_service,
+)
 from atcoder_helper.services.auth import AuthService
 from atcoder_helper.services.auth import get_default_auth_service
 from atcoder_helper.services.execute_test import execute_test
@@ -29,7 +32,7 @@ class EntryPoint:
     def __init__(self) -> None:
         """__init__."""
         self._auth_service = get_default_auth_service()
-        self._atcoder_helper_config = AtCoderHelperConfigService()
+        self._atcoder_helper_config = get_default_atcoder_helper_config_service()
 
     def main(self) -> None:
         """main."""
