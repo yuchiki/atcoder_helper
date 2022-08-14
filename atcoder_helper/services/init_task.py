@@ -10,7 +10,9 @@ from atcoder_helper.models.task_config import TaskConfigDict
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     AtCoderHelperConfigRepository,
 )
+from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
+from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.util import get_atcoder_helper_config_filepath
 
 
@@ -31,15 +33,31 @@ def _init_task(
     contest: Optional[str],
     task: Optional[str],
 ) -> None:
+    """_init_task.
+
+    Args:
+        task_dir (str):
+        languageConfig (LanguageConfig):
+        contest (Optional[str]):
+        task (Optional[str]):
+
+    Raises:
+        DirectoryNotEmpty:
+        ConfigAccessError:
+    """
     os.makedirs(task_dir, exist_ok=True)
     if not _is_empty(task_dir):
         raise DirectoryNotEmpty(f"directory {task_dir} is not empty")
 
     if languageConfig.resolved_template_dir is not None:
-        for filename in os.listdir(languageConfig.resolved_template_dir):
-            shutil.copy(
-                os.path.join(languageConfig.resolved_template_dir, filename), task_dir
-            )
+        try:
+            for filename in os.listdir(languageConfig.resolved_template_dir):
+                shutil.copy(
+                    os.path.join(languageConfig.resolved_template_dir, filename),
+                    task_dir,
+                )
+        except OSError as e:
+            raise ConfigAccessError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
 
     task_config_dict: TaskConfigDict = {
         "build": languageConfig.build,
@@ -52,16 +70,27 @@ def _init_task(
     if task is not None:
         task_config_dict["task"] = task
 
-    with open(
-        os.path.join(task_dir, TaskConfigRepository.default_filename), "w"
-    ) as file:
-        yaml.dump(task_config_dict, file, sort_keys=False)
+    try:
+        with open(
+            os.path.join(task_dir, TaskConfigRepository.default_filename), "wt"
+        ) as file:
+            yaml.dump(task_config_dict, file, sort_keys=False)
+    except OSError as e:
+        raise ConfigAccessError("タスク設定ファイルの初期化中にエラーが発生しました") from e
 
 
 def init_task(dir: Optional[str], contest: Optional[str], task: Optional[str]) -> None:
-    """taskディレクトリを初期化します."""
+    """taskディレクトリを初期化します.
+
+    Raises:
+        DirectoryNotEmpty: 作成しようとしているディレクトリが空でない
+        ConfigAccessError: 設定ファイルの読み書きに失敗
+    """
     config_repo = AtCoderHelperConfigRepository(get_atcoder_helper_config_filepath())
-    config = config_repo.read()
+    try:
+        config = config_repo.read()
+    except ReadError as e:
+        raise ConfigAccessError("全体設定ファイルの読み込みに失敗しました") from e
 
     if dir is None:
         dir = os.getcwd()

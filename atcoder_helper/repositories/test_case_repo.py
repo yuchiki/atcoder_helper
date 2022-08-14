@@ -6,6 +6,7 @@ import yaml
 
 from atcoder_helper.models.test_case import AtcoderTestCase
 from atcoder_helper.repositories.errors import ReadError
+from atcoder_helper.repositories.errors import WriteError
 
 
 class TestCaseRepository:
@@ -26,6 +27,9 @@ class TestCaseRepository:
 
         Args:
             test_cases (List[TestCase]): 取得したテストスイート
+
+        Raises:
+            WriteError: 書き込み失敗
         """
 
         def str_representer(dumper: yaml.dumper.Dumper, data: str) -> yaml.Node:
@@ -37,8 +41,11 @@ class TestCaseRepository:
 
         test_case_dicts = [case.to_dict() for case in test_cases]
 
-        with open(self._filename, "wt") as file:
-            yaml.dump(test_case_dicts, file, sort_keys=False)
+        try:
+            with open(self._filename, "wt") as file:
+                yaml.dump(test_case_dicts, file, sort_keys=False)
+        except OSError as e:
+            raise WriteError(f"cannot open {self._filename}") from e
 
     def read(self) -> List[AtcoderTestCase]:
         """読み込みを行う.

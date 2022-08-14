@@ -23,10 +23,11 @@ class AtCoderHelperConfigRepository:
     def read(self) -> AtCoderHelperConfig:
         """読み込みを行う.
 
-        Returns:
-            AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
         Raises:
             ReadError: 読み込みに失敗した
+
+        Returns:
+            AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
         """
         try:
             with open(self._filename, "rt") as file:

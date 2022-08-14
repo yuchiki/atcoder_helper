@@ -7,19 +7,30 @@ from typing import List
 from atcoder_helper.models.test_case import AtcoderTestCase
 from atcoder_helper.models.test_case import TestResult
 from atcoder_helper.models.test_case import TestStatus
+from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
+from atcoder_helper.services.errors import ConfigAccessError
 
 
 def execute_test() -> None:
-    """testcaseに基づき、テストを実行する関数."""
-    test_case_repo = TestCaseRepository()
+    """testcaseに基づき、テストを実行する関数.
+
+    Raises:
+        ConfigAccessError: 設定ファイル読み書きのエラー
+
+    """
     task_config_repo = TaskConfigRepository()
-    task_config = task_config_repo.read()
+    test_case_repo = TestCaseRepository()
 
-    subprocess.run(task_config.build)
+    try:
+        task_config = task_config_repo.read()
+        test_cases = test_case_repo.read()
+    except repository_error.ReadError:
+        raise ConfigAccessError("設定ファイルの読み込みに失敗しました")
 
-    test_cases = test_case_repo.read()
+    subprocess.run(task_config.build)  # TODO(ビルド失敗で止まるようにする)
+
     results = _execute_and_show(test_cases, task_config.run)
     _show_summary(results)
 
@@ -57,7 +68,3 @@ def _show_summary(results: List[TestResult]) -> None:
     print("SUMMARY:")
     for result in results:
         print(f"{result.name:<15}: {result.status.dyed}")
-
-
-if __name__ == "__main__":
-    execute_test()
