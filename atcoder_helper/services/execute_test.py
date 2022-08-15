@@ -1,11 +1,14 @@
 """テストケース実行のためのメソッド."""
 
 from textwrap import indent
+from typing import Any
+from typing import Callable
 from typing import List
 from typing import Protocol
 
 from atcoder_helper.models.test_case import TestResult
 from atcoder_helper.models.test_case import TestStatus
+from atcoder_helper.program_executor import ProgramExecutor
 from atcoder_helper.program_executor import get_default_program_executor
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
@@ -15,6 +18,8 @@ from atcoder_helper.repositories.task_config_repo import (
 from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 from atcoder_helper.repositories.test_case_repo import get_default_test_case_repository
 from atcoder_helper.services.errors import ConfigAccessError
+
+ExecutorBuilder = Callable[[List[str], List[str]], ProgramExecutor]
 
 
 class ExecuteTestService(Protocol):
@@ -43,10 +48,15 @@ class ExecuteTestServiceImpl:
     _task_config_repo: TaskConfigRepository
     _test_case_repo: TestCaseRepository
 
+    # 本当は ExecutorBuilder型なんだがmypyのバグにより型付けに失敗するので Any
+    # see also https://github.com/python/mypy/issues/5485
+    _executor_builder: Any
+
     def __init__(
         self,
         task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
         test_case_repo: TestCaseRepository = get_default_test_case_repository(),
+        executor_builder: ExecutorBuilder = get_default_program_executor,
     ):
         """__init__.
 
@@ -55,9 +65,12 @@ class ExecuteTestServiceImpl:
                 get_default_task_config_repository().
             test_case_repo (TestCaseRepository, optional): Defaults to
                 get_default_test_case_repository().
+            executor_builder (Callable[[List[str], List[str]], ProgramExecutor]): _
+                Defaults to get_default_program_executor
         """
         self._task_config_repo = task_config_repo
         self._test_case_repo = test_case_repo
+        self._executor_builder = executor_builder
 
     def execute_test(self) -> None:
         """testcaseに基づき、テストを実行する関数.
@@ -71,7 +84,7 @@ class ExecuteTestServiceImpl:
         except repository_error.ReadError:
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました")
 
-        executor = get_default_program_executor(task_config.build, task_config.run)
+        executor = self._executor_builder(task_config.build, task_config.run)
 
         executor.build()  # TODO(ビルド失敗で止まるようにする)
 
@@ -85,7 +98,6 @@ class ExecuteTestServiceImpl:
         self._show_summary(results)
 
     def _show_result(self, result: TestResult) -> None:
-
         print("-----------------------------------")
         print(f"{result.name:<15}: {result.status.dyed}")
 
