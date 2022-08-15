@@ -1,12 +1,12 @@
 """テストケース実行のためのメソッド."""
 
-import subprocess
 from textwrap import indent
 from typing import List
 from typing import Protocol
 
 from atcoder_helper.models.test_case import TestResult
 from atcoder_helper.models.test_case import TestStatus
+from atcoder_helper.program_executor import get_default_program_executor
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
@@ -71,13 +71,15 @@ class ExecuteTestServiceImpl:
         except repository_error.ReadError:
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました")
 
-        subprocess.run(task_config.build)  # TODO(ビルド失敗で止まるようにする)
+        executor = get_default_program_executor(task_config.build, task_config.run)
+
+        executor.build()  # TODO(ビルド失敗で止まるようにする)
 
         results = []
         for test_case in test_cases:
             print("-----------------------------------")
             print(f"executing {test_case.name}...")
-            result = test_case.execute(run_command=task_config.run)
+            result = executor.execute(test_case)
             results.append(result)
             self._show_result(result)
         self._show_summary(results)

@@ -1,8 +1,6 @@
 """テストケースにまつわるデータ構造を定義する."""
-import subprocess
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
 from typing import Optional
 from typing import TypedDict
 from typing import cast
@@ -79,38 +77,3 @@ class AtcoderTestCase(YAMLObject):
             test_case_dict["input"] + "\n",
             test_case_dict["expected"] + "\n" if "expected" in test_case_dict else None,
         )
-
-    def execute(self, run_command: List[str]) -> TestResult:
-        """テストを実行する."""
-        completed_process = subprocess.run(
-            run_command, input=self.given, text=True, capture_output=True
-        )
-
-        if completed_process.returncode != 0:
-            return TestResult(
-                self.name,
-                TestStatus.ERROR,
-                actual=completed_process.stdout,
-                error=completed_process.stderr,
-            )
-
-        if self.expected is None:
-            return TestResult(
-                self.name,
-                TestStatus.JUSTSHOW,
-                actual=completed_process.stdout,
-                error="",
-            )
-
-        if self.expected == completed_process.stdout:
-            return TestResult(
-                self.name, TestStatus.AC, actual=completed_process.stdout, error=""
-            )
-        else:
-            return TestResult(
-                self.name,
-                TestStatus.WA,
-                actual=completed_process.stdout,
-                expected=self.expected,
-                error="",
-            )
