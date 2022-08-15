@@ -8,6 +8,7 @@ flake8-docstrings
 hacking
 mypy
 pytest
+pytest-cov
 twine
 wheel
 mock
