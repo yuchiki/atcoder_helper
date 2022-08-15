@@ -51,11 +51,16 @@ class FetchTaskServiceImpl:
     _task_config_repo: TaskConfigRepository
     _test_case_repo: TestCaseRepository
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        atcoder_repo: AtCoderRepository = get_default_atcoder_repository(),
+        task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
+        test_case_repo: TestCaseRepository = get_default_test_case_repository(),
+    ) -> None:
         """__init__."""
-        self._atcoder_repo = get_default_atcoder_repository()
-        self._task_config_repo = get_default_task_config_repository()
-        self._test_case_repo = get_default_test_case_repository()
+        self._atcoder_repo = atcoder_repo
+        self._task_config_repo = task_config_repo
+        self._test_case_repo = test_case_repo
 
     def fetch_task(
         self,
@@ -87,11 +92,11 @@ class FetchTaskServiceImpl:
             raise ConfigAccessError("task is not set.")
 
         try:
-            test_cases = self._atcoder_repo.fetch_test_cases(contest, task)
+            test_cases = self._atcoder_repo.fetch_test_cases(contest=contest, task=task)
         except repository_error.ReadError as e:
             raise AtcoderAccessError("テストケースの取得に失敗しました") from e
 
         try:
             self._test_case_repo.write(test_cases)
         except repository_error.WriteError as e:
-            raise ConfigAccessError("設定ファイルの書き込みに失敗しました") from e
+            raise ConfigAccessError("テストケースの書き込みに失敗しました") from e
