@@ -1,5 +1,5 @@
 """Tests for execute_test."""
 
 
-class TestExecuteTestServiceImpl:
-    """ExecuteTestServiceのテスト."""
+def test_execute_test() -> None:
+    """execute_testのテスト."""

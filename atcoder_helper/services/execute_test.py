@@ -5,7 +5,6 @@ from textwrap import indent
 from typing import List
 from typing import Protocol
 
-from atcoder_helper.models.test_case import AtcoderTestCase
 from atcoder_helper.models.test_case import TestResult
 from atcoder_helper.models.test_case import TestStatus
 from atcoder_helper.repositories import errors as repository_error
@@ -74,35 +73,33 @@ class ExecuteTestServiceImpl:
 
         subprocess.run(task_config.build)  # TODO(ビルド失敗で止まるようにする)
 
-        results = self._execute_and_show(test_cases, task_config.run)
-        self._show_summary(results)
-
-    def _execute_and_show(
-        self, test_cases: List[AtcoderTestCase], run_command: List[str]
-    ) -> List[TestResult]:
-
         results = []
         for test_case in test_cases:
             print("-----------------------------------")
-            result = test_case.execute(run_command)
-            print(f"{test_case.name:<15}: {result.status.dyed}")
+            print(f"executing {test_case.name}...")
+            result = test_case.execute(run_command=task_config.run)
             results.append(result)
+            self._show_result(result)
+        self._show_summary(results)
 
-            if result.status == TestStatus.JUSTSHOW:
-                print("    output:")
-                print(indent(result.actual, "       >"))
-            if result.status == TestStatus.ERROR:
-                print(result.error)
-            if result.status == TestStatus.WA:
-                if result.expected is None:
-                    raise Exception("internal error")
+    def _show_result(self, result: TestResult) -> None:
 
-                print("    expected:")
-                print(indent(result.expected, "       >"))
-                print("    but got:")
-                print(indent(result.actual, "       >"))
+        print("-----------------------------------")
+        print(f"{result.name:<15}: {result.status.dyed}")
 
-        return results
+        if result.status == TestStatus.JUSTSHOW:
+            print("    output:")
+            print(indent(result.actual, "       >"))
+        if result.status == TestStatus.ERROR:
+            print(result.error)
+        if result.status == TestStatus.WA:
+            if result.expected is None:
+                raise Exception("internal error")
+
+            print("    expected:")
+            print(indent(result.expected, "       >"))
+            print("    but got:")
+            print(indent(result.actual, "       >"))
 
     def _show_summary(self, results: List[TestResult]) -> None:
         print("========================================")
