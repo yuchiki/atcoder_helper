@@ -66,7 +66,7 @@ class LanguageConfig:
         if self.use_default_template:
             return os.path.join(
                 atcoder_helper.__path__[0],
-                "default_settings",
+                "default_configs",
                 "templates",
                 self.name,
             )

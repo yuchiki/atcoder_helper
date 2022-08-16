@@ -3,3 +3,5 @@ atcoder_helper.egg-info
 /integration_test/workdir
 /build
 /dist
+/.mypy_cache
+/.pytest_cache
