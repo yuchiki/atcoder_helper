@@ -1,12 +1,11 @@
 """TaskConfigを取得する."""
 from typing import Final
 from typing import Protocol
-from typing import cast
 
 import yaml
 
 from atcoder_helper.models.task_config import TaskConfig
-from atcoder_helper.models.task_config import TaskConfigDict
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 
 
@@ -60,8 +59,14 @@ class TaskConfigRepositoryImpl:
         """
         try:
             with open(self._filename) as file:
-                object = cast(TaskConfigDict, yaml.safe_load(file))  # TODO(validate)
+                try:
+                    object = yaml.safe_load(file)
+                except Exception as e:
+                    raise ParseError(f"{file} is not a valid yaml file") from e
         except OSError as e:
             raise ReadError(f"cannot read from {file}") from e
 
-        return TaskConfig.from_dict(object)
+        try:
+            return TaskConfig.parse_obj(object)
+        except Exception as e:
+            raise ParseError(f"{self._filename} can not read as TaskConfig") from e

@@ -7,6 +7,7 @@ from typing import Optional
 from typing import TypedDict
 
 from typing_extensions import NotRequired
+from yaml import YAMLObject
 
 import atcoder_helper
 
@@ -22,7 +23,7 @@ class LanguageConfigDict(TypedDict):
 
 
 @dataclass
-class LanguageConfig:
+class LanguageConfig(YAMLObject):
     """言語ごとの設定を保持する."""
 
     name: str

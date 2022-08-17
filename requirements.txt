@@ -12,3 +12,4 @@ pytest-cov
 twine
 wheel
 mock
+pydantic

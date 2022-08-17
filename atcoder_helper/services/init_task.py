@@ -7,13 +7,14 @@ from typing import Protocol
 import yaml
 
 from atcoder_helper.models.atcoder_helper_config import LanguageConfig
-from atcoder_helper.models.task_config import TaskConfigDict
+from atcoder_helper.models.task_config import TaskConfig
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     get_default_config_repository,
 )
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepositoryImpl
+from atcoder_helper.repositories.utils import filter_out_none
 from atcoder_helper.services.errors import ConfigAccessError
 from atcoder_helper.services.errors import DirectoryNotEmpty
 
@@ -121,41 +122,21 @@ class InitTaskDirServiceImpl:
             except OSError as e:
                 raise ConfigAccessError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
 
-        task_config_dict = self._build_config_dict(languageConfig, contest, task)
+        task_config = TaskConfig(
+            build=languageConfig.build,
+            run=languageConfig.run,
+            contest=contest,
+            task=task,
+        )
 
         try:
             with open(
                 os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
             ) as file:
-                yaml.dump(task_config_dict, file, sort_keys=False)
+                yaml.dump(
+                    filter_out_none(task_config.dict()),
+                    file,
+                    sort_keys=False,
+                )
         except OSError as e:
             raise ConfigAccessError("タスク設定ファイルの初期化中にエラーが発生しました") from e
-
-    @staticmethod
-    def _build_config_dict(
-        languageConfig: LanguageConfig,
-        contest: Optional[str],
-        task: Optional[str],
-    ) -> TaskConfigDict:
-        """TaskConfigDictを生成する.
-
-        Args:
-            languageConfig (LanguageConfig):
-            contest (str):
-            task (str):
-
-        Returns:
-            TaskConfigDict:
-        """
-        task_config_dict: TaskConfigDict = {
-            "build": languageConfig.build,
-            "run": languageConfig.run,
-        }
-
-        if contest is not None:
-            task_config_dict["contest"] = contest
-
-        if task is not None:
-            task_config_dict["task"] = task
-
-        return task_config_dict

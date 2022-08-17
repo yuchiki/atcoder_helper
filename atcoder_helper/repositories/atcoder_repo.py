@@ -73,7 +73,10 @@ def get_default_atcoder_repository() -> AtCoderRepository:
 
 
 class AtCoderRepositoryImpl:
-    """AtCoderと通信するためのクラス."""
+    """AtCoderと通信するためのクラス.
+
+    TODO(データに対するrepositoryになっていないので切り分ける必要がある)
+    """
 
     _session: requests.Session
 
