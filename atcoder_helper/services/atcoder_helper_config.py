@@ -111,8 +111,12 @@ class AtCoderHelperConfigServiceImpl:
 
             config.default_language = language
             self._config_repo.write(config)
-        except (repository_errors.WriteError, repository_errors.ReadError):
-            raise ConfigAccessError("設定ファイルの読み書きに失敗しました。")
+        except (
+            repository_errors.WriteError,
+            repository_errors.ReadError,
+            repository_errors.ParseError,
+        ) as e:
+            raise ConfigAccessError("設定ファイルの読み書きに失敗しました。") from e
 
     def config_default_language(self) -> LanguageConfig:
         """デフォルト言語を取得する.
@@ -125,7 +129,7 @@ class AtCoderHelperConfigServiceImpl:
         """
         try:
             config = self._config_repo.read()
-        except repository_errors.ReadError as e:
+        except (repository_errors.ReadError, repository_errors.ParseError) as e:
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
 
         return config.languages[config.default_language]
@@ -141,7 +145,7 @@ class AtCoderHelperConfigServiceImpl:
         """
         try:
             config = self._config_repo.read()
-        except repository_errors.ReadError as e:
+        except (repository_errors.ReadError, repository_errors.ParseError) as e:
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
 
         return config.languages
@@ -156,7 +160,7 @@ class AtCoderHelperConfigServiceImpl:
         """
         try:
             default_atcoder_config = self._default_config_repo.read()
-        except repository_errors.ReadError as e:
+        except (repository_errors.ReadError, repository_errors.ParseError) as e:
             raise ConfigAccessError("デフォルト設定ファイルの読み込みに失敗しました.") from e
 
         try:

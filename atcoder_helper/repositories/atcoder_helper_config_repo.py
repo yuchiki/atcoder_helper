@@ -8,6 +8,7 @@ import yaml
 
 from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfigDict
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 from atcoder_helper.services.util import get_atcoder_helper_config_filepath
@@ -24,6 +25,7 @@ class ConfigRepository(Protocol):
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
 
         Returns:
             AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
@@ -59,19 +61,33 @@ class ConfigRepositoryImpl:
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
 
         Returns:
             AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
         """
         try:
             with open(self._filename, "rt") as file:
-                config_dict = cast(
+                config_obj = cast(
                     AtCoderHelperConfigDict, yaml.safe_load(file)
                 )  # TODO(validate)
         except OSError as e:
             raise ReadError(f"cannot read from {self._filename}.") from e
 
-        return AtCoderHelperConfig.from_dict(config_dict)
+        try:
+            language_dict = {
+                language["name"]: language for language in config_obj["languages"]
+            }
+            return AtCoderHelperConfig.parse_obj(
+                {
+                    "languages": language_dict,
+                    "default_language": config_obj["default_language"],
+                }
+            )
+        except Exception as e:
+            raise ParseError(
+                f"{self._filename} can not read as AtCoderHelperConfig"
+            ) from e
 
     def write(self, config: AtCoderHelperConfig) -> None:
         """書き込みを行う.

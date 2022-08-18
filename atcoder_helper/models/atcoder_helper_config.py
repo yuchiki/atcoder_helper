@@ -1,13 +1,12 @@
 """AtcoderHelperConfigを定義する."""
 
 import os
-from dataclasses import dataclass
 from typing import List
 from typing import Optional
 from typing import TypedDict
 
+from pydantic import BaseModel
 from typing_extensions import NotRequired
-from yaml import YAMLObject
 
 import atcoder_helper
 
@@ -22,13 +21,12 @@ class LanguageConfigDict(TypedDict):
     run: List[str]
 
 
-@dataclass
-class LanguageConfig(YAMLObject):
+class LanguageConfig(BaseModel):
     """言語ごとの設定を保持する."""
 
     name: str
     template_dir: Optional[str]
-    use_default_template: bool
+    use_default_template: Optional[bool]
     build: List[str]
     run: List[str]
 
@@ -48,7 +46,7 @@ class LanguageConfig(YAMLObject):
         if self.template_dir is None:
             return {
                 "name": self.name,
-                "use_default_template": self.use_default_template,
+                "use_default_template": (bool)(self.use_default_template),
                 "build": self.build,
                 "run": self.run,
             }
@@ -56,7 +54,7 @@ class LanguageConfig(YAMLObject):
             return {
                 "name": self.name,
                 "template_dir": self.template_dir,
-                "use_default_template": self.use_default_template,
+                "use_default_template": (bool)(self.use_default_template),
                 "build": self.build,
                 "run": self.run,
             }
@@ -82,8 +80,7 @@ class AtCoderHelperConfigDict(TypedDict):
     default_language: str
 
 
-@dataclass
-class AtCoderHelperConfig:
+class AtCoderHelperConfig(BaseModel):
     """atcoder_helper アプリ全体の設定を保持する."""
 
     languages: dict[str, LanguageConfig]

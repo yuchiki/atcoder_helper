@@ -9,6 +9,7 @@ from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigReposit
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     get_default_config_repository,
 )
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
@@ -59,7 +60,7 @@ class InitTaskDirServiceImpl:
         """
         self._atcoder_helper_config_repo = atcoder_helper_config_repo
 
-    def init_task(
+    def init_task(  # TODO(テストを書く)
         self,
         dir: Optional[str] = None,
         contest: Optional[str] = None,
@@ -75,7 +76,7 @@ class InitTaskDirServiceImpl:
             language_config = (
                 self._atcoder_helper_config_repo.read().default_language_config
             )
-        except ReadError as e:
+        except (ReadError, ParseError) as e:
             raise ConfigAccessError("全体設定ファイルの読み込みに失敗しました") from e
 
         if dir is None:
