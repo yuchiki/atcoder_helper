@@ -13,7 +13,6 @@ from atcoder_helper.repositories.errors import DirectoryNotEmpty
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.repositories.utils import filter_out_none
 
 
 class TaskConfigRepository(Protocol):
@@ -138,7 +137,7 @@ class TaskConfigRepositoryImpl:
                 os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
             ) as file:
                 yaml.dump(
-                    filter_out_none(task_config.dict()),
+                    task_config.dict(exclude_none=True),
                     file,
                     sort_keys=False,
                 )
