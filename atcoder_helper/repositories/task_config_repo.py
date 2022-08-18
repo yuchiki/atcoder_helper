@@ -8,7 +8,7 @@ from typing import Protocol
 import yaml
 
 from atcoder_helper.models.task_config import TaskConfig
-from atcoder_helper.repositories.errors import CoppyError
+from atcoder_helper.repositories.errors import CopyError
 from atcoder_helper.repositories.errors import DirectoryNotEmpty
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
@@ -130,7 +130,7 @@ class TaskConfigRepositoryImpl:
                         task_dir,
                     )
             except OSError as e:
-                raise CoppyError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
+                raise CopyError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
 
         try:
             with open(

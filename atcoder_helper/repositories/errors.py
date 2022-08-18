@@ -21,5 +21,5 @@ class DirectoryNotEmpty(Exception):
     """Directoryが空でないエラー."""
 
 
-class CoppyError(Exception):
+class CopyError(Exception):
     """Copy時のエラー."""

@@ -97,5 +97,5 @@ class InitTaskDirServiceImpl:
             raise ConfigAccessError("ディレクトリを初期化できません") from e
         except repo_errors.WriteError as e:
             raise ConfigAccessError("タスク設定ファイルの書き込みに失敗しました") from e
-        except repo_errors.CoppyError as e:
+        except repo_errors.CopyError as e:
             raise ConfigAccessError("テンプレートによる初期化に失敗しました") from e
