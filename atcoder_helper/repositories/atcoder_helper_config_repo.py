@@ -2,12 +2,10 @@
 
 import os
 from typing import Protocol
-from typing import cast
 
 import yaml
 
 from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
-from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfigDict
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
@@ -68,9 +66,7 @@ class ConfigRepositoryImpl:
         """
         try:
             with open(self._filename, "rt") as file:
-                config_obj = cast(
-                    AtCoderHelperConfigDict, yaml.safe_load(file)
-                )  # TODO(validate)
+                config_obj = yaml.safe_load(file)
         except OSError as e:
             raise ReadError(f"cannot read from {self._filename}.") from e
 
@@ -100,10 +96,8 @@ class ConfigRepositoryImpl:
         """
         os.makedirs(name=os.path.dirname(self._filename), exist_ok=True)
 
-        config_dict = config.to_dict()
-
         try:
             with open(self._filename, "wt") as file:
-                yaml.dump(config_dict, file)
+                yaml.dump(config.dict(exclude_none=True), file)
         except OSError as e:
             raise WriteError("cannot write to {self._filename}.") from e
