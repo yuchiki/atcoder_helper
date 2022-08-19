@@ -79,7 +79,7 @@ class FetchTaskServiceImpl:
         """
         try:
             task_config = self._task_config_repo.read()
-        except repository_error.ReadError as e:
+        except (repository_error.ReadError, repository_error.ParseError) as e:
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
 
         contest = task_config.contest if contest is None else contest

@@ -90,7 +90,7 @@ class ProgramExecutorRepoImpl:
                 error="",
             )
 
-        if test_case.expected == completed_process.stdout:
+        if test_case.expected.rstrip() == completed_process.stdout.rstrip():
             return TestResult(
                 test_case.name, TestStatus.AC, actual=completed_process.stdout, error=""
             )

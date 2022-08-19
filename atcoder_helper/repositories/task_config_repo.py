@@ -29,6 +29,7 @@ class TaskConfigRepository(Protocol):
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
         """
 
     def write(
@@ -84,13 +85,11 @@ class TaskConfigRepositoryImpl:
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
         """
         try:
             with open(self._filename) as file:
-                try:
-                    object = yaml.safe_load(file)
-                except Exception as e:
-                    raise ParseError(f"{file} is not a valid yaml file") from e
+                object = yaml.safe_load(file)
         except OSError as e:
             raise ReadError(f"cannot read from {file}") from e
 

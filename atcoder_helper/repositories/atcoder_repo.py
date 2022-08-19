@@ -257,6 +257,8 @@ class AtCoderRepositoryImpl:
             raise ParseError() from e
 
         return [
-            AtcoderTestCase(f"case-{name}", given, output_sections[name])
+            AtcoderTestCase(
+                name=f"case-{name}", given=given, expected=output_sections[name]
+            )
             for (name, given) in input_sections.items()
         ]
