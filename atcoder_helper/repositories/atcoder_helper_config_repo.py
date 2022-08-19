@@ -2,12 +2,11 @@
 
 import os
 from typing import Protocol
-from typing import cast
 
 import yaml
 
 from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
-from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfigDict
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 from atcoder_helper.services.util import get_atcoder_helper_config_filepath
@@ -24,6 +23,7 @@ class ConfigRepository(Protocol):
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
 
         Returns:
             AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
@@ -59,19 +59,31 @@ class ConfigRepositoryImpl:
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
 
         Returns:
             AtCoderHelperConfig: 読み込まれたAtcoderHelperConfig
         """
         try:
             with open(self._filename, "rt") as file:
-                config_dict = cast(
-                    AtCoderHelperConfigDict, yaml.safe_load(file)
-                )  # TODO(validate)
+                config_obj = yaml.safe_load(file)
         except OSError as e:
             raise ReadError(f"cannot read from {self._filename}.") from e
 
-        return AtCoderHelperConfig.from_dict(config_dict)
+        try:
+            language_dict = {
+                language["name"]: language for language in config_obj["languages"]
+            }
+            return AtCoderHelperConfig.parse_obj(
+                {
+                    "languages": language_dict,
+                    "default_language": config_obj["default_language"],
+                }
+            )
+        except Exception as e:
+            raise ParseError(
+                f"{self._filename} can not read as AtCoderHelperConfig"
+            ) from e
 
     def write(self, config: AtCoderHelperConfig) -> None:
         """書き込みを行う.
@@ -84,10 +96,8 @@ class ConfigRepositoryImpl:
         """
         os.makedirs(name=os.path.dirname(self._filename), exist_ok=True)
 
-        config_dict = config.to_dict()
-
         try:
             with open(self._filename, "wt") as file:
-                yaml.dump(config_dict, file)
+                yaml.dump(config.dict(exclude_none=True), file)
         except OSError as e:
             raise WriteError("cannot write to {self._filename}.") from e

@@ -81,7 +81,7 @@ class ExecuteTestServiceImpl:
         try:
             task_config = self._task_config_repo.read()
             test_cases = self._test_case_repo.read()
-        except repository_error.ReadError:
+        except (repository_error.ReadError, repository_error.ParseError):
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました")
 
         executor = self._executor_builder(task_config.build, task_config.run)

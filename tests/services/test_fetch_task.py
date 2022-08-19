@@ -32,9 +32,9 @@ def _default_task_config(
 
 
 _default_test_cases = [
-    AtcoderTestCase("case1", "input1", "expected1"),
-    AtcoderTestCase("case2", "input2", "expected2"),
-    AtcoderTestCase("case3", "input3", "expected3"),
+    AtcoderTestCase(name="case1", given="input1", expected="expected1"),
+    AtcoderTestCase(name="case2", given="input2", expected="expected2"),
+    AtcoderTestCase(name="case3", given="input3", expected="expected3"),
 ]
 
 

@@ -73,7 +73,10 @@ def get_default_atcoder_repository() -> AtCoderRepository:
 
 
 class AtCoderRepositoryImpl:
-    """AtCoderと通信するためのクラス."""
+    """AtCoderと通信するためのクラス.
+
+    TODO(データに対するrepositoryになっていないので切り分ける必要がある)
+    """
 
     _session: requests.Session
 
@@ -254,6 +257,8 @@ class AtCoderRepositoryImpl:
             raise ParseError() from e
 
         return [
-            AtcoderTestCase(f"case-{name}", given, output_sections[name])
+            AtcoderTestCase(
+                name=f"case-{name}", given=given, expected=output_sections[name]
+            )
             for (name, given) in input_sections.items()
         ]

@@ -1,13 +1,18 @@
 """TaskConfigを取得する."""
+import os
+import shutil
 from typing import Final
+from typing import Optional
 from typing import Protocol
-from typing import cast
 
 import yaml
 
 from atcoder_helper.models.task_config import TaskConfig
-from atcoder_helper.models.task_config import TaskConfigDict
+from atcoder_helper.repositories.errors import CopyError
+from atcoder_helper.repositories.errors import DirectoryNotEmpty
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
+from atcoder_helper.repositories.errors import WriteError
 
 
 class TaskConfigRepository(Protocol):
@@ -24,12 +29,35 @@ class TaskConfigRepository(Protocol):
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
+        """
+
+    def write(
+        self, task_config: TaskConfig, template_dir: Optional[str] = None
+    ) -> None:
+        """TaskConfigを書き込む.
+
+        Args:
+            task_config (TaskConfig):
+            template_dir (Optional[str]): Defaults to None
+
+        Raises:
+            DirectoryNotEmpty: ディレクトリが空でない
+            WriteError: タスク設定ファイルの書き込みに失敗
+            CopyError: テンプレートのコピーに失敗
         """
 
 
-def get_default_task_config_repository() -> TaskConfigRepository:
+def get_default_task_config_repository(
+    dir: Optional[str] = None,
+) -> TaskConfigRepository:
     """TaskConfigRepositoryの標準実装."""
-    return TaskConfigRepositoryImpl()
+    if dir is None:
+        return TaskConfigRepositoryImpl()
+    else:
+        return TaskConfigRepositoryImpl(
+            os.path.join(dir, TaskConfigRepositoryImpl.default_filename)
+        )
 
 
 class TaskConfigRepositoryImpl:
@@ -57,11 +85,60 @@ class TaskConfigRepositoryImpl:
 
         Raises:
             ReadError: 読み込みに失敗した
+            ParseError: パースに失敗した
         """
         try:
             with open(self._filename) as file:
-                object = cast(TaskConfigDict, yaml.safe_load(file))  # TODO(validate)
+                object = yaml.safe_load(file)
         except OSError as e:
             raise ReadError(f"cannot read from {file}") from e
 
-        return TaskConfig.from_dict(object)
+        try:
+            return TaskConfig.parse_obj(object)
+        except Exception as e:
+            raise ParseError(f"{self._filename} can not read as TaskConfig") from e
+
+    def write(
+        self, task_config: TaskConfig, template_dir: Optional[str] = None
+    ) -> None:
+        """TaskConfigを書き込む.
+
+        Args:
+            task_config (TaskConfig):
+            template_dir (Optional[str]): Defaults to None
+
+        Raises:
+            DirectoryNotEmpty: ディレクトリが空でない
+            WriteError: タスク設定ファイルの書き込みに失敗
+            CopyError: テンプレートのコピーに失敗
+        """
+        task_dir = os.path.dirname(self._filename)
+
+        def _is_empty(dir: str) -> bool:
+            return len(os.listdir(dir)) == 0
+
+        os.makedirs(task_dir, exist_ok=True)
+        if not _is_empty(task_dir):
+            raise DirectoryNotEmpty(f"directory {task_dir} is not empty")
+
+        if template_dir is not None:
+            try:
+                for filename in os.listdir(template_dir):
+                    shutil.copy(
+                        os.path.join(template_dir, filename),
+                        task_dir,
+                    )
+            except OSError as e:
+                raise CopyError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
+
+        try:
+            with open(
+                os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
+            ) as file:
+                yaml.dump(
+                    task_config.dict(exclude_none=True),
+                    file,
+                    sort_keys=False,
+                )
+        except OSError as e:
+            raise WriteError("タスク設定ファイルの初期化中にエラーが発生しました") from e

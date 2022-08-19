@@ -2,6 +2,8 @@
 
 set -eux
 
+CMD="atcoder_helper --verbose"
+
 
 function installed() {
     echo "atcoder_helper がインストールされていることを確認する"
@@ -13,44 +15,44 @@ function installed() {
 
 function can_config_init() {
     echo "atcoder_helper config initができることを確認する"
-    atcoder_helper config init
+    $CMD config init
 }
 
 function can_logout() {
     echo "logoutがfailしない"
-    atcoder_helper auth logout
+    $CMD auth logout
 }
 
 function can_show_auth_status(){
     echo "atcoder_helper auth statusは動く"
-    test "$(atcoder_helper auth status)" == "logged out."
+    test "$($CMD auth status)" == "logged out."
 }
 
 function can_show_languages() {
     echo "atcoder_helper config languagesは動く"
-    atcoder_helper config languages
+    $CMD config languages
 }
 
 function can_show_default_language() {
     if [ -z "${1+UNDEF}" ]; then
         echo "atcoder_helper config defaultが動く"
-        atcoder_helper config default
+        $CMD config default
     else
         echo "atcoder_helper config defaultが$1を返す"
 
-        test "$(atcoder_helper config default)" = $1
+        test "$($CMD config default)" = $1
     fi
 }
 
 function can_set_default_language() {
     language=$1
     echo "atcoder_helper config useが動く"
-    atcoder_helper config use $language
+    $CMD config use $language
 }
 
 function can_task_init() {
     echo "現在のタスクディレクトリが初期化できることを確かめる"
-    atcoder_helper task init
+    $CMD task init
 }
 
 function can_fetch() {
@@ -70,14 +72,14 @@ function can_fetch() {
         task_flag="--task $2"
     fi
 
-    atcoder_helper fetch $contest_flag $task_flag
+    $CMD fetch $contest_flag $task_flag
     ls testcases.yaml
     echo "OK"
 }
 
 function can_execute() {
     echo "テストが実行できることを確認する"
-    atcoder_helper exec
+    $CMD exec
 
     echo "OK"
 }
@@ -87,7 +89,7 @@ function can_task_create() {
     task=$2
 
     echo "task ディレクトリを新規作成して初期化できる"
-    atcoder_helper task create $contest $task
+    $CMD task create $contest $task
     echo "OK"
 }
 

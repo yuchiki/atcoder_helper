@@ -15,3 +15,11 @@ class ParseError(Exception):
 
 class AlreadyLoggedIn(Exception):
     """既にログインしているエラー."""
+
+
+class DirectoryNotEmpty(Exception):
+    """Directoryが空でないエラー."""
+
+
+class CopyError(Exception):
+    """Copy時のエラー."""

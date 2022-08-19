@@ -264,7 +264,7 @@ def test_config_languages_handler(
     config_languages_side_effect: Exception, should_succeed: bool
 ) -> None:
     """config_languages_handlerのテスト."""
-    languages = {"c": LanguageConfig("c", None, False, [], [])}
+    languages = {"c": LanguageConfig(name="c", build=[], run=[])}
 
     sut = _get_sut(
         atcoder_helper_config_service_mock=mock.MagicMock(
@@ -292,7 +292,7 @@ def test_config_default_language_handler(
     default_language_side_effect: Exception, should_succeed: bool
 ) -> None:
     """config_default_language_handlerのテスト."""
-    language = LanguageConfig("c", None, False, [], [])
+    language = LanguageConfig(name="c", build=[], run=[])
 
     sut = _get_sut(
         atcoder_helper_config_service_mock=mock.MagicMock(

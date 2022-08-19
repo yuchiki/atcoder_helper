@@ -24,11 +24,6 @@ languages:
       - -stdlib=libc++
       - Wall
       - -O2
-      # - -DNDEBUG
-      # - -DONLINE_JUDGE
-      # - -I/opt/boost/clang/include
-      # - -L/opt/boost/clang/lib
-      # - -I/opt/ac-library
       - -omain
       - main.cpp
     run:
@@ -52,16 +47,20 @@ languages:
       - publish
       - outputs/main
       - -cRelease
-      # -rubuntu.18.04-x64
-      - -p:PublishReadyuToRun=true
+      - "-p:PublishReadyuToRun=true"
       - -ooutputs
-      -  # -vq
       - --nologo
     run:
       - ./outputs/main
   - name: rust
-    build: cargo build --release --offline --quiet
-    run: ./a.out
+    build:
+    - cargo
+    - build
+    - --release
+    - --offline
+    - --quiet
+    run:
+    - ./a.out
   - name: ruby
     build:
       - ruby

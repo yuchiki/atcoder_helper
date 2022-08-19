@@ -32,9 +32,9 @@ def _get_sut(
 
 _task_config = TaskConfig(contest=None, task=None, build=["foo"], run=["bar"])
 _test_cases = [
-    AtcoderTestCase("test_a", "foo_a", "bar_a"),
-    AtcoderTestCase("test_b", "foo_b", "bar_b"),
-    AtcoderTestCase("test_c", "foo_c", "bar_c"),
+    AtcoderTestCase(name="test_a", given="foo_a", expected="bar_a"),
+    AtcoderTestCase(name="test_b", given="foo_b", expected="bar_b"),
+    AtcoderTestCase(name="test_c", given="foo_c", expected="bar_c"),
 ]
 
 _result = TestResult("foo", TestStatus.AC, "actual", "error", None)

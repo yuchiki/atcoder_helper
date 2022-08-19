@@ -6,6 +6,7 @@ from typing import Protocol
 import yaml
 
 from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 
@@ -31,6 +32,7 @@ class TestCaseRepository(Protocol):
 
         Raises:
             ReadError: データの読み込みに失敗した
+            ParseError: パースに失敗した
         """
 
 
@@ -69,11 +71,9 @@ class TestCaseRepositoryImpl:
 
         yaml.add_representer(str, str_representer)
 
-        test_case_dicts = [case.to_dict() for case in test_cases]
-
         try:
             with open(self._filename, "wt") as file:
-                yaml.dump(test_case_dicts, file, sort_keys=False)
+                yaml.dump([case.dict() for case in test_cases], file, sort_keys=False)
         except OSError as e:
             raise WriteError(f"cannot open {self._filename}") from e
 
@@ -85,10 +85,17 @@ class TestCaseRepositoryImpl:
 
         Raises:
             ReadError: データの読み込みに失敗した
+            ParseError: パースに失敗した
         """
         try:
             with open(self._filename, "rt") as file:
-                objects = yaml.safe_load(file)  # TODO(validate)
+                objects = yaml.safe_load(file)
         except OSError as e:
             raise ReadError(f"cannot open {self._filename}") from e
-        return [AtcoderTestCase.from_dict(object) for object in objects]
+
+        try:
+            return [AtcoderTestCase.parse_obj(object) for object in objects]
+        except Exception as e:
+            raise ParseError(
+                f"failed to parse {self._filename} as AtcoderTestCase"
+            ) from e

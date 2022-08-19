@@ -19,5 +19,3 @@ class UndefinedLanguage(Exception):
 
 class DirectoryNotEmpty(Exception):
     """Directoryが空でないエラー."""
-
-    pass
