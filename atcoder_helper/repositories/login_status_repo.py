@@ -10,17 +10,8 @@ class LoginStatusRepo:
     """login情報を取得するrepository."""
 
     _url_provider = AtCoderURLProvider
-    _session: requests.Session
 
-    def __init__(self, session: requests.Session):
-        """__init__.
-
-        Args:
-            session (requests.Session): セッション情報
-        """
-        self._session = session
-
-    def is_logged_in(self) -> bool:
+    def is_logged_in(self, session: requests.Session) -> bool:
         """loginしているかどうかを判定する.
 
         Raises:
@@ -33,7 +24,7 @@ class LoginStatusRepo:
         #  https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46
 
         try:
-            res = self._session.get(
+            res = session.get(
                 self._url_provider.submit_url("abc001"),
                 allow_redirects=False,
             )

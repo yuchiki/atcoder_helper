@@ -1,11 +1,8 @@
 """atcoderとの通信を行う層."""
 import os
-import pickle
 from typing import Final
 from typing import List
 from typing import Protocol
-
-import requests
 
 from atcoder_helper.models.test_case import AtcoderTestCase
 from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
@@ -13,8 +10,7 @@ from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
 )
 from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRepository
 from atcoder_helper.repositories.errors import AlreadyLoggedIn
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
@@ -79,46 +75,23 @@ class AtCoderRepositoryImpl:
     TODO(データに対するrepositoryになっていないので切り分ける必要がある)
     """
 
-    _session: requests.Session
-
     url_provider = AtCoderURLProvider
 
     _default_session_file: Final[str] = os.path.join(
         os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
     )
 
+    _session_repo: LoggedInSessionRepository
+
     def __init__(self, session_filename: str = _default_session_file):
         """__init__.
 
         Args:
             session_filename (str): セッションを保存しておくファイル名
-
-        Raises:
-            ReadError: 読み込みに失敗した
         """
-        self._session_filename = session_filename
-        if os.path.isfile(session_filename):
-            try:
-                with open(session_filename, "rb") as file:
-                    self._session = pickle.load(file)
-            except OSError as e:
-                raise ReadError(f"cannot open {session_filename}") from e
-        else:
-            self._session = requests.session()
-
-    def _write_session(self) -> None:
-        """_write_session.
-
-        Raises:
-            WriteError: 書き込みに失敗
-        """
-        os.makedirs(os.path.dirname(self._session_filename), exist_ok=True)
-
-        try:
-            with open(self._session_filename, "wb") as file:
-                pickle.dump(self._session, file)
-        except OSError as e:
-            raise WriteError(f"cannot write to {self._session_filename}") from e
+        self._session_repo = LoggedInSessionRepository(
+            session_filename=session_filename
+        )
 
     def login(self, username: str, password: str) -> None:
         """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
@@ -138,8 +111,7 @@ class AtCoderRepositoryImpl:
         atcoder_session_repo = AtCoderLoggedInSessionRepository()
         session = atcoder_session_repo.read(username=username, password=password)
 
-        self._session = session
-        self._write_session()
+        self._session_repo.write(session)
 
     def logout(self) -> None:
         """logoutする. loginしていない状態でも何も検査しない.
@@ -147,9 +119,7 @@ class AtCoderRepositoryImpl:
         Raises:
             WriteError: セッションの初期化に失敗
         """
-        self._session = requests.session()
-
-        self._write_session()
+        self._session_repo.delete()
 
     def is_logged_in(self) -> bool:
         """loginしているかどうかを判定する.
@@ -160,8 +130,9 @@ class AtCoderRepositoryImpl:
         Returns:
             bool: loginしているか否か
         """
-        status_repo = LoginStatusRepo(self._session)
-        return status_repo.is_logged_in()
+        session = self._session_repo.read()
+        status_repo = LoginStatusRepo()
+        return status_repo.is_logged_in(session)
 
     def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
         """テストケーススイートを取得する.
@@ -177,5 +148,6 @@ class AtCoderRepositoryImpl:
         Returns:
             List[TestCase]: テストケーススイート
         """
-        atcoder_test_case_repo = AtCoderTestCaseRepository(self._session)
+        session = self._session_repo.read()
+        atcoder_test_case_repo = AtCoderTestCaseRepository(session)
         return atcoder_test_case_repo.fetch_test_cases(contest, task)
