@@ -62,3 +62,7 @@ class LoggedInSessionRepository:
             bool: 存在するかどうか
         """
         return os.path.isfile(self._session_filename)
+
+    def delete(self) -> None:
+        """session 情報を削除します。"""
+        self.write(requests.Session())

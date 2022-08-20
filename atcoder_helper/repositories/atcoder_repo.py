@@ -4,8 +4,6 @@ from typing import Final
 from typing import List
 from typing import Protocol
 
-import requests
-
 from atcoder_helper.models.test_case import AtcoderTestCase
 from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
     AtCoderLoggedInSessionRepository,
@@ -124,7 +122,7 @@ class AtCoderRepositoryImpl:
         Raises:
             WriteError: セッションの初期化に失敗
         """
-        self._session_repo.write(requests.Session())
+        self._session_repo.delete()
 
     def is_logged_in(self) -> bool:
         """loginしているかどうかを判定する.
