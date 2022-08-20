@@ -14,6 +14,7 @@ from atcoder_helper.repositories.errors import AlreadyLoggedIn
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
 
@@ -184,20 +185,8 @@ class AtCoderRepositoryImpl:
         Returns:
             bool: loginしているか否か
         """
-        # たたもさんの atcoder-cli を参考にしている
-        #  https://github.com/Tatamo/atcoder-cli/blob/0ca0d088f28783a4804ad90d89fc56eb7ddd6ef4/src/atcoder.ts#L46
-
-        try:
-            res = self._session.get(
-                self.url_provider.submit_url("abc001"),
-                allow_redirects=False,
-            )
-        except Exception as e:
-            raise ReadError(
-                f"cannot GET {self.url_provider.submit_url('abc001')}"
-            ) from e
-
-        return res.status_code == 200  # login していなければ302 redirect になる
+        status_repo = LoginStatusRepo(self._session)
+        return status_repo.is_logged_in()
 
     def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
         """テストケーススイートを取得する.
