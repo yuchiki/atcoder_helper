@@ -18,7 +18,7 @@ class LoginStatusRepo:
         Args:
             session (requests.Session): セッション情報
         """
-        self._sesion = session
+        self._session = session
 
     def is_logged_in(self) -> bool:
         """loginしているかどうかを判定する.
