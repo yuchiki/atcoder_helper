@@ -30,7 +30,7 @@ class TestAuthServiceImpl:
         ],
         [
             [None, None],
-            [None, None, True],
+            [None, None],
             [repositories.errors.AlreadyLoggedIn(), AlreadyLoggedIn],
             [repositories.errors.ReadError(), ConfigAccessError],
             [repositories.errors.WriteError(), ConfigAccessError],
