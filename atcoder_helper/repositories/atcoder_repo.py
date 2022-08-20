@@ -14,7 +14,7 @@ from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
 from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRepository
 from atcoder_helper.repositories.errors import AlreadyLoggedIn
 from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
@@ -87,6 +87,8 @@ class AtCoderRepositoryImpl:
         os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
     )
 
+    _session_repo: LoggedInSessionRepository
+
     def __init__(self, session_filename: str = _default_session_file):
         """__init__.
 
@@ -96,6 +98,10 @@ class AtCoderRepositoryImpl:
         Raises:
             ReadError: 読み込みに失敗した
         """
+        self._session_repo = LoggedInSessionRepository(
+            session_filename=session_filename
+        )
+
         self._session_filename = session_filename
         if os.path.isfile(session_filename):
             try:
@@ -105,20 +111,6 @@ class AtCoderRepositoryImpl:
                 raise ReadError(f"cannot open {session_filename}") from e
         else:
             self._session = requests.session()
-
-    def _write_session(self) -> None:
-        """_write_session.
-
-        Raises:
-            WriteError: 書き込みに失敗
-        """
-        os.makedirs(os.path.dirname(self._session_filename), exist_ok=True)
-
-        try:
-            with open(self._session_filename, "wb") as file:
-                pickle.dump(self._session, file)
-        except OSError as e:
-            raise WriteError(f"cannot write to {self._session_filename}") from e
 
     def login(self, username: str, password: str) -> None:
         """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
@@ -138,8 +130,7 @@ class AtCoderRepositoryImpl:
         atcoder_session_repo = AtCoderLoggedInSessionRepository()
         session = atcoder_session_repo.read(username=username, password=password)
 
-        self._session = session
-        self._write_session()
+        self._session_repo.write(session)
 
     def logout(self) -> None:
         """logoutする. loginしていない状態でも何も検査しない.
@@ -147,9 +138,7 @@ class AtCoderRepositoryImpl:
         Raises:
             WriteError: セッションの初期化に失敗
         """
-        self._session = requests.session()
-
-        self._write_session()
+        self._session_repo.write(requests.Session())
 
     def is_logged_in(self) -> bool:
         """loginしているかどうかを判定する.
