@@ -4,12 +4,13 @@ import pickle
 from typing import Final
 from typing import List
 from typing import Protocol
-from typing import cast
 
 import requests
-from bs4 import BeautifulSoup
 
 from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
+    AtCoderLoggedInSessionRepository,
+)
 from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRepository
 from atcoder_helper.repositories.errors import AlreadyLoggedIn
 from atcoder_helper.repositories.errors import ReadError
@@ -21,7 +22,7 @@ from atcoder_helper.repositories.utils import AtCoderURLProvider
 class AtCoderRepository(Protocol):
     """AtCoderとの通信を抽象化するためのプロトコル."""
 
-    def login(self, username: str, password: str) -> bool:
+    def login(self, username: str, password: str) -> None:
         """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
 
         Args:
@@ -30,10 +31,8 @@ class AtCoderRepository(Protocol):
 
         Raises:
             AlreadyLoggedIn: 既にログインしていたとき
-            WriteError: POSTに失敗
-
-        Returns:
-            bool: ログインに成功したかどうかを返す
+            ConnectionError: POSTに失敗
+            LoginFailure: ログインに失敗
         """
 
     def logout(self) -> None:
@@ -121,14 +120,7 @@ class AtCoderRepositoryImpl:
         except OSError as e:
             raise WriteError(f"cannot write to {self._session_filename}") from e
 
-    def _get_csrf_token(self) -> str:
-        login_page = self._session.get(self.url_provider.login_url)
-        html = BeautifulSoup(login_page.text, "html.parser")
-
-        token = html.find("input").attrs["value"]
-        return cast(str, token)  # TODO(ちゃんと例外処理をする)
-
-    def login(self, username: str, password: str) -> bool:
+    def login(self, username: str, password: str) -> None:
         """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
 
         Args:
@@ -137,34 +129,17 @@ class AtCoderRepositoryImpl:
 
         Raises:
             AlreadyLoggedIn: 既にログインしていたとき
-            WriteError: POSTに失敗
-
-        Returns:
-            bool: ログインに成功したかどうかを返す
+            ConnectionError: POSTに失敗
+            LoginFailure: ログインに失敗
         """
         if self.is_logged_in():
             raise AlreadyLoggedIn("すでにloginしています")
 
-        csrf_token = self._get_csrf_token()
+        atcoder_session_repo = AtCoderLoggedInSessionRepository()
+        session = atcoder_session_repo.read(username=username, password=password)
 
-        try:
-            res = self._session.post(
-                self.url_provider.login_url,
-                params={
-                    "username": username,
-                    "password": password,
-                    "csrf_token": csrf_token,
-                },
-                allow_redirects=False,
-            )
-        except Exception as e:
-            raise WriteError(f"cannot post to {self.url_provider.login_url}") from e
-
-        if res.headers["Location"] == "/home":
-            self._write_session()
-            return True
-        else:
-            return False
+        self._session = session
+        self._write_session()
 
     def logout(self) -> None:
         """logoutする. loginしていない状態でも何も検査しない.

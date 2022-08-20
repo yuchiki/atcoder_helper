@@ -14,7 +14,7 @@ from atcoder_helper.services.errors import ConfigAccessError
 class AuthService(Protocol):
     """auth を扱うサービスのプロトコル."""
 
-    def login(self, username: str, password: str) -> bool:
+    def login(self, username: str, password: str) -> None:
         """ログインする.
 
         Args:
@@ -25,8 +25,6 @@ class AuthService(Protocol):
             AlreadyLoggedIn: 既にログインしている
             ConfigAccessError: 設定ファイルのエラー
             AtcoderAccessError: atcoderから情報を取得する際のエラー
-        Returns:
-            bool: ログインに成功できたかどうか
         """
 
     def logout(self) -> None:
@@ -63,7 +61,7 @@ class AuthServiceImpl:
         """__init__."""
         self.atcoder_repo = atcoder_repo
 
-    def login(self, username: str, password: str) -> bool:
+    def login(self, username: str, password: str) -> None:
         """ログインする.
 
         Args:
@@ -74,19 +72,19 @@ class AuthServiceImpl:
             AlreadyLoggedIn: 既にログインしている
             ConfigAccessError: 設定ファイルのエラー
             AtcoderAccessError: atcoderから情報を取得する際のエラー
-        Returns:
-            bool: ログインに成功できたかどうか
         """
         try:
-            status = self.atcoder_repo.login(username, password)
+            self.atcoder_repo.login(username, password)
         except repository_error.AlreadyLoggedIn as e:
             raise AlreadyLoggedIn("既にログインしています") from e
         except (repository_error.ReadError) as e:
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
         except (repository_error.WriteError) as e:
+            raise ConfigAccessError("セッションの保存に失敗しました") from e
+        except (repository_error.ConnectionError) as e:
             raise AtcoderAccessError("通信に失敗しました") from e
-
-        return status
+        except (repository_error.LoginFailure) as e:
+            raise AtcoderAccessError("ログインに失敗しました") from e
 
     def logout(self) -> None:
         """logout.

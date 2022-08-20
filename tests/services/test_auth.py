@@ -27,22 +27,19 @@ class TestAuthServiceImpl:
         [
             "repo_login_side_effect",
             "exception",
-            "repo_login_return_value",
-            "return_value",
         ],
         [
-            [None, None, False, False],
-            [None, None, True, True],
-            [repositories.errors.AlreadyLoggedIn(), AlreadyLoggedIn, False, False],
-            [repositories.errors.ReadError(), ConfigAccessError, False, False],
-            [repositories.errors.WriteError(), AtcoderAccessError, False, False],
+            [None, None],
+            [None, None, True],
+            [repositories.errors.AlreadyLoggedIn(), AlreadyLoggedIn],
+            [repositories.errors.ReadError(), ConfigAccessError],
+            [repositories.errors.WriteError(), ConfigAccessError],
+            [repositories.errors.LoginFailure(), AtcoderAccessError],
         ],
     )
     def test_login(
         repo_login_side_effect: Exception,
         exception: Type[Exception],
-        repo_login_return_value: bool,
-        return_value: bool,
     ) -> None:
         """loginのテスト."""
         username = "foo"
@@ -50,9 +47,7 @@ class TestAuthServiceImpl:
 
         sut = TestAuthServiceImpl._get_sut(
             atcoder_repo_mock=mock.MagicMock(
-                login=mock.MagicMock(
-                    side_effect=repo_login_side_effect, return_value=return_value
-                )
+                login=mock.MagicMock(side_effect=repo_login_side_effect)
             )
         )
 
@@ -60,8 +55,7 @@ class TestAuthServiceImpl:
             with pytest.raises(exception):
                 sut.login(username, password)
         else:
-            ret = sut.login(username, password)
-            assert ret == return_value
+            sut.login(username, password)
 
     @staticmethod
     @pytest.mark.parametrize(
