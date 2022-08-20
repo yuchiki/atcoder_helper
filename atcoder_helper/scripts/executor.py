@@ -64,7 +64,7 @@ class Executor:
         name = input("name:")
         password = getpass.getpass("password:")
         try:
-            status = self._auth_service.login(name, password)
+            self._auth_service.login(name, password)
         except service_errors.AlreadyLoggedIn:
             print("既にログインしています.")
             if args.verbose:
@@ -81,11 +81,7 @@ class Executor:
                 print(traceback.format_exc())
             sys.exit(1)
 
-        if status:
-            print("logged in.")
-        else:
-            print("fail to log in.")
-            sys.exit(1)
+        print("logged in.")
 
     def auth_logout_handler(self, args: argparse.Namespace) -> None:
         """ログアウトする.

@@ -23,3 +23,11 @@ class DirectoryNotEmpty(Exception):
 
 class CopyError(Exception):
     """Copy時のエラー."""
+
+
+class LoginFailure(Exception):
+    """loginに失敗した."""
+
+
+class ConnectionError(Exception):
+    """通信に失敗した."""
