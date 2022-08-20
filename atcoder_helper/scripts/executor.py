@@ -106,6 +106,11 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
             sys.exit(1)
+        except service_errors.ConfigAccessError:
+            print("設定ファイルが読み込めません")
+            if args.verbose:
+                print(traceback.format_exc())
+            sys.exit(1)
 
         if stat:
             print("logged in.")

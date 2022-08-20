@@ -88,9 +88,6 @@ class AtCoderRepositoryImpl:
 
         Args:
             session_filename (str): セッションを保存しておくファイル名
-
-        Raises:
-            ReadError: 読み込みに失敗した
         """
         self._session_repo = LoggedInSessionRepository(
             session_filename=session_filename
@@ -134,8 +131,8 @@ class AtCoderRepositoryImpl:
             bool: loginしているか否か
         """
         session = self._session_repo.read()
-        status_repo = LoginStatusRepo(session)
-        return status_repo.is_logged_in()
+        status_repo = LoginStatusRepo()
+        return status_repo.is_logged_in(session)
 
     def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
         """テストケーススイートを取得する.

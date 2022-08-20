@@ -2,6 +2,7 @@
 
 import os
 import pickle
+from typing import Final
 from typing import cast
 
 import requests
@@ -15,7 +16,11 @@ class LoggedInSessionRepository:
 
     _session_filename: str
 
-    def __init__(self, session_filename: str):
+    _default_session_file: Final[str] = os.path.join(
+        os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
+    )
+
+    def __init__(self, session_filename: str = _default_session_file):
         """__init__.
 
         Args:
