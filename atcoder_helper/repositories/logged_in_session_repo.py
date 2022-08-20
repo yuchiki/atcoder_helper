@@ -38,7 +38,7 @@ class LoggedInSessionRepository:
             raise WriteError(f"cannot write to {self._session_filename}") from e
 
     def read(self) -> requests.Session:
-        """__init__.
+        """read. ファイルが存在しない場合はデフォルトsessionを返す.
 
         Raises:
             ReadError: 読み込みに失敗した
@@ -46,11 +46,14 @@ class LoggedInSessionRepository:
         Return:
             requests.Session: 取得したsession
         """
-        try:
-            with open(self._session_filename, "rb") as file:
-                return cast(requests.Session, pickle.load(file))
-        except OSError as e:
-            raise ReadError(f"cannot open or parse {self._session_filename}") from e
+        if self.doesExist():
+            try:
+                with open(self._session_filename, "rb") as file:
+                    return cast(requests.Session, pickle.load(file))
+            except OSError as e:
+                raise ReadError(f"cannot open or parse {self._session_filename}") from e
+        else:
+            return requests.session()
 
     def doesExist(self) -> bool:
         """sessionがすでに存在するかどうか確認する.

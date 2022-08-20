@@ -77,8 +77,6 @@ class AtCoderRepositoryImpl:
     TODO(データに対するrepositoryになっていないので切り分ける必要がある)
     """
 
-    _session: requests.Session
-
     url_provider = AtCoderURLProvider
 
     _default_session_file: Final[str] = os.path.join(
@@ -99,12 +97,6 @@ class AtCoderRepositoryImpl:
         self._session_repo = LoggedInSessionRepository(
             session_filename=session_filename
         )
-
-        self._session_filename = session_filename
-        if self._session_repo.doesExist():
-            self._session = self._session_repo.read()
-        else:
-            self._session = requests.session()
 
     def login(self, username: str, password: str) -> None:
         """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
@@ -143,7 +135,8 @@ class AtCoderRepositoryImpl:
         Returns:
             bool: loginしているか否か
         """
-        status_repo = LoginStatusRepo(self._session)
+        session = self._session_repo.read()
+        status_repo = LoginStatusRepo(session)
         return status_repo.is_logged_in()
 
     def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
@@ -160,5 +153,6 @@ class AtCoderRepositoryImpl:
         Returns:
             List[TestCase]: テストケーススイート
         """
-        atcoder_test_case_repo = AtCoderTestCaseRepository(self._session)
+        session = self._session_repo.read()
+        atcoder_test_case_repo = AtCoderTestCaseRepository(session)
         return atcoder_test_case_repo.fetch_test_cases(contest, task)
