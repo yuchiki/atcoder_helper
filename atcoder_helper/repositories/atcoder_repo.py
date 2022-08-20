@@ -14,6 +14,7 @@ from atcoder_helper.repositories.errors import AlreadyLoggedIn
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.repositories.utils import AtCoderURLProvider
 
 
 class AtCoderRepository(Protocol):
@@ -80,21 +81,11 @@ class AtCoderRepositoryImpl:
 
     _session: requests.Session
 
+    url_provider = AtCoderURLProvider
+
     _default_session_file: Final[str] = os.path.join(
         os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
     )
-
-    _atcoder_url: Final[str] = "https://atcoder.jp"
-    _login_url: Final[str] = f"{_atcoder_url}/login"
-
-    def _contest_url(self, contest: str) -> str:
-        return f"{self._atcoder_url}/contests/{contest}"
-
-    def _task_url(self, contest: str, task: str) -> str:
-        return f"{self._contest_url(contest)}/tasks/{contest}_{task}"
-
-    def _submit_url(self, contest: str) -> str:
-        return f"{self._contest_url(contest)}/submit"
 
     def __init__(self, session_filename: str = _default_session_file):
         """__init__.
@@ -130,7 +121,7 @@ class AtCoderRepositoryImpl:
             raise WriteError(f"cannot write to {self._session_filename}") from e
 
     def _get_csrf_token(self) -> str:
-        login_page = self._session.get(self._login_url)
+        login_page = self._session.get(self.url_provider.login_url)
         html = BeautifulSoup(login_page.text, "html.parser")
 
         token = html.find("input").attrs["value"]
@@ -157,7 +148,7 @@ class AtCoderRepositoryImpl:
 
         try:
             res = self._session.post(
-                self._login_url,
+                self.url_provider.login_url,
                 params={
                     "username": username,
                     "password": password,
@@ -166,7 +157,7 @@ class AtCoderRepositoryImpl:
                 allow_redirects=False,
             )
         except Exception as e:
-            raise WriteError(f"cannot post to {self._login_url}") from e
+            raise WriteError(f"cannot post to {self.url_provider.login_url}") from e
 
         if res.headers["Location"] == "/home":
             self._write_session()
@@ -198,11 +189,13 @@ class AtCoderRepositoryImpl:
 
         try:
             res = self._session.get(
-                self._submit_url("abc001"),
+                self.url_provider.submit_url("abc001"),
                 allow_redirects=False,
             )
         except Exception as e:
-            raise ReadError(f"cannot GET {self._submit_url('abc001')}") from e
+            raise ReadError(
+                f"cannot GET {self.url_provider.submit_url('abc001')}"
+            ) from e
 
         return res.status_code == 200  # login していなければ302 redirect になる
 
@@ -225,9 +218,11 @@ class AtCoderRepositoryImpl:
             return "\n".join(text.splitlines())
 
         try:
-            task_page = self._session.get(self._task_url(contest, task))
+            task_page = self._session.get(self.url_provider.task_url(contest, task))
         except Exception as e:
-            raise ReadError(f"cannot GET {self._task_url(contest, task)}") from e
+            raise ReadError(
+                f"cannot GET {self.url_provider.task_url(contest, task)}"
+            ) from e
 
         try:
             html = BeautifulSoup(task_page.text, "html.parser")
