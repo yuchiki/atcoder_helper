@@ -64,5 +64,5 @@ class LoggedInSessionRepository:
         return os.path.isfile(self._session_filename)
 
     def delete(self) -> None:
-        """session 情報を削除します."""
+        """Session 情報を削除します."""
         self.write(requests.Session())
