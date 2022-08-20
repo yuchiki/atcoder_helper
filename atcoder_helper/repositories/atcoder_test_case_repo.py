@@ -15,18 +15,11 @@ from atcoder_helper.repositories.utils import AtCoderURLProvider
 class AtCoderTestCaseRepository:
     """AtCoderからテストケースを取得するリポジトリ."""
 
-    _session: requests.Session
     _url_provider = AtCoderURLProvider
 
-    def __init__(self, session: requests.Session):
-        """__init__.
-
-        Args:
-            session (requests.Session): session
-        """
-        self._session = session
-
-    def fetch_test_cases(self, contest: str, task: str) -> List[AtcoderTestCase]:
+    def fetch_test_cases(
+        self, session: requests.Session, contest: str, task: str
+    ) -> List[AtcoderTestCase]:
         """テストケーススイートを取得する.
 
         Args:
@@ -45,7 +38,7 @@ class AtCoderTestCaseRepository:
             return "\n".join(text.splitlines())
 
         try:
-            task_page = self._session.get(self._url_provider.task_url(contest, task))
+            task_page = session.get(self._url_provider.task_url(contest, task))
         except Exception as e:
             raise ReadError(
                 f"cannot GET {self._url_provider.task_url(contest, task)}"
