@@ -1,6 +1,5 @@
 """atcoderとの通信を行う層."""
 import os
-import pickle
 from typing import Final
 from typing import List
 from typing import Protocol
@@ -13,7 +12,6 @@ from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
 )
 from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRepository
 from atcoder_helper.repositories.errors import AlreadyLoggedIn
-from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
 from atcoder_helper.repositories.utils import AtCoderURLProvider
@@ -103,12 +101,8 @@ class AtCoderRepositoryImpl:
         )
 
         self._session_filename = session_filename
-        if os.path.isfile(session_filename):
-            try:
-                with open(session_filename, "rb") as file:
-                    self._session = pickle.load(file)
-            except OSError as e:
-                raise ReadError(f"cannot open {session_filename}") from e
+        if self._session_repo.doesExist():
+            self._session = self._session_repo.read()
         else:
             self._session = requests.session()
 

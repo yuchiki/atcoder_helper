@@ -2,9 +2,11 @@
 
 import os
 import pickle
+from typing import cast
 
 import requests
 
+from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 
 
@@ -34,3 +36,26 @@ class LoggedInSessionRepository:
                 pickle.dump(session, file)
         except OSError as e:
             raise WriteError(f"cannot write to {self._session_filename}") from e
+
+    def read(self) -> requests.Session:
+        """__init__.
+
+        Raises:
+            ReadError: 読み込みに失敗した
+
+        Return:
+            requests.Session: 取得したsession
+        """
+        try:
+            with open(self._session_filename, "rb") as file:
+                return cast(requests.Session, pickle.load(file))
+        except OSError as e:
+            raise ReadError(f"cannot open or parse {self._session_filename}") from e
+
+    def doesExist(self) -> bool:
+        """sessionがすでに存在するかどうか確認する.
+
+        Returns:
+            bool: 存在するかどうか
+        """
+        return os.path.isfile(self._session_filename)
