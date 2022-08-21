@@ -1,5 +1,4 @@
 """テストケースの永続化を行う."""
-from typing import Final
 from typing import List
 from typing import Protocol
 
@@ -38,15 +37,14 @@ class TestCaseRepository(Protocol):
 
 def get_default_test_case_repository() -> TestCaseRepository:
     """TestCaseRepositoryの標準実装を返す."""
-    return TestCaseRepositoryImpl()
+    default_testcase_file = "testcases.yaml"
+    return TestCaseRepositoryImpl(default_testcase_file)
 
 
 class TestCaseRepositoryImpl:
     """テストケースの永続化を行う."""
 
-    default_testcase_file: Final[str] = "testcases.yaml"
-
-    def __init__(self, filename: str = default_testcase_file):
+    def __init__(self, filename: str):
         """__init__.
 
         Args:

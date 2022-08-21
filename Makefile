@@ -1,11 +1,11 @@
-check-light: tests lint
-
-check-all: check-light integration
+check-all: test lint type-check integration
 
 lint:
 	isort .
 	black .
 	flake8
+
+type-check:
 	mypy --install-types --non-interactive .
 
 test:
@@ -29,4 +29,4 @@ build:
 upload-test: build
 	twine upload --repository testpypi dist/*
 
-.PHONY: lint test check-all integration build upload-test uninstall install
+.PHONY: lint test lint type-check check-all integration build upload-test uninstall install

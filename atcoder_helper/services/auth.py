@@ -7,8 +7,15 @@ import atcoder_helper.repositories.errors as repository_error
 from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
     AtCoderLoggedInSessionRepository,
 )
+from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
+    get_default_atcoder_session_repository,
+)
 from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
+from atcoder_helper.repositories.logged_in_session_repo import (
+    get_default_session_repository,
+)
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
+from atcoder_helper.repositories.login_status_repo import get_default_login_status_repo
 from atcoder_helper.services.errors import AlreadyLoggedIn
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
@@ -50,7 +57,11 @@ class AuthService(Protocol):
 
 def get_default_auth_service() -> AuthService:
     """AuthServiceの標準実装を返す."""
-    return AuthServiceImpl()
+    return AuthServiceImpl(
+        atcoder_session_repo=(get_default_atcoder_session_repository()),
+        local_session_repo=(get_default_session_repository()),
+        login_status_repo=get_default_login_status_repo(),
+    )
 
 
 class AuthServiceImpl:
@@ -62,23 +73,17 @@ class AuthServiceImpl:
 
     def __init__(
         self,
-        atcoder_session_repo: AtCoderLoggedInSessionRepository = (
-            AtCoderLoggedInSessionRepository()
-        ),
-        local_session_repo: LoggedInSessionRepository = LoggedInSessionRepository(),
-        login_status_repo: LoginStatusRepo = LoginStatusRepo(),
+        atcoder_session_repo: AtCoderLoggedInSessionRepository,
+        local_session_repo: LoggedInSessionRepository,
+        login_status_repo: LoginStatusRepo,
     ):
         """__init__.
 
         Args:
-            atcoder_repo (AtCoderRepository, optional): . Defaults
-                to get_default_atcoder_repository().
+            atcoder_repo (AtCoderRepository, optional): _
             atcoder_session_repo (AtCoderLoggedInSessionRepository, optional): _
-                Defaults to AtCoderLoggedInSessionRepository().
             local_session_repo (LoggedInSessionRepository, optional): _
-                Defaults to LoggedInSessionRepository().
             login_status_repo (LoginStatusRepo, optional): _
-                Defaults to LoginStatusRepo().
         """
         self._atcoder_session_repo = atcoder_session_repo
         self._local_session_repo = local_session_repo

@@ -64,7 +64,14 @@ def get_default_atcoder_helper_config_service() -> AtCoderHelperConfigService:
     Returns:
         AtCoderHelperConfigService:
     """
-    return AtCoderHelperConfigServiceImpl()
+    return AtCoderHelperConfigServiceImpl(
+        config_repo=get_default_config_repository(),
+        default_config_repo=ConfigRepositoryImpl(
+            os.path.join(
+                atcoder_helper.__path__[0], "default_configs", "default_config.yaml"
+            )
+        ),
+    )
 
 
 class AtCoderHelperConfigServiceImpl:
@@ -74,25 +81,13 @@ class AtCoderHelperConfigServiceImpl:
     _default_config_repo: ConfigRepository
 
     def __init__(
-        self,
-        config_repo: ConfigRepository = get_default_config_repository(),
-        default_config_repo: ConfigRepository = ConfigRepositoryImpl(
-            os.path.join(
-                atcoder_helper.__path__[0], "default_configs", "default_config.yaml"
-            )
-        ),
+        self, config_repo: ConfigRepository, default_config_repo: ConfigRepository
     ):
         """_init_.
 
         Args:
-            config_repo (ConfigRepository, optional):Defaults t
-                get_default_config_repository().
-            default_config_repo (ConfigRepository, optional): Defaults to
-                ConfigRepositoryImpl(
-                    os.path.join(
-                        atcoder_helper.__path__[0],
-                        "default_configs",
-                        "default_config.yaml")).
+            config_repo (ConfigRepository, optional): _
+            default_config_repo (ConfigRepository, optional): _
         """
         self._config_repo = config_repo
         self._default_config_repo = default_config_repo
