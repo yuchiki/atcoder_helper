@@ -86,14 +86,8 @@ class AtCoderHelperConfigServiceImpl:
         """_init_.
 
         Args:
-            config_repo (ConfigRepository, optional):Defaults t
-                get_default_config_repository().
-            default_config_repo (ConfigRepository, optional): Defaults to
-                ConfigRepositoryImpl(
-                    os.path.join(
-                        atcoder_helper.__path__[0],
-                        "default_configs",
-                        "default_config.yaml")).
+            config_repo (ConfigRepository, optional): _
+            default_config_repo (ConfigRepository, optional): _
         """
         self._config_repo = config_repo
         self._default_config_repo = default_config_repo

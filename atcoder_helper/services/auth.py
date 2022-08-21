@@ -80,14 +80,10 @@ class AuthServiceImpl:
         """__init__.
 
         Args:
-            atcoder_repo (AtCoderRepository, optional): . Defaults
-                to get_default_atcoder_repository().
+            atcoder_repo (AtCoderRepository, optional): _
             atcoder_session_repo (AtCoderLoggedInSessionRepository, optional): _
-                Defaults to AtCoderLoggedInSessionRepository().
             local_session_repo (LoggedInSessionRepository, optional): _
-                Defaults to LoggedInSessionRepository().
             login_status_repo (LoginStatusRepo, optional): _
-                Defaults to LoginStatusRepo().
         """
         self._atcoder_session_repo = atcoder_session_repo
         self._local_session_repo = local_session_repo
