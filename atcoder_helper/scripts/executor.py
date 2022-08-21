@@ -31,27 +31,20 @@ class Executor:
 
     def __init__(
         self,
-        auth_service: AuthService = get_default_auth_service(),
-        atcoder_helper_config_service: AtCoderHelperConfigService = (
-            get_default_atcoder_helper_config_service()
-        ),
-        execute_test_service: ExecuteTestService = get_default_execute_test_service(),
-        fetch_task_service: FetchTaskService = get_default_fetch_task_service(),
-        init_task_dir_service: InitTaskDirService = get_default_init_task_dir_service(),
+        auth_service: AuthService,
+        atcoder_helper_config_service: AtCoderHelperConfigService,
+        execute_test_service: ExecuteTestService,
+        fetch_task_service: FetchTaskService,
+        init_task_dir_service: InitTaskDirService,
     ) -> None:
         """__init__.
 
         Args:
-            auth_service (AuthService, optional): Defaults to
-                get_default_auth_service().
+            auth_service (AuthService, optional): _
             atcoder_helper_config_service (AtCoderHelperConfigService, optional): _
-                Defaults get_default_atcoder_helper_config_service().
-            execute_test_service (ExecuteTestService, optional): Defaults to
-                get_default_execute_test_service().
-            fetch_task_service (FetchTaskService, optional): Defaults to
-                get_default_fetch_task_service().
-            init_task_dir_service (InitTaskDirService, optional): Defaults to
-                get_default_init_task_dir_service().
+            execute_test_service (ExecuteTestService, optional): _
+            fetch_task_service (FetchTaskService, optional): _
+            init_task_dir_service (InitTaskDirService, optional): _
         """
         self._auth_service = auth_service
         self._atcoder_helper_config_service = atcoder_helper_config_service
@@ -254,3 +247,14 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
             sys.exit(1)
+
+
+def get_default_executor() -> Executor:
+    """標準Executorを返す."""
+    return Executor(
+        auth_service=get_default_auth_service(),
+        atcoder_helper_config_service=(get_default_atcoder_helper_config_service()),
+        execute_test_service=get_default_execute_test_service(),
+        fetch_task_service=get_default_fetch_task_service(),
+        init_task_dir_service=get_default_init_task_dir_service(),
+    )
