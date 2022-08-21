@@ -40,7 +40,9 @@ def get_default_init_task_dir_service() -> InitTaskDirService:
     Returns:
         InitTaskDirService: _description_
     """
-    return InitTaskDirServiceImpl()
+    return InitTaskDirServiceImpl(
+        atcoder_helper_config_repo=get_default_config_repository(),
+    )
 
 
 class InitTaskDirServiceImpl:
@@ -50,13 +52,12 @@ class InitTaskDirServiceImpl:
 
     def __init__(
         self,
-        atcoder_helper_config_repo: ConfigRepository = get_default_config_repository(),
+        atcoder_helper_config_repo: ConfigRepository,
     ):
         """__init.
 
         Args:
-            atcoder_helper_config_repo (ConfigRepository, optional): Defaults to
-                get_default_config_repository().
+            atcoder_helper_config_repo (ConfigRepository, optional): _
         """
         self._atcoder_helper_config_repo = atcoder_helper_config_repo
 

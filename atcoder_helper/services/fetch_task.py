@@ -48,7 +48,12 @@ def get_default_fetch_task_service() -> FetchTaskService:
     Returns:
         FetchTaskService:
     """
-    return FetchTaskServiceImpl()
+    return FetchTaskServiceImpl(
+        task_config_repo=get_default_task_config_repository(),
+        test_case_repo=get_default_test_case_repository(),
+        session_repo=get_default_session_repository(),
+        atcoder_testcase_repo=(get_default_atcoder_test_case_repository()),
+    )
 
 
 class FetchTaskServiceImpl:
@@ -61,12 +66,10 @@ class FetchTaskServiceImpl:
 
     def __init__(
         self,
-        task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
-        test_case_repo: TestCaseRepository = get_default_test_case_repository(),
-        session_repo: LoggedInSessionRepository = get_default_session_repository(),
-        atcoder_testcase_repo: AtCoderTestCaseRepository = (
-            get_default_atcoder_test_case_repository()
-        ),
+        task_config_repo: TaskConfigRepository,
+        test_case_repo: TestCaseRepository,
+        session_repo: LoggedInSessionRepository,
+        atcoder_testcase_repo: AtCoderTestCaseRepository,
     ) -> None:
         """__init__."""
         self._task_config_repo = task_config_repo

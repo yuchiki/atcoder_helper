@@ -57,7 +57,11 @@ class AuthService(Protocol):
 
 def get_default_auth_service() -> AuthService:
     """AuthServiceの標準実装を返す."""
-    return AuthServiceImpl()
+    return AuthServiceImpl(
+        atcoder_session_repo=(get_default_atcoder_session_repository()),
+        local_session_repo=(get_default_session_repository()),
+        login_status_repo=get_default_login_status_repo(),
+    )
 
 
 class AuthServiceImpl:
@@ -69,13 +73,9 @@ class AuthServiceImpl:
 
     def __init__(
         self,
-        atcoder_session_repo: AtCoderLoggedInSessionRepository = (
-            get_default_atcoder_session_repository()
-        ),
-        local_session_repo: LoggedInSessionRepository = (
-            get_default_session_repository()
-        ),
-        login_status_repo: LoginStatusRepo = get_default_login_status_repo(),
+        atcoder_session_repo: AtCoderLoggedInSessionRepository,
+        local_session_repo: LoggedInSessionRepository,
+        login_status_repo: LoginStatusRepo,
     ):
         """__init__.
 

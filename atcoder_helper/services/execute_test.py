@@ -39,7 +39,11 @@ def get_default_execute_test_service() -> ExecuteTestService:
     Returns:
         ExecuteTestService:
     """
-    return ExecuteTestServiceImpl()
+    return ExecuteTestServiceImpl(
+        task_config_repo=get_default_task_config_repository(),
+        test_case_repo=get_default_test_case_repository(),
+        executor_builder=get_default_program_executor,
+    )
 
 
 class ExecuteTestServiceImpl:
@@ -54,19 +58,16 @@ class ExecuteTestServiceImpl:
 
     def __init__(
         self,
-        task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
-        test_case_repo: TestCaseRepository = get_default_test_case_repository(),
-        executor_builder: ExecutorBuilder = get_default_program_executor,
+        task_config_repo: TaskConfigRepository,
+        test_case_repo: TestCaseRepository,
+        executor_builder: ExecutorBuilder,
     ):
         """__init__.
 
         Args:
-            task_config_repo (TaskConfigRepository, optional): Defaults to
-                get_default_task_config_repository().
-            test_case_repo (TestCaseRepository, optional): Defaults to
-                get_default_test_case_repository().
+            task_config_repo (TaskConfigRepository, optional): _
+            test_case_repo (TestCaseRepository, optional): _
             executor_builder (Callable[[List[str], List[str]], ProgramExecutor]): _
-                Defaults to get_default_program_executor
         """
         self._task_config_repo = task_config_repo
         self._test_case_repo = test_case_repo
