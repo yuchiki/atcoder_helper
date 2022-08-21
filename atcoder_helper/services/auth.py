@@ -7,8 +7,15 @@ import atcoder_helper.repositories.errors as repository_error
 from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
     AtCoderLoggedInSessionRepository,
 )
+from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
+    get_default_atcoder_session_repository,
+)
 from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
+from atcoder_helper.repositories.logged_in_session_repo import (
+    get_default_session_repository,
+)
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
+from atcoder_helper.repositories.login_status_repo import get_default_login_status_repo
 from atcoder_helper.services.errors import AlreadyLoggedIn
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
@@ -63,10 +70,12 @@ class AuthServiceImpl:
     def __init__(
         self,
         atcoder_session_repo: AtCoderLoggedInSessionRepository = (
-            AtCoderLoggedInSessionRepository()
+            get_default_atcoder_session_repository()
         ),
-        local_session_repo: LoggedInSessionRepository = LoggedInSessionRepository(),
-        login_status_repo: LoginStatusRepo = LoginStatusRepo(),
+        local_session_repo: LoggedInSessionRepository = (
+            get_default_session_repository()
+        ),
+        login_status_repo: LoginStatusRepo = get_default_login_status_repo(),
     ):
         """__init__.
 

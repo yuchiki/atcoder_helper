@@ -2,6 +2,7 @@
 
 
 from typing import List
+from typing import Protocol
 
 import requests
 from bs4 import BeautifulSoup
@@ -12,7 +13,37 @@ from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
 
-class AtCoderTestCaseRepository:
+class AtCoderTestCaseRepository(Protocol):
+    """AtCoderからテストケースを取得するリポジトリのプロトコル."""
+
+    def fetch_test_cases(
+        self, session: requests.Session, contest: str, task: str
+    ) -> List[AtcoderTestCase]:
+        """テストケーススイートを取得する.
+
+        Args:
+            contest (str): コンテスト名
+            task (str): タスク名
+
+        Raises:
+            ReadError: GETに失敗
+            ParseError: Parseに失敗
+
+        Returns:
+            List[TestCase]: テストケーススイート
+        """
+
+
+def get_default_atcoder_test_case_repository() -> AtCoderTestCaseRepository:
+    """AtCoderTestCaseRepositoryのデフォルト実装を作成する.
+
+    Returns:
+        AtCoderTestCaseRepository: デフォルト実装
+    """
+    return AtCoderTestCaseRepositoryImpl()
+
+
+class AtCoderTestCaseRepositoryImpl:
     """AtCoderからテストケースを取得するリポジトリ."""
 
     _url_provider = AtCoderURLProvider

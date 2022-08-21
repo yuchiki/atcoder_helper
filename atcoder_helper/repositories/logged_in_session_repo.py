@@ -3,6 +3,7 @@
 import os
 import pickle
 from typing import Final
+from typing import Protocol
 from typing import cast
 
 import requests
@@ -11,7 +12,47 @@ from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 
 
-class LoggedInSessionRepository:
+class LoggedInSessionRepository(Protocol):
+    """Login済みセッションのリポジトリのプロトコル."""
+
+    def write(self, session: requests.Session) -> None:
+        """_write.
+
+        Raises:
+            WriteError: 書き込みに失敗
+        """
+
+    def read(self) -> requests.Session:
+        """read. ファイルが存在しない場合はデフォルトsessionを返す.
+
+        Raises:
+            ReadError: 読み込みに失敗した
+
+        Return:
+            requests.Session: 取得したsession
+        """
+
+    def doesExist(self) -> bool:
+        """sessionがすでに存在するかどうか確認する.
+
+        Returns:
+            bool: 存在するかどうか
+        """
+
+    def delete(self) -> None:
+        """Session 情報を削除します."""
+
+
+def get_default_session_repository() -> LoggedInSessionRepository:
+    """LoggedInSessionRepositoryの標準実装を返す.
+
+    Returns:
+        LoggedInSessionRepositoryImpl: 標準実装
+    """
+    return LoggedInSessionRepositoryImpl()
+
+
+class LoggedInSessionRepositoryImpl:
     """Login済みセッションの永続化層."""
 
     _session_filename: str

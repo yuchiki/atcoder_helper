@@ -5,7 +5,13 @@ from typing import Tuple
 
 from atcoder_helper.repositories import errors as repository_error
 from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRepository
+from atcoder_helper.repositories.atcoder_test_case_repo import (
+    get_default_atcoder_test_case_repository,
+)
 from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
+from atcoder_helper.repositories.logged_in_session_repo import (
+    get_default_session_repository,
+)
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
@@ -57,8 +63,10 @@ class FetchTaskServiceImpl:
         self,
         task_config_repo: TaskConfigRepository = get_default_task_config_repository(),
         test_case_repo: TestCaseRepository = get_default_test_case_repository(),
-        session_repo: LoggedInSessionRepository = LoggedInSessionRepository(),
-        atcoder_testcase_repo: AtCoderTestCaseRepository = AtCoderTestCaseRepository(),
+        session_repo: LoggedInSessionRepository = get_default_session_repository(),
+        atcoder_testcase_repo: AtCoderTestCaseRepository = (
+            get_default_atcoder_test_case_repository()
+        ),
     ) -> None:
         """__init__."""
         self._task_config_repo = task_config_repo

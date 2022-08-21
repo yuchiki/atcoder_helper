@@ -1,6 +1,7 @@
 """atcoderからlogin済みのセッションを取得するrepository."""
 
 
+from typing import Protocol
 from typing import cast
 
 import requests
@@ -10,7 +11,36 @@ from atcoder_helper.repositories.errors import LoginFailure
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
 
-class AtCoderLoggedInSessionRepository:
+class AtCoderLoggedInSessionRepository(Protocol):
+    """atcoder からlogin済みのセッションを取得するrepositoryのプロトコル."""
+
+    def read(self, username: str, password: str) -> requests.Session:
+        """atcoderにloginしたsessionを返す.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
+
+        Args:
+            username (str): username
+            password (str): password
+
+        Raises:
+            AlreadyLoggedIn: 既にログインしていた
+            ConnectionError: POSTに失敗
+            LoginFailure: ログイン失敗
+
+        Returns:
+            requests.Session: セッションを返す.
+        """
+
+
+def get_default_atcoder_session_repository() -> AtCoderLoggedInSessionRepository:
+    """AtCoderLoggedInSessionRepositoryのデフォルト実装を返す.
+
+    Returns:
+        AtCoderLoggedInSessionRepository: デフォルト実装
+    """
+    return AtCoderLoggedInSessionRepositoryImpl()
+
+
+class AtCoderLoggedInSessionRepositoryImpl:
     """atcoder からlogin済みのセッションを取得するrepository."""
 
     _url_provider = AtCoderURLProvider
@@ -23,7 +53,7 @@ class AtCoderLoggedInSessionRepository:
         return cast(str, token)  # TODO(ちゃんと例外処理をする)
 
     def read(self, username: str, password: str) -> requests.Session:
-        """atcoderにloginする.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
+        """atcoderにloginしたsessionを返す.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
 
         Args:
             username (str): username
