@@ -1,7 +1,6 @@
 """TaskConfigを取得する."""
 import os
 import shutil
-from typing import Final
 from typing import Optional
 from typing import Protocol
 
@@ -52,12 +51,12 @@ def get_default_task_config_repository(
     dir: Optional[str] = None,
 ) -> TaskConfigRepository:
     """TaskConfigRepositoryの標準実装."""
+    default_filename = ".atcoder_helper_task_config.yaml"
+
     if dir is None:
-        return TaskConfigRepositoryImpl()
+        return TaskConfigRepositoryImpl(default_filename)
     else:
-        return TaskConfigRepositoryImpl(
-            os.path.join(dir, TaskConfigRepositoryImpl.default_filename)
-        )
+        return TaskConfigRepositoryImpl(os.path.join(dir, default_filename))
 
 
 class TaskConfigRepositoryImpl:
@@ -66,10 +65,9 @@ class TaskConfigRepositoryImpl:
     TaskConfig用ファイルは、Taskディレクトリにおかれていることを想定している.
     """
 
-    default_filename: Final[str] = ".atcoder_helper_task_config.yaml"
     _filename: str
 
-    def __init__(self, filename: str = default_filename):
+    def __init__(self, filename: str):
         """__init__.
 
         Args:
@@ -132,9 +130,7 @@ class TaskConfigRepositoryImpl:
                 raise CopyError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
 
         try:
-            with open(
-                os.path.join(task_dir, TaskConfigRepositoryImpl.default_filename), "wt"
-            ) as file:
+            with open(os.path.join(self._filename), "wt") as file:
                 yaml.dump(
                     task_config.dict(exclude_none=True),
                     file,

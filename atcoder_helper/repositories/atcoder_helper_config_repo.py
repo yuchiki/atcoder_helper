@@ -42,7 +42,7 @@ class ConfigRepository(Protocol):
 
 def get_default_config_repository() -> ConfigRepository:
     """ConfigRepositoryの標準実装を返す."""
-    return ConfigRepositoryImpl()
+    return ConfigRepositoryImpl(get_atcoder_helper_config_filepath())
 
 
 class ConfigRepositoryImpl:
@@ -50,7 +50,7 @@ class ConfigRepositoryImpl:
 
     _filename: str
 
-    def __init__(self, filename: str = get_atcoder_helper_config_filepath()) -> None:
+    def __init__(self, filename: str) -> None:
         """__init__."""
         self._filename = filename
 

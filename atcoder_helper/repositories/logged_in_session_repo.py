@@ -49,7 +49,10 @@ def get_default_session_repository() -> LoggedInSessionRepository:
     Returns:
         LoggedInSessionRepositoryImpl: 標準実装
     """
-    return LoggedInSessionRepositoryImpl()
+    default_session_file: Final[str] = os.path.join(
+        os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
+    )
+    return LoggedInSessionRepositoryImpl(default_session_file)
 
 
 class LoggedInSessionRepositoryImpl:
@@ -57,11 +60,7 @@ class LoggedInSessionRepositoryImpl:
 
     _session_filename: str
 
-    _default_session_file: Final[str] = os.path.join(
-        os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
-    )
-
-    def __init__(self, session_filename: str = _default_session_file):
+    def __init__(self, session_filename: str):
         """__init__.
 
         Args:
