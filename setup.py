@@ -22,6 +22,7 @@ setuptools.setup(
     ],
     maintainer=AUTHOR,
     maintainer_email=EMAIL,
+    include_package_data=True,
     description="automation cli tools for AtCoder",
     long_description=long_description,
     long_description_content_type="text/markdown",
