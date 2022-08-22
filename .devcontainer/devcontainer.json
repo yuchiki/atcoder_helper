@@ -52,7 +52,7 @@
 	"remoteUser": "vscode",
 	"features": {
 		"docker-from-docker": "latest",
-		"git": "latest",
+		"git": "2.36",
 		"github-cli": "latest"
 	}
 }
