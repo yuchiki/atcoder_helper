@@ -14,6 +14,12 @@ setuptools.setup(
     name="atcoder_helper",
     author=AUTHOR,
     author_email=EMAIL,
+    data_files=[
+        ("", ["atcoder_helper/default_configs/default_config.yaml"]),
+        ("", ["atcoder_helper/default_configs/templates/cpp-clang/main.cpp"]),
+        ("", ["atcoder_helper/default_configs/templates/python/main.py"]),
+        ("", ["atcoder_helper/default_configs/templates/python-pypy3/main.py"]),
+    ],
     maintainer=AUTHOR,
     maintainer_email=EMAIL,
     description="automation cli tools for AtCoder",
