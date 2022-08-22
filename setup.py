@@ -17,6 +17,7 @@ setuptools.setup(
     data_files=[
         ("", ["atcoder_helper/default_configs/default_config.yaml"]),
         ("", ["atcoder_helper/default_configs/templates/cpp-clang/main.cpp"]),
+        ("", ["atcodeer_helper/default_configs/template/cpp-gcc/main.cpp"]),
         ("", ["atcoder_helper/default_configs/templates/python/main.py"]),
         ("", ["atcoder_helper/default_configs/templates/python-pypy3/main.py"]),
     ],
