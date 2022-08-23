@@ -22,7 +22,6 @@ class AtCoderLoggedInSessionRepository(Protocol):
             password (str): password
 
         Raises:
-            AlreadyLoggedIn: 既にログインしていた
             ConnectionError: POSTに失敗
             LoginFailure: ログイン失敗
 
@@ -60,7 +59,6 @@ class AtCoderLoggedInSessionRepositoryImpl:
             password (str): password
 
         Raises:
-            AlreadyLoggedIn: 既にログインしていた
             ConnectionError: POSTに失敗
             LoginFailure: ログイン失敗
 
