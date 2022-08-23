@@ -40,7 +40,11 @@ class LoggedInSessionRepository(Protocol):
         """
 
     def delete(self) -> None:
-        """Session 情報を削除します."""
+        """Session 情報を削除します.
+
+        Raises:
+            WriteError: _
+        """
 
 
 def get_default_session_repository() -> LoggedInSessionRepository:
@@ -109,5 +113,9 @@ class LoggedInSessionRepositoryImpl:
         return os.path.isfile(self._session_filename)
 
     def delete(self) -> None:
-        """Session 情報を削除します."""
+        """Session 情報を削除します.
+
+        Raises:
+            WriteError: _
+        """
         self.write(requests.Session())

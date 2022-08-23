@@ -16,7 +16,6 @@ from atcoder_helper.repositories.logged_in_session_repo import (
 )
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
 from atcoder_helper.repositories.login_status_repo import get_default_login_status_repo
-from atcoder_helper.services.errors import AlreadyLoggedIn
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
 
@@ -32,9 +31,9 @@ class AuthService(Protocol):
             password (str): password
 
         Raises:
-            AlreadyLoggedIn: 既にログインしている
             ConfigAccessError: 設定ファイルのエラー
             AtcoderAccessError: atcoderから情報を取得する際のエラー
+            AlreadyLoggedIn: 既にログインしている # 今は返さないけど今後かなりの高確率で返しうるので書いておく
         """
 
     def logout(self) -> None:
@@ -97,21 +96,16 @@ class AuthServiceImpl:
             password (str): password
 
         Raises:
-            AlreadyLoggedIn: 既にログインしている
             ConfigAccessError: 設定ファイルのエラー
             AtcoderAccessError: atcoderから情報を取得する際のエラー
+            AlreadyLoggedInError: 既にログインしている
         """
         try:
             session = self._atcoder_session_repo.read(username, password)
-        except (repository_error.ReadError) as e:
-            raise ConfigAccessError("設定ファイルの読み込みに失敗しました") from e
         except (repository_error.ConnectionError) as e:
             raise AtcoderAccessError("通信に失敗しました") from e
         except (repository_error.LoginFailure) as e:
             raise AtcoderAccessError("ログインに失敗しました") from e
-
-        if self._login_status_repo.is_logged_in(session):
-            raise AlreadyLoggedIn("既にログインしています")
 
         try:
             self._local_session_repo.write(session)
@@ -126,8 +120,8 @@ class AuthServiceImpl:
         """
         try:
             self._local_session_repo.delete()
-        except (repository_error.ReadError, repository_error.WriteError) as e:
-            raise ConfigAccessError("設定ファイルの読み書きに失敗しました") from e
+        except (repository_error.WriteError) as e:
+            raise ConfigAccessError("設定ファイルの書き込みに失敗しました") from e
 
     def status(self) -> bool:
         """loginしているかどうかを返す.
