@@ -9,6 +9,7 @@ import requests
 
 from atcoder_helper.repositories.errors import ConnectionError
 from atcoder_helper.repositories.errors import LoginFailure
+from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 from atcoder_helper.services.auth import AuthServiceImpl
 from atcoder_helper.services.errors import AtcoderAccessError
@@ -116,6 +117,44 @@ def test_logout(local_session_repo: mock.MagicMock, exception: Type[Exception]) 
         sut.logout()
 
 
-@pytest.mark.skip()
-def test_status() -> None:
+test_status_input = {
+    "OK": [
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(),
+        None,
+    ],
+    "session readに失敗したらエラー": [
+        mock.MagicMock(read=mock.MagicMock(side_effect=ReadError)),
+        mock.MagicMock(),
+        ConfigAccessError,
+    ],
+    "is_logged_in に失敗したらエラー": [
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(is_logged_in=mock.MagicMock(side_effect=ReadError())),
+        AtcoderAccessError,
+    ],
+}
+
+
+@pytest.mark.parametrize(
+    argnames=(
+        "local_session_repo",
+        "login_status_repo",
+        "exception",
+    ),
+    argvalues=test_status_input.values(),
+    ids=test_status_input.keys(),
+)
+def test_status(
+    local_session_repo: mock.MagicMock,
+    login_status_repo: mock.MagicMock,
+    exception: Type[Exception],
+) -> None:
     """statusのテスト."""
+    sut = _get_sut(mock.MagicMock(), local_session_repo, login_status_repo)
+
+    if exception:
+        with pytest.raises(exception):
+            sut.status()
+    else:
+        sut.status()
