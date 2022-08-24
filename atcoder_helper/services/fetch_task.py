@@ -103,7 +103,7 @@ class FetchTaskServiceImpl:
             test_cases = self._atcoder_testcase_repo.fetch_test_cases(
                 session=session, contest=contest, task=task
             )
-        except repository_error.ReadError as e:
+        except (repository_error.ConnectionError, repository_error.ParseError) as e:
             raise AtcoderAccessError("テストケースの取得に失敗しました") from e
 
         try:

@@ -9,7 +9,6 @@ from bs4 import BeautifulSoup
 
 from atcoder_helper.models.test_case import AtcoderTestCase
 from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
 
@@ -26,7 +25,7 @@ class AtCoderTestCaseRepository(Protocol):
             task (str): タスク名
 
         Raises:
-            ReadError: GETに失敗
+            ConnectionError: GETに失敗
             ParseError: Parseに失敗
 
         Returns:
@@ -58,7 +57,7 @@ class AtCoderTestCaseRepositoryImpl:
             task (str): タスク名
 
         Raises:
-            ReadError: GETに失敗
+            ConnectionError: GETに失敗
             ParseError: Parseに失敗
 
         Returns:
@@ -71,7 +70,7 @@ class AtCoderTestCaseRepositoryImpl:
         try:
             task_page = session.get(self._url_provider.task_url(contest, task))
         except Exception as e:
-            raise ReadError(
+            raise ConnectionError(
                 f"cannot GET {self._url_provider.task_url(contest, task)}"
             ) from e
 

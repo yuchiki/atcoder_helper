@@ -1,20 +1,23 @@
 """Tests for fetch_task."""
 
-from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Type
+from unittest.mock import ANY
 
 import mock
 import pytest
+import requests
 
 from atcoder_helper.models.task_config import TaskConfig
 from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.repositories.errors import ConnectionError
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
-from atcoder_helper.repositories.test_case_repo import TestCaseRepository
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.services.fetch_task import FetchTaskServiceImpl
 
 
 def _default_task_config(
@@ -28,212 +31,229 @@ def _default_task_config(
     )
 
 
-_default_test_cases = [
-    AtcoderTestCase(name="case1", given="input1", expected="expected1"),
-    AtcoderTestCase(name="case2", given="input2", expected="expected2"),
-    AtcoderTestCase(name="case3", given="input3", expected="expected3"),
-]
+def _default_atcoder_testcases() -> List[AtcoderTestCase]:
+    return [AtcoderTestCase(name="foo", given="bar", expected=None)]
 
 
-# def _get_sut(
-#    atcoder_repo_mock: AtCoderRepository = mock.MagicMock(),
-#    task_config_repo_mock: TaskConfigRepository = mock.MagicMock(),
-#    test_case_repo_mock: TestCaseRepository = mock.MagicMock(),
-# ) -> FetchTaskServiceImpl:
-#    return FetchTaskServiceImpl(
-#        atcoder_repo=atcoder_repo_mock,
-#        task_config_repo=task_config_repo_mock,
-#        test_case_repo=test_case_repo_mock,
-#    )
+def _get_sut(
+    task_config_repo_mock: mock.MagicMock,
+    test_case_repo_mock: mock.MagicMock,
+    session_repo_mock: mock.MagicMock,
+    atcoder_testcase_repo_mock: mock.MagicMock,
+) -> FetchTaskServiceImpl:
+    return FetchTaskServiceImpl(
+        task_config_repo=task_config_repo_mock,
+        test_case_repo=test_case_repo_mock,
+        session_repo=session_repo_mock,
+        atcoder_testcase_repo=atcoder_testcase_repo_mock,
+    )
 
 
-test_fetch_task_params = {
-    "taskとconfigは指定されないが設定ファイルから取られる": (
-        None,
-        None,
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
-        mock.MagicMock(
-            read=mock.MagicMock(
-                return_value=_default_task_config("foo_config", "bar_config")
-            )
-        ),
-        mock.MagicMock(),
-        None,
-        {"contest": "foo_config", "task": "bar_config"},
-        _default_test_cases,
-    ),
-    "taskのみ指定されており、contestは設定ファイルから、taskは引数から取られる": (
-        None,
-        "bar",
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
-        mock.MagicMock(
-            read=mock.MagicMock(
-                return_value=_default_task_config("foo_config", "bar_config")
-            )
-        ),
-        mock.MagicMock(),
-        None,
-        {"contest": "foo_config", "task": "bar"},
-        _default_test_cases,
-    ),
-    "contestのみ指定されており、taskは設定ファイルから、contestは引数から取られる": (
-        "foo",
-        None,
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
-        mock.MagicMock(
-            read=mock.MagicMock(
-                return_value=_default_task_config("foo_config", "bar_config")
-            )
-        ),
-        mock.MagicMock(),
-        None,
-        {"contest": "foo", "task": "bar_config"},
-        _default_test_cases,
-    ),
-    "contestもtaskも指定されており、configよりも優先される": (
-        "foo",
-        "bar",
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
-        mock.MagicMock(
-            read=mock.MagicMock(
-                return_value=_default_task_config("foo_config", "bar_config")
-            )
-        ),
-        mock.MagicMock(),
-        None,
-        {"contest": "foo", "task": "bar"},
-        _default_test_cases,
-    ),
-    "flagが指定されていれば、configにcontest/taskがなくてもよい": (
-        "foo",
-        "bar",
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
+test_fetch_task_parameters = {
+    "OK(task configではなく、引数でcontest と taskを渡す)": [
         mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
         mock.MagicMock(),
-        None,
-        {"contest": "foo", "task": "bar"},
-        _default_test_cases,
-    ),
-    "flagからもconfigからもtaskが取得できないとエラー": (
-        "foo",
-        None,
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
         mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
         ),
-        mock.MagicMock(
-            read=mock.MagicMock(return_value=_default_task_config("foo_contest", None))
-        ),
-        mock.MagicMock(),
-        ConfigAccessError,
+        "foo_contest",
+        "foo_task",
+        "foo_contest",
+        "foo_task",
         None,
-        None,
-    ),
-    "flagからもconfigからもcontestが取得できないとエラー": (
-        None,
-        "bar",
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
-        mock.MagicMock(
-            read=mock.MagicMock(return_value=_default_task_config(None, "bar_config"))
-        ),
-        mock.MagicMock(),
-        ConfigAccessError,
-        None,
-        None,
-    ),
-    "設定ファイルの読みこみに失敗したらエラー": (
-        "foo",
-        "bar",
-        mock.MagicMock(),
-        mock.MagicMock(read=mock.MagicMock(side_effect=ReadError())),
-        mock.MagicMock(),
-        ConfigAccessError,
-        None,
-        None,
-    ),
-    "テストケースの取得に失敗したらエラー": (
-        "foo",
-        "bar",
-        mock.MagicMock(fetch_test_cases=mock.MagicMock(side_effect=ReadError())),
-        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config)),
-        mock.MagicMock(),
-        AtcoderAccessError,
-        None,
-        None,
-    ),
-    "テストケースのン書き込みに失敗したらエラー": (
-        "foo",
-        "bar",
-        mock.MagicMock(
-            fetch_test_cases=mock.MagicMock(return_value=_default_test_cases)
-        ),
+    ],
+    "OK(task configと引数でcontest と taskが渡された場合、引数が優先)": [
         mock.MagicMock(
             read=mock.MagicMock(
-                return_value=_default_task_config("foo_config", "bar_config")
+                return_value=_default_task_config("config_contest", "config_task")
             )
         ),
-        mock.MagicMock(write=mock.MagicMock(side_effect=WriteError())),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "given_contest",
+        "given_task",
+        "given_contest",
+        "given_task",
+        None,
+    ],
+    "OK(contestがtask configで渡されていれば引数で渡されなくてもよい)": [
+        mock.MagicMock(
+            read=mock.MagicMock(return_value=_default_task_config(contest="foo"))
+        ),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        None,
+        "given_task",
+        "foo",
+        "given_task",
+        None,
+    ],
+    "OK(taskがtask configで渡されていれば引数で渡されなくてもよい)": [
+        mock.MagicMock(
+            read=mock.MagicMock(return_value=_default_task_config(task="bar"))
+        ),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "foo_contest",
+        None,
+        "foo_contest",
+        "bar",
+        None,
+    ],
+    "contestが取得できないとエラー": [
+        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        None,
+        "foo_task",
+        None,
+        None,
         ConfigAccessError,
-        {"contest": "foo", "task": "bar"},
-        _default_test_cases,
-    ),
+    ],
+    "taskが取得できないとエラー": [
+        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "foo_contest",
+        None,
+        None,
+        None,
+        ConfigAccessError,
+    ],
+    "task_config_repo readエラーでエラー": [
+        mock.MagicMock(read=mock.MagicMock(side_effect=ReadError)),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "foo_contest",
+        "foo_task",
+        None,
+        None,
+        ConfigAccessError,
+    ],
+    "task_config_repo parseエラーでエラー": [
+        mock.MagicMock(read=mock.MagicMock(side_effect=ReadError)),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "foo_contest",
+        "foo_task",
+        None,
+        None,
+        ConfigAccessError,
+    ],
+    "セッションが読み込めなかったらエラー": [
+        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(side_effect=ReadError())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "foo_contest",
+        "foo_task",
+        None,
+        None,
+        ConfigAccessError,
+    ],
+    "テストケースのフェッチに失敗したらエラー": [
+        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(fetch_test_cases=mock.MagicMock(side_effect=ConnectionError())),
+        "foo_contest",
+        "foo_task",
+        "foo_contest",
+        "foo_task",
+        AtcoderAccessError,
+    ],
+    "テストケースのparseに失敗したらエラー": [
+        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
+        mock.MagicMock(),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(fetch_test_cases=mock.MagicMock(side_effect=ParseError())),
+        "foo_contest",
+        "foo_task",
+        "foo_contest",
+        "foo_task",
+        AtcoderAccessError,
+    ],
+    "error(テストケースの書き込みに失敗)": [
+        mock.MagicMock(read=mock.MagicMock(return_value=_default_task_config())),
+        mock.MagicMock(write=mock.MagicMock(side_effect=WriteError())),
+        mock.MagicMock(read=mock.MagicMock(return_value=requests.Session())),
+        mock.MagicMock(
+            fetch_test_cases=mock.MagicMock(return_value=_default_atcoder_testcases())
+        ),
+        "foo_contest",
+        "foo_task",
+        "foo_contest",
+        "foo_task",
+        ConfigAccessError,
+    ],
 }
 
 
-# @pytest.mark.parametrize(
-#    (
-#        "contest",
-#        "task",
-#        "atcoder_repo_mock",
-#        "task_config_repo_mock",
-#        "test_case_repo_mock",
-#        "exception",
-#        "given_to_atcoder_repo",
-#        "given_to_test_case_repo",
-#    ),
-#    list(test_fetch_task_params.values()),
-#    ids=list(test_fetch_task_params.keys()),
-# )
-@pytest.mark.skip()
+@pytest.mark.parametrize(
+    argnames=(
+        "task_config_repo_mock",
+        "test_case_repo_mock",
+        "session_repo_mock",
+        "atcoder_testcase_repo_mock",
+        "contest",
+        "task",
+        "fetched_contest",
+        "fetched_task",
+        "exception",
+    ),
+    argvalues=test_fetch_task_parameters.values(),
+    ids=test_fetch_task_parameters.keys(),
+)
 def test_fetch_task(
-    task_config_repo_mock: TaskConfigRepository,
-    test_case_repo_mock: TestCaseRepository,
+    task_config_repo_mock: mock.MagicMock,
+    test_case_repo_mock: mock.MagicMock,
+    session_repo_mock: mock.MagicMock,
+    atcoder_testcase_repo_mock: mock.MagicMock,
     contest: Optional[str],
     task: Optional[str],
+    fetched_contest: Optional[str],
+    fetched_task: Optional[str],
     exception: Type[Exception],
-    given_to_atcoder_repo: Optional[Dict[str, str]],
-    given_to_test_case_repo: Optional[AtcoderTestCase],
 ) -> None:
-    """fetch_taskのテスト."""
+    """fetch_taskをテストする."""
+    sut = _get_sut(
+        task_config_repo_mock,
+        test_case_repo_mock,
+        session_repo_mock,
+        atcoder_testcase_repo_mock,
+    )
 
+    if exception:
+        with pytest.raises(exception):
+            sut.fetch_task(contest, task)
+    else:
+        sut.fetch_task(contest, task)
 
-#    sut = _get_sut(
-#        atcoder_repo_mock=atcoder_repo_mock,
-#        task_config_repo_mock=task_config_repo_mock,
-#        test_case_repo_mock=test_case_repo_mock,
-#    )
-#
-#    if exception:
-#        with pytest.raises(exception):
-#            sut.fetch_task(contest, task)
-#    else:
-#        sut.fetch_task(contest, task)
-#
-#    if given_to_atcoder_repo is not None:
-#        repo_fetch_mock = cast(mock.MagicMock, sut._atcoder_repo.fetch_test_cases)
-#        repo_fetch_mock.assert_called_once_with(**given_to_atcoder_repo)
-#
-#    if given_to_test_case_repo is not None:
-#        write_mock = cast(mock.MagicMock, sut._test_case_repo.write)
-#        write_mock.assert_called_once_with(given_to_test_case_repo)
+    if fetched_contest is not None:
+        atcoder_testcase_repo_mock.fetch_test_cases.assert_called_with(
+            session=ANY, contest=fetched_contest, task=fetched_task
+        )
