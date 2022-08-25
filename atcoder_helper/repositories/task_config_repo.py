@@ -114,7 +114,7 @@ class TaskConfigRepositoryImpl:
             CopyError: テンプレートのコピーに失敗
         """
         if target_dir is None:
-            task_dir = os.path.dirname(self._filename)
+            task_dir = os.path.dirname(os.path.abspath(self._filename))
         else:
             task_dir = target_dir
 
