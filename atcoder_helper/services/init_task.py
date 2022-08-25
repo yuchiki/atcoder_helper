@@ -3,7 +3,7 @@ from typing import Optional
 from typing import Protocol
 
 import atcoder_helper.repositories.errors as repo_errors
-from atcoder_helper.models.task_config import TaskConfig
+from atcoder_helper.models.atcoder_task_config import TaskConfig
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     get_default_config_repository,

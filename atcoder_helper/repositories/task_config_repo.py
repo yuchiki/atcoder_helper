@@ -6,7 +6,7 @@ from typing import Protocol
 
 import yaml
 
-from atcoder_helper.models.task_config import TaskConfig
+from atcoder_helper.models.atcoder_task_config import TaskConfig
 from atcoder_helper.repositories.errors import CopyError
 from atcoder_helper.repositories.errors import DirectoryNotEmpty
 from atcoder_helper.repositories.errors import ParseError

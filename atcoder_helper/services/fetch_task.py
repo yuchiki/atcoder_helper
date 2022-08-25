@@ -8,6 +8,10 @@ from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRe
 from atcoder_helper.repositories.atcoder_test_case_repo import (
     get_default_atcoder_test_case_repository,
 )
+from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
+from atcoder_helper.repositories.local_test_case_repo import (
+    get_default_local_test_case_repository,
+)
 from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
 from atcoder_helper.repositories.logged_in_session_repo import (
     get_default_session_repository,
@@ -16,8 +20,6 @@ from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
-from atcoder_helper.repositories.test_case_repo import TestCaseRepository
-from atcoder_helper.repositories.test_case_repo import get_default_test_case_repository
 from atcoder_helper.services.errors import AtcoderAccessError
 from atcoder_helper.services.errors import ConfigAccessError
 
@@ -50,7 +52,7 @@ def get_default_fetch_task_service() -> FetchTaskService:
     """
     return FetchTaskServiceImpl(
         task_config_repo=get_default_task_config_repository(),
-        test_case_repo=get_default_test_case_repository(),
+        test_case_repo=get_default_local_test_case_repository(),
         session_repo=get_default_session_repository(),
         atcoder_testcase_repo=(get_default_atcoder_test_case_repository()),
     )
@@ -60,14 +62,14 @@ class FetchTaskServiceImpl:
     """atcoderサイトからテストケースを取得するサービス."""
 
     _task_config_repo: TaskConfigRepository
-    _test_case_repo: TestCaseRepository
+    _test_case_repo: LocalTestCaseRepository
     _session_repo: LoggedInSessionRepository
     _atcoder_testcase_repo: AtCoderTestCaseRepository
 
     def __init__(
         self,
         task_config_repo: TaskConfigRepository,
-        test_case_repo: TestCaseRepository,
+        test_case_repo: LocalTestCaseRepository,
         session_repo: LoggedInSessionRepository,
         atcoder_testcase_repo: AtCoderTestCaseRepository,
     ) -> None:

@@ -9,7 +9,7 @@ from colorama import Style
 from pydantic import BaseModel
 
 
-class TestStatus(Enum):
+class AtCoderTestStatus(Enum):
     """テスト結果の状態を保持する."""
 
     AC = 1
@@ -24,21 +24,21 @@ class TestStatus(Enum):
     def dyed(self) -> str:
         """テスト結果の状態をふさわしい色に染めた文字列を返す."""
         table = {
-            TestStatus.AC: Fore.GREEN,
-            TestStatus.WA: Fore.YELLOW,
-            TestStatus.ERROR: Fore.RED,
-            TestStatus.JUSTSHOW: Fore.BLUE,
+            AtCoderTestStatus.AC: Fore.GREEN,
+            AtCoderTestStatus.WA: Fore.YELLOW,
+            AtCoderTestStatus.ERROR: Fore.RED,
+            AtCoderTestStatus.JUSTSHOW: Fore.BLUE,
         }
 
         return self._dye(self.name, table[self])
 
 
 @dataclass
-class TestResult:
+class AtCoderTestResult:
     """入力と出力からなる一度のテストに対して、テスト実行にまつわる結果を保持する."""
 
     name: str
-    status: TestStatus
+    status: AtCoderTestStatus
     actual: str
     error: str
     expected: Optional[str] = None
