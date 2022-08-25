@@ -1,5 +1,4 @@
 """Taskディレクトリを初期化するためのservice."""
-import os
 from typing import Optional
 from typing import Protocol
 
@@ -11,6 +10,7 @@ from atcoder_helper.repositories.atcoder_helper_config_repo import (
 )
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
+from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
@@ -42,6 +42,7 @@ def get_default_init_task_dir_service() -> InitTaskDirService:
     """
     return InitTaskDirServiceImpl(
         atcoder_helper_config_repo=get_default_config_repository(),
+        task_config_repo=get_default_task_config_repository(),
     )
 
 
@@ -49,19 +50,23 @@ class InitTaskDirServiceImpl:
     """TaskDirectoryを初期化するサービス."""
 
     _atcoder_helper_config_repo: ConfigRepository
+    _task_config_repo: TaskConfigRepository
 
     def __init__(
         self,
         atcoder_helper_config_repo: ConfigRepository,
+        task_config_repo: TaskConfigRepository,
     ):
         """__init.
 
         Args:
-            atcoder_helper_config_repo (ConfigRepository, optional): _
+            atcoder_helper_config_repo (ConfigRepository): _
+            task_config_repo (TaskConfigRepository): _
         """
         self._atcoder_helper_config_repo = atcoder_helper_config_repo
+        self._task_config_repo = task_config_repo
 
-    def init_task(  # TODO(テストを書く)
+    def init_task(
         self,
         dir: Optional[str] = None,
         contest: Optional[str] = None,
@@ -80,11 +85,6 @@ class InitTaskDirServiceImpl:
         except (ReadError, ParseError) as e:
             raise ConfigAccessError("全体設定ファイルの読み込みに失敗しました") from e
 
-        if dir is None:
-            dir = os.getcwd()
-
-        task_config_repo = get_default_task_config_repository(dir=dir)
-
         task_config = TaskConfig(
             build=language_config.build,
             run=language_config.run,
@@ -93,7 +93,11 @@ class InitTaskDirServiceImpl:
         )
 
         try:
-            task_config_repo.write(task_config, language_config.resolved_template_dir)
+            self._task_config_repo.write(
+                task_config=task_config,
+                template_dir=language_config.resolved_template_dir,
+                target_dir=dir,
+            )
         except repo_errors.DirectoryNotEmpty as e:
             raise ConfigAccessError("ディレクトリを初期化できません") from e
         except repo_errors.WriteError as e:
