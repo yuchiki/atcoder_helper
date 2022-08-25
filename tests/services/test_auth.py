@@ -9,6 +9,7 @@ import requests
 
 from atcoder_helper.repositories.errors import ConnectionError
 from atcoder_helper.repositories.errors import LoginFailure
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 from atcoder_helper.services.auth import AuthServiceImpl
@@ -37,6 +38,12 @@ test_login_input = {
     ],
     "atcoder_session_repoがConnection Errorのときエラー": [
         mock.MagicMock(read=mock.MagicMock(side_effect=ConnectionError())),
+        mock.MagicMock(),
+        mock.MagicMock(),
+        AtcoderAccessError,
+    ],
+    "atcoder_session_repoがParse Errorのときエラー": [
+        mock.MagicMock(read=mock.MagicMock(side_effect=ParseError())),
         mock.MagicMock(),
         mock.MagicMock(),
         AtcoderAccessError,

@@ -102,9 +102,11 @@ class AuthServiceImpl:
         """
         try:
             session = self._atcoder_session_repo.read(username, password)
-        except (repository_error.ConnectionError) as e:
+        except repository_error.ConnectionError as e:
             raise AtcoderAccessError("通信に失敗しました") from e
-        except (repository_error.LoginFailure) as e:
+        except repository_error.ParseError as e:
+            raise AtcoderAccessError("パースに失敗しました.") from e
+        except repository_error.LoginFailure as e:
             raise AtcoderAccessError("ログインに失敗しました") from e
 
         try:
