@@ -9,7 +9,7 @@ type-check:
 	mypy --install-types --non-interactive .
 
 test:
-	pytest tests
+	pytest -v tests
 
 install:
 	pip install -e .
