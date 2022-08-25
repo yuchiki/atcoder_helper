@@ -6,17 +6,19 @@ from typing import Callable
 from typing import List
 from typing import Protocol
 
-from atcoder_helper.models.test_case import TestResult
-from atcoder_helper.models.test_case import TestStatus
+from atcoder_helper.models.atcoder_test_case import AtCoderTestResult
+from atcoder_helper.models.atcoder_test_case import AtCoderTestStatus
 from atcoder_helper.program_executor import ProgramExecutor
 from atcoder_helper.program_executor import get_default_program_executor
 from atcoder_helper.repositories import errors as repository_error
+from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
+from atcoder_helper.repositories.local_test_case_repo import (
+    get_default_local_test_case_repository,
+)
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
-from atcoder_helper.repositories.test_case_repo import TestCaseRepository
-from atcoder_helper.repositories.test_case_repo import get_default_test_case_repository
 from atcoder_helper.services.errors import ConfigAccessError
 
 ExecutorBuilder = Callable[[List[str], List[str]], ProgramExecutor]
@@ -41,7 +43,7 @@ def get_default_execute_test_service() -> ExecuteTestService:
     """
     return ExecuteTestServiceImpl(
         task_config_repo=get_default_task_config_repository(),
-        test_case_repo=get_default_test_case_repository(),
+        test_case_repo=get_default_local_test_case_repository(),
         executor_builder=get_default_program_executor,
     )
 
@@ -50,7 +52,7 @@ class ExecuteTestServiceImpl:
     """テストを実行するサービス."""
 
     _task_config_repo: TaskConfigRepository
-    _test_case_repo: TestCaseRepository
+    _test_case_repo: LocalTestCaseRepository
 
     # 本当は ExecutorBuilder型なんだがmypyのバグにより型付けに失敗するので Any
     # see also https://github.com/python/mypy/issues/5485
@@ -59,7 +61,7 @@ class ExecuteTestServiceImpl:
     def __init__(
         self,
         task_config_repo: TaskConfigRepository,
-        test_case_repo: TestCaseRepository,
+        test_case_repo: LocalTestCaseRepository,
         executor_builder: ExecutorBuilder,
     ):
         """__init__.
@@ -98,16 +100,16 @@ class ExecuteTestServiceImpl:
             self._show_result(result)
         self._show_summary(results)
 
-    def _show_result(self, result: TestResult) -> None:
+    def _show_result(self, result: AtCoderTestResult) -> None:
         print("-----------------------------------")
         print(f"{result.name:<15}: {result.status.dyed}")
 
-        if result.status == TestStatus.JUSTSHOW:
+        if result.status == AtCoderTestStatus.JUSTSHOW:
             print("    output:")
             print(indent(result.actual, "       >"))
-        if result.status == TestStatus.ERROR:
+        if result.status == AtCoderTestStatus.ERROR:
             print(result.error)
-        if result.status == TestStatus.WA:
+        if result.status == AtCoderTestStatus.WA:
             if result.expected is None:
                 raise Exception("internal error")
 
@@ -116,7 +118,7 @@ class ExecuteTestServiceImpl:
             print("    but got:")
             print(indent(result.actual, "       >"))
 
-    def _show_summary(self, results: List[TestResult]) -> None:
+    def _show_summary(self, results: List[AtCoderTestResult]) -> None:
         print("========================================")
         print("SUMMARY:")
         for result in results:

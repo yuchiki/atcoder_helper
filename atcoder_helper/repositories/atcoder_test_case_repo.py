@@ -7,7 +7,7 @@ from typing import Protocol
 import requests
 from bs4 import BeautifulSoup
 
-from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.models.atcoder_test_case import AtcoderTestCase
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 

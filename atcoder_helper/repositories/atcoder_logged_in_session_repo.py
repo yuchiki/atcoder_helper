@@ -2,12 +2,13 @@
 
 
 from typing import Protocol
-from typing import cast
 
 import requests
 from bs4 import BeautifulSoup
 
+from atcoder_helper.repositories.errors import ConnectionError
 from atcoder_helper.repositories.errors import LoginFailure
+from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.utils import AtCoderURLProvider
 
 
@@ -22,7 +23,8 @@ class AtCoderLoggedInSessionRepository(Protocol):
             password (str): password
 
         Raises:
-            ConnectionError: POSTに失敗
+            ConnectionError: GETかPOSTに失敗
+            ParseError: パースに失敗
             LoginFailure: ログイン失敗
 
         Returns:
@@ -45,11 +47,32 @@ class AtCoderLoggedInSessionRepositoryImpl:
     _url_provider = AtCoderURLProvider
 
     def _get_csrf_token(self, session: requests.Session) -> str:
-        login_page = session.get(self._url_provider.login_url)
-        html = BeautifulSoup(login_page.text, "html.parser")
+        """_.
 
-        token = html.find("input").attrs["value"]
-        return cast(str, token)  # TODO(ちゃんと例外処理をする)
+        Args:
+            session (requests.Session): _description_
+
+        Raises:
+            ConnectionError: _description_
+            ParseError: _description_
+
+        Returns:
+            str: _description_
+        """
+        try:
+            login_page = session.get(self._url_provider.login_url)
+        except Exception as e:
+            raise ConnectionError("fail to get url") from e
+
+        try:
+            html = BeautifulSoup(login_page.text, "html.parser")
+            token = html.find("input").attrs["value"]
+            if not isinstance(token, str):
+                raise ParseError("input value is not a string")
+        except Exception as e:
+            raise ParseError("input value cannot be parsed") from e
+
+        return token
 
     def read(self, username: str, password: str) -> requests.Session:
         """atcoderにloginしたsessionを返す.入力したユーザーネームとパスワードは保存されず、代わりにセッションが保存される.
@@ -59,7 +82,8 @@ class AtCoderLoggedInSessionRepositoryImpl:
             password (str): password
 
         Raises:
-            ConnectionError: POSTに失敗
+            ConnectionError: GETかPOSTに失敗
+            ParseError: パースに失敗
             LoginFailure: ログイン失敗
 
         Returns:

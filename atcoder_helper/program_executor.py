@@ -4,9 +4,9 @@ import subprocess
 from typing import List
 from typing import Protocol
 
-from atcoder_helper.models.test_case import AtcoderTestCase
-from atcoder_helper.models.test_case import TestResult
-from atcoder_helper.models.test_case import TestStatus
+from atcoder_helper.models.atcoder_test_case import AtcoderTestCase
+from atcoder_helper.models.atcoder_test_case import AtCoderTestResult
+from atcoder_helper.models.atcoder_test_case import AtCoderTestStatus
 
 
 class ProgramExecutor(Protocol):
@@ -21,7 +21,7 @@ class ProgramExecutor(Protocol):
             bool: ビルドが成功したか
         """
 
-    def execute(self, test_case: AtcoderTestCase) -> TestResult:
+    def execute(self, test_case: AtcoderTestCase) -> AtCoderTestResult:
         """プログラムを実行し、テスト結果を得る.
 
         Args:
@@ -61,7 +61,7 @@ class ProgramExecutorRepoImpl:
         completed_process = subprocess.run(self._build_command)
         return completed_process.returncode == 0
 
-    def execute(self, test_case: AtcoderTestCase) -> TestResult:
+    def execute(self, test_case: AtcoderTestCase) -> AtCoderTestResult:
         """プログラムを実行し、テスト結果を得る.
 
         Args:
@@ -75,29 +75,32 @@ class ProgramExecutorRepoImpl:
         )
 
         if completed_process.returncode != 0:
-            return TestResult(
+            return AtCoderTestResult(
                 test_case.name,
-                TestStatus.ERROR,
+                AtCoderTestStatus.ERROR,
                 actual=completed_process.stdout,
                 error=completed_process.stderr,
             )
 
         if test_case.expected is None:
-            return TestResult(
+            return AtCoderTestResult(
                 test_case.name,
-                TestStatus.JUSTSHOW,
+                AtCoderTestStatus.JUSTSHOW,
                 actual=completed_process.stdout,
                 error="",
             )
 
         if test_case.expected.rstrip() == completed_process.stdout.rstrip():
-            return TestResult(
-                test_case.name, TestStatus.AC, actual=completed_process.stdout, error=""
+            return AtCoderTestResult(
+                test_case.name,
+                AtCoderTestStatus.AC,
+                actual=completed_process.stdout,
+                error="",
             )
         else:
-            return TestResult(
+            return AtCoderTestResult(
                 test_case.name,
-                TestStatus.WA,
+                AtCoderTestStatus.WA,
                 actual=completed_process.stdout,
                 expected=test_case.expected,
                 error="",

@@ -4,13 +4,13 @@ from typing import Protocol
 
 import yaml
 
-from atcoder_helper.models.test_case import AtcoderTestCase
+from atcoder_helper.models.atcoder_test_case import AtcoderTestCase
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
 
 
-class TestCaseRepository(Protocol):
+class LocalTestCaseRepository(Protocol):
     """テストケースの永続化を行うプロトコル."""
 
     def write(self, test_cases: List[AtcoderTestCase]) -> None:
@@ -35,13 +35,13 @@ class TestCaseRepository(Protocol):
         """
 
 
-def get_default_test_case_repository() -> TestCaseRepository:
+def get_default_local_test_case_repository() -> LocalTestCaseRepository:
     """TestCaseRepositoryの標準実装を返す."""
     default_testcase_file = "testcases.yaml"
-    return TestCaseRepositoryImpl(default_testcase_file)
+    return LocalTestCaseRepositoryImpl(default_testcase_file)
 
 
-class TestCaseRepositoryImpl:
+class LocalTestCaseRepositoryImpl:
     """テストケースの永続化を行う."""
 
     def __init__(self, filename: str):
