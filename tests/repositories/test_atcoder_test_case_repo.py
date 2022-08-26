@@ -40,6 +40,7 @@ fetch_test_cases_parameters = {
 def test_fetch_test_cases(
     get_mock: mock.MagicMock, exception: Type[Exception], monkeypatch: MonkeyPatch
 ) -> None:
+    """fetch_test_casesのテスト."""
     contest = "foo_contest"
     task = "bar_task"
     session = requests.Session()
