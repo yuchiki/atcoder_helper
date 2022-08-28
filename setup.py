@@ -10,17 +10,12 @@ AUTHOR = "yuchiki"
 EMAIL = "yuki.imai77@gmail.com"
 URL = "https://github.com/yuchiki/atcoder_helper"
 
+
 setuptools.setup(
     name="atcoder_helper",
     author=AUTHOR,
     author_email=EMAIL,
-    data_files=[
-        ("", ["atcoder_helper/default_configs/default_config.yaml"]),
-        ("", ["atcoder_helper/default_configs/templates/cpp-clang/main.cpp"]),
-        ("", ["atcoder_helper/default_configs/templates/cpp-gcc/main.cpp"]),
-        ("", ["atcoder_helper/default_configs/templates/python/main.py"]),
-        ("", ["atcoder_helper/default_configs/templates/python-pypy3/main.py"]),
-    ],
+    package_data={"atcoder_helper": ["default_configs/*"]},
     maintainer=AUTHOR,
     maintainer_email=EMAIL,
     include_package_data=True,
