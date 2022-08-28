@@ -11,8 +11,8 @@ type-check:
 test:
 	pytest -v tests
 
-install:
-	pip install -e .
+install: build
+	pip install dist/atcoder_helper-DUMMY-py3-none-any.whl
 	which atcoder_helper
 
 uninstall:
