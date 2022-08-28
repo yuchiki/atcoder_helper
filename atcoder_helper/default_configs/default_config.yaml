@@ -33,13 +33,13 @@ languages:
     build: []
     run:
       - pypy3
-      - main.py
+      - task.py
     use_default_template: true
   - name: python
     build: []
     run:
       - python
-      - main.py
+      - task.py
     use_default_template: true
   - name: csharp
     build:
@@ -54,13 +54,13 @@ languages:
       - ./outputs/main
   - name: rust
     build:
-    - cargo
-    - build
-    - --release
-    - --offline
-    - --quiet
+      - cargo
+      - build
+      - --release
+      - --offline
+      - --quiet
     run:
-    - ./a.out
+      - ./a.out
   - name: ruby
     build:
       - ruby

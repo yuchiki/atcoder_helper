@@ -127,11 +127,8 @@ class TaskConfigRepositoryImpl:
 
         if template_dir is not None:
             try:
-                for filename in os.listdir(template_dir):
-                    shutil.copy(
-                        os.path.join(template_dir, filename),
-                        task_dir,
-                    )
+                print(f"{template_dir} -> {task_dir}")
+                shutil.copytree(template_dir, task_dir, dirs_exist_ok=True)
             except OSError as e:
                 raise CopyError("テンプレートディレクトリのコピー中にエラーが発生しました") from e
 
