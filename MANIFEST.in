@@ -1,1 +1,1 @@
-recursive-include atcoder_helper/default_configs
+recursive-include atcoder_helper/default_configs *
