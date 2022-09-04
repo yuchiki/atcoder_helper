@@ -5,6 +5,7 @@ import os
 import sys
 import traceback
 
+from atcoder_helper._version import __version__
 from atcoder_helper.services import errors as service_errors
 from atcoder_helper.services.atcoder_helper_config import AtCoderHelperConfigService
 from atcoder_helper.services.atcoder_helper_config import (
@@ -247,6 +248,14 @@ class Executor:
             if args.verbose:
                 print(traceback.format_exc())
             sys.exit(1)
+
+    def version_handler(self, args: argparse.Namespace) -> None:
+        """現在のバージョンを表示する.
+
+        Args:
+            args (argparse.Namespace): 引数
+        """
+        print(__version__)
 
 
 def get_default_executor() -> Executor:

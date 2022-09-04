@@ -21,6 +21,7 @@ def get_root_parser() -> argparse.ArgumentParser:
     _set_fetch_parser(root_subparsers.add_parser("fetch"))
     _set_task_pasrer(root_subparsers.add_parser("task"))
     _set_config_parser(root_subparsers.add_parser("config"))
+    _set_version_parser(root_subparsers.add_parser("version"))
 
     return root_parser
 
@@ -100,3 +101,7 @@ def _set_config_parser(parser_config: argparse.ArgumentParser) -> None:
         handler=Executor.config_use_handler, parser=parser_config_use
     )
     parser_config_use.add_argument("language")
+
+
+def _set_version_parser(parser_version: argparse.ArgumentParser) -> None:
+    parser_version.set_defaults(handler=Executor.version_handler, parser=parser_version)
