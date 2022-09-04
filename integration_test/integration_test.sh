@@ -93,6 +93,11 @@ function can_task_create() {
     echo "OK"
 }
 
+function can_show_version(){
+    echo "バージョンコマンドを実行できるかを確認する"
+    test "$($CMD version)" == "DUMMY"
+}
+
 function main() {
     cd integration_test
 
@@ -104,6 +109,7 @@ function main() {
 
     # 初期設定
     installed
+    can_show_version
     can_logout
     can_show_auth_status
     can_config_init
