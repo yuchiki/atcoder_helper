@@ -21,12 +21,8 @@ uninstall:
 integration: uninstall install
 	integration_test/integration_test.sh
 
-
 build:
 	python setup.py sdist
 	python setup.py bdist_wheel
-
-upload-test: build
-	twine upload --repository testpypi dist/*
 
 .PHONY: lint test lint type-check check-all integration build upload-test uninstall install
