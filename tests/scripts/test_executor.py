@@ -72,10 +72,10 @@ def test_auth_login_handler(
         mock.patch("getpass.getpass", return_value=password),
     ):
         if should_succeed:
-            sut.auth_login_handler(_get_default_namespace())
+            sut.auth_login_handler(_get_default_namespace(username="", password=""))
         else:
             with pytest.raises(SystemExit) as e:
-                sut.auth_login_handler(_get_default_namespace())
+                sut.auth_login_handler(_get_default_namespace(username="", password=""))
             assert e.value.code == 1
 
 

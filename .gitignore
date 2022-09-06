@@ -5,3 +5,5 @@ atcoder_helper.egg-info
 /dist
 /.mypy_cache
 /.pytest_cache
+
+/integration_test/secret.env

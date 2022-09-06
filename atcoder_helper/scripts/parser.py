@@ -35,6 +35,8 @@ def _set_auth_parser(parser_auth: argparse.ArgumentParser) -> None:
     parser_auth_login.set_defaults(
         handler=Executor.auth_login_handler, parser=parser_auth_login
     )
+    parser_auth_login.add_argument("--username")
+    parser_auth_login.add_argument("--password")
 
     parser_auth_logout = parser_auth_subparsers.add_parser("logout")
     parser_auth_logout.set_defaults(

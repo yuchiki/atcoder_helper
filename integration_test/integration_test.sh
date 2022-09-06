@@ -18,6 +18,11 @@ function can_config_init() {
     $CMD config init
 }
 
+function can_login() {
+    echo "atcoder_helper auth loginができることを確認する"
+    $CMD auth login --username $ATCODER_HELPER_NAME --password $ATCODER_HELPER_PASSWORD
+}
+
 function can_logout() {
     echo "logoutがfailしない"
     $CMD auth logout
@@ -101,6 +106,10 @@ function can_show_version(){
 function main() {
     cd integration_test
 
+    if [ -e secret.env ]; then
+        source secret.env
+    fi
+
     rm -rf workdir
     mkdir workdir
     cd workdir
@@ -110,6 +119,7 @@ function main() {
     # 初期設定
     installed
     can_show_version
+    can_login
     can_logout
     can_show_auth_status
     can_config_init
