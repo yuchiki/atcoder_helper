@@ -6,7 +6,7 @@ lint:
 	flake8
 
 type-check:
-	mypy --install-types --non-interactive .
+	mypy --install-types --non-interactive atcoder_helper tests
 
 test:
 	pytest -v tests
