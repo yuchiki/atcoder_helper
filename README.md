@@ -58,6 +58,7 @@ PyPI: <https://pypi.org/project/atcoder-helper/>
 
 ## 開発
 
+- [開発を始める](./docs/getting_started.md)
 - [リポジトリ構造](./docs/about_repository_structure.md)
 - [プログラム構造](./docs/about_program_structure.md)
 - [設計上の決定](./docs/decisions_on_architecturing.md)

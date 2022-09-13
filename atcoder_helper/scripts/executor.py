@@ -55,8 +55,8 @@ class Executor:
 
     def auth_login_handler(self, args: argparse.Namespace) -> None:
         """ログインする."""
-        name = input("name:")
-        password = getpass.getpass("password:")
+        name = args.username if args.username else input("name:")
+        password = args.password if args.password else getpass.getpass("password:")
         try:
             self._auth_service.login(name, password)
         except service_errors.AlreadyLoggedIn:

@@ -31,6 +31,9 @@ jobs:
           python-version: "3.10"
       - run: pip install -r requirements.txt
       - run: make integration
+        env:
+          ATCODER_HELPER_NAME: ${{ secrets.ATCODER_HELPER_NAME }}
+          ATCODER_HELPER_PASSWORD: ${{ secrets.ATCODER_HELPER_PASSWORD }}
   release:
     needs: ["lint", "test", "integration"]
     runs-on: ubuntu-latest
