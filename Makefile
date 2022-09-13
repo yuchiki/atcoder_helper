@@ -1,4 +1,4 @@
-check-all: test lint type-check integration
+check-all: test lint type-check build integration
 
 lint:
 	isort .
