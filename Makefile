@@ -18,8 +18,8 @@ install: build
 uninstall:
 	pip uninstall -y atcoder_helper
 
-integration: uninstall install
-	integration_test/integration_test.sh
+integration:
+	integration_test/integration_test_entry.sh
 
 build:
 	python setup.py sdist

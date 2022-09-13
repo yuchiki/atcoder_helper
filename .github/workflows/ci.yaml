@@ -34,14 +34,19 @@ jobs:
           python-version: "3.10"
       - run: pip install -r requirements.txt
       - run: make test
-  integration:
+  build-and-install:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:
           python-version: "3.10"
-      - run: pip install -r requirements.txt
+      - run: make build
+      - run: make install
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - run: make integration
         env:
           ATCODER_HELPER_NAME: ${{ secrets.ATCODER_HELPER_NAME }}
