@@ -2,7 +2,7 @@
 
 # このスクリプトは integration_test_entry.sh 経由でdockerコンテナの中で動かすことが想定されている。
 
-set -eu
+set -eux
 
 CMD="atcoder_helper --verbose"
 
