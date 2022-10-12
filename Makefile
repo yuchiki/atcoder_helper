@@ -1,4 +1,4 @@
-check-all: test lint type-check integration
+check-all: test lint type-check build integration
 
 lint:
 	isort .
@@ -18,8 +18,8 @@ install: build
 uninstall:
 	pip uninstall -y atcoder_helper
 
-integration: uninstall install
-	integration_test/integration_test.sh
+integration:
+	integration_test/integration_test_entry.sh
 
 build:
 	python setup.py sdist
