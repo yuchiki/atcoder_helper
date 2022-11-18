@@ -1,4 +1,4 @@
-# https://atcoder.jp/contests/language-test-202001
+# https://atcoder.jp/contestscontests/language-test-202001
 default_language: cpp-gcc
 languages:
   - name: cpp-gcc
@@ -69,3 +69,4 @@ languages:
     run:
       - ruby
       - main.rb
+  - name: csharp
