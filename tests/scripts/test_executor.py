@@ -8,7 +8,7 @@ from typing import Optional
 import mock
 import pytest
 
-from atcoder_helper.models.atcoder_helper_config import LanguageConfig
+from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.scripts.executor import Executor
 from atcoder_helper.services.atcoder_helper_config import AtCoderHelperConfigService
 from atcoder_helper.services.auth import AuthService

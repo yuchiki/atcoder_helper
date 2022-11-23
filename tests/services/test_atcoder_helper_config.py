@@ -7,8 +7,8 @@ from typing import Type
 import mock
 import pytest
 
-from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
-from atcoder_helper.models.atcoder_helper_config import LanguageConfig
+from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
+from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError

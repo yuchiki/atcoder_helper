@@ -8,7 +8,7 @@ import yaml
 from mock import ANY
 from pytest import MonkeyPatch
 
-from atcoder_helper.models.atcoder_test_case import AtcoderTestCase
+from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError

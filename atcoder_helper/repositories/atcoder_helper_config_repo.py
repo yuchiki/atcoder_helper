@@ -5,7 +5,7 @@ from typing import Protocol
 
 import yaml
 
-from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
+from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError

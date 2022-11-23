@@ -6,8 +6,8 @@ from typing import Callable
 from typing import List
 from typing import Protocol
 
-from atcoder_helper.models.atcoder_test_case import AtCoderTestResult
-from atcoder_helper.models.atcoder_test_case import AtCoderTestStatus
+from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
+from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
 from atcoder_helper.program_executor import ProgramExecutor
 from atcoder_helper.program_executor import get_default_program_executor
 from atcoder_helper.repositories import errors as repository_error

@@ -6,8 +6,8 @@ from typing import Type
 import mock
 import pytest
 
-from atcoder_helper.models.atcoder_helper_config import AtCoderHelperConfig
-from atcoder_helper.models.atcoder_helper_config import LanguageConfig
+from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
+from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.repositories.errors import CopyError
 from atcoder_helper.repositories.errors import DirectoryNotEmpty
 from atcoder_helper.repositories.errors import ParseError

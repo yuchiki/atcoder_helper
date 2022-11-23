@@ -6,10 +6,10 @@ from typing import Type
 import mock
 import pytest
 
-from atcoder_helper.models.atcoder_task_config import TaskConfig
-from atcoder_helper.models.atcoder_test_case import AtcoderTestCase
-from atcoder_helper.models.atcoder_test_case import AtCoderTestResult
-from atcoder_helper.models.atcoder_test_case import AtCoderTestStatus
+from atcoder_helper.entities.atcoder_task_config import TaskConfig
+from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
+from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
+from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository

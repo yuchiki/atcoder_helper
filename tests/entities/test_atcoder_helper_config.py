@@ -6,7 +6,7 @@ from typing import Optional
 import pytest
 
 import atcoder_helper
-from atcoder_helper.models.atcoder_helper_config import LanguageConfig
+from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 
 
 @pytest.mark.parametrize(

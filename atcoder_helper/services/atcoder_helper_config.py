@@ -6,7 +6,7 @@ from typing import Dict
 from typing import Protocol
 
 import atcoder_helper
-from atcoder_helper.models.atcoder_helper_config import LanguageConfig
+from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.repositories import errors as repository_errors
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl

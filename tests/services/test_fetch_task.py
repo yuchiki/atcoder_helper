@@ -9,8 +9,8 @@ import mock
 import pytest
 import requests
 
-from atcoder_helper.models.atcoder_task_config import TaskConfig
-from atcoder_helper.models.atcoder_test_case import AtcoderTestCase
+from atcoder_helper.entities.atcoder_task_config import TaskConfig
+from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
 from atcoder_helper.repositories.errors import ConnectionError
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
