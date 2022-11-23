@@ -16,11 +16,11 @@ from atcoder_helper.repositories.logged_in_session_repo import (
 )
 from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
 from atcoder_helper.repositories.login_status_repo import get_default_login_status_repo
-from atcoder_helper.services.errors import AtcoderAccessError
-from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import AtcoderAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
 
 
-class AuthService(Protocol):
+class AuthUsecase(Protocol):
     """auth を扱うサービスのプロトコル."""
 
     def login(self, username: str, password: str) -> None:
@@ -54,16 +54,16 @@ class AuthService(Protocol):
         """
 
 
-def get_default_auth_service() -> AuthService:
-    """AuthServiceの標準実装を返す."""
-    return AuthServiceImpl(
+def get_default_auth_usecase() -> AuthUsecase:
+    """AuthUsecaseの標準実装を返す."""
+    return AuthInteractor(
         atcoder_session_repo=(get_default_atcoder_session_repository()),
         local_session_repo=(get_default_session_repository()),
         login_status_repo=get_default_login_status_repo(),
     )
 
 
-class AuthServiceImpl:
+class AuthInteractor:
     """auth を扱うサービス."""
 
     _atcoder_session_repo: AtCoderLoggedInSessionRepository

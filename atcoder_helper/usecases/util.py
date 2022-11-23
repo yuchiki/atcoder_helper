@@ -1,4 +1,4 @@
-"""Services共通のutil."""
+"""Usecases共通のutil."""
 
 import os
 from typing import Final

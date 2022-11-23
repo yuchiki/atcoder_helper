@@ -10,31 +10,31 @@ import pytest
 
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.scripts.executor import Executor
-from atcoder_helper.services.atcoder_helper_config import AtCoderHelperConfigService
-from atcoder_helper.services.auth import AuthService
-from atcoder_helper.services.errors import AlreadyLoggedIn
-from atcoder_helper.services.errors import AtcoderAccessError
-from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.errors import DirectoryNotEmpty
-from atcoder_helper.services.errors import UndefinedLanguage
-from atcoder_helper.services.execute_test import ExecuteTestService
-from atcoder_helper.services.fetch_task import FetchTaskService
-from atcoder_helper.services.init_task import InitTaskDirService
+from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigUsecase
+from atcoder_helper.usecases.auth import AuthUsecase
+from atcoder_helper.usecases.errors import AlreadyLoggedIn
+from atcoder_helper.usecases.errors import AtcoderAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import DirectoryNotEmpty
+from atcoder_helper.usecases.errors import UndefinedLanguage
+from atcoder_helper.usecases.execute_test import ExecuteTestUsecase
+from atcoder_helper.usecases.fetch_task import FetchTaskUsecase
+from atcoder_helper.usecases.init_task import InitTaskDirUsecase
 
 
 def _get_sut(
-    auth_service_mock: AuthService = mock.MagicMock(),
-    atcoder_helper_config_service_mock: AtCoderHelperConfigService = mock.MagicMock(),
-    execute_test_service_mock: ExecuteTestService = mock.MagicMock(),
-    fetch_task_service_mock: FetchTaskService = mock.MagicMock(),
-    init_task_dir_service_mock: InitTaskDirService = mock.MagicMock(),
+    auth_usecase_mock: AuthUsecase = mock.MagicMock(),
+    atcoder_helper_config_usecase_mock: AtCoderHelperConfigUsecase = mock.MagicMock(),
+    execute_test_usecase_mock: ExecuteTestUsecase = mock.MagicMock(),
+    fetch_task_usecase_mock: FetchTaskUsecase = mock.MagicMock(),
+    init_task_dir_usecase_mock: InitTaskDirUsecase = mock.MagicMock(),
 ) -> Executor:
     return Executor(
-        auth_service=auth_service_mock,
-        atcoder_helper_config_service=atcoder_helper_config_service_mock,
-        execute_test_service=execute_test_service_mock,
-        fetch_task_service=fetch_task_service_mock,
-        init_task_dir_service=init_task_dir_service_mock,
+        auth_usecase=auth_usecase_mock,
+        atcoder_helper_config_usecase=atcoder_helper_config_usecase_mock,
+        execute_test_usecase=execute_test_usecase_mock,
+        fetch_task_usecase=fetch_task_usecase_mock,
+        init_task_dir_usecase=init_task_dir_usecase_mock,
     )
 
 
@@ -59,7 +59,7 @@ def test_auth_login_handler(
 ) -> None:
     """auth_login_handlerのテスト."""
     sut = _get_sut(
-        auth_service_mock=mock.MagicMock(
+        auth_usecase_mock=mock.MagicMock(
             login=mock.MagicMock(side_effect=login_side_effect)
         )
     )
@@ -88,7 +88,7 @@ def test_auth_logout_handler(
 ) -> None:
     """auth_logout_handlerのテスト."""
     sut = _get_sut(
-        auth_service_mock=mock.MagicMock(
+        auth_usecase_mock=mock.MagicMock(
             logout=mock.MagicMock(side_effect=logout_side_effect)
         )
     )
@@ -117,7 +117,7 @@ def test_auth_status_handler(
 ) -> None:
     """auth_status_handlerのテスト."""
     sut = _get_sut(
-        auth_service_mock=mock.MagicMock(
+        auth_usecase_mock=mock.MagicMock(
             status=mock.MagicMock(
                 side_effect=status_side_effect, return_value=status_return_value
             )
@@ -142,7 +142,7 @@ def test_task_init_handler(
 ) -> None:
     """task_init_handlerのテスト."""
     sut = _get_sut(
-        init_task_dir_service_mock=mock.MagicMock(
+        init_task_dir_usecase_mock=mock.MagicMock(
             init_task=mock.MagicMock(side_effect=init_task_side_effect)
         )
     )
@@ -170,7 +170,7 @@ def test_task_create_handler(
     contest = "foo"
     task = "bar"
     sut = _get_sut(
-        init_task_dir_service_mock=mock.MagicMock(
+        init_task_dir_usecase_mock=mock.MagicMock(
             init_task=mock.MagicMock(side_effect=init_task_side_effect)
         )
     )
@@ -194,7 +194,7 @@ def test_execute_test_handler(
 ) -> None:
     """execute_test_handlerのテスト."""
     sut = _get_sut(
-        execute_test_service_mock=mock.MagicMock(
+        execute_test_usecase_mock=mock.MagicMock(
             execute_test=mock.MagicMock(side_effect=execute_test_side_effect)
         )
     )
@@ -216,7 +216,7 @@ def test_fetch_task_handler(
 ) -> None:
     """fetch_task_handlerのテスト."""
     sut = _get_sut(
-        fetch_task_service_mock=mock.MagicMock(
+        fetch_task_usecase_mock=mock.MagicMock(
             fetch_task=mock.MagicMock(side_effect=fetch_task_side_effect)
         )
     )
@@ -241,7 +241,7 @@ def test_config_init_handler(
 ) -> None:
     """config_init_handlerのテスト."""
     sut = _get_sut(
-        atcoder_helper_config_service_mock=mock.MagicMock(
+        atcoder_helper_config_usecase_mock=mock.MagicMock(
             init_config=mock.MagicMock(side_effect=init_config_side_effect)
         )
     )
@@ -267,7 +267,7 @@ def test_config_languages_handler(
     languages = {"c": LanguageConfig(name="c", build=[], run=[])}
 
     sut = _get_sut(
-        atcoder_helper_config_service_mock=mock.MagicMock(
+        atcoder_helper_config_usecase_mock=mock.MagicMock(
             config_languages=mock.MagicMock(
                 side_effect=config_languages_side_effect, return_value=languages
             )
@@ -295,7 +295,7 @@ def test_config_default_language_handler(
     language = LanguageConfig(name="c", build=[], run=[])
 
     sut = _get_sut(
-        atcoder_helper_config_service_mock=mock.MagicMock(
+        atcoder_helper_config_usecase_mock=mock.MagicMock(
             config_default_language=mock.MagicMock(
                 side_effect=default_language_side_effect, return_value=language
             )
@@ -327,7 +327,7 @@ def test_config_use_handler(
     language = "csharp"
 
     sut = _get_sut(
-        atcoder_helper_config_service_mock=mock.MagicMock(
+        atcoder_helper_config_usecase_mock=mock.MagicMock(
             config_use=mock.MagicMock(side_effect=config_use_side_effect)
         )
     )

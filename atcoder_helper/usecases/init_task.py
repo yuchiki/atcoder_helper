@@ -1,4 +1,4 @@
-"""Taskディレクトリを初期化するためのservice."""
+"""Taskディレクトリを初期化するためのusecase."""
 from typing import Optional
 from typing import Protocol
 
@@ -14,10 +14,10 @@ from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
-from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
 
 
-class InitTaskDirService(Protocol):
+class InitTaskDirUsecase(Protocol):
     """TaskDirectoryを初期化するサービスのプロトコル."""
 
     def init_task(
@@ -34,19 +34,19 @@ class InitTaskDirService(Protocol):
         """
 
 
-def get_default_init_task_dir_service() -> InitTaskDirService:
-    """InitTaskDirServiceの標準実装を返す.
+def get_default_init_task_dir_usecase() -> InitTaskDirUsecase:
+    """InitTaskDirUsecaseの標準実装を返す.
 
     Returns:
-        InitTaskDirService: _description_
+        InitTaskDirUsecase: _description_
     """
-    return InitTaskDirServiceImpl(
+    return InitTaskDirInteractor(
         atcoder_helper_config_repo=get_default_config_repository(),
         task_config_repo=get_default_task_config_repository(),
     )
 
 
-class InitTaskDirServiceImpl:
+class InitTaskDirInteractor:
     """TaskDirectoryを初期化するサービス."""
 
     _atcoder_helper_config_repo: ConfigRepository

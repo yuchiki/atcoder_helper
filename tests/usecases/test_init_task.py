@@ -13,8 +13,8 @@ from atcoder_helper.repositories.errors import DirectoryNotEmpty
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.init_task import InitTaskDirServiceImpl
+from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.init_task import InitTaskDirInteractor
 
 
 def _get_config() -> AtCoderHelperConfig:
@@ -26,8 +26,8 @@ def _get_config() -> AtCoderHelperConfig:
 
 def _get_sut(
     atcoder_helper_repo_mock: mock.MagicMock, task_config_repo_mock: mock.MagicMock
-) -> InitTaskDirServiceImpl:
-    return InitTaskDirServiceImpl(
+) -> InitTaskDirInteractor:
+    return InitTaskDirInteractor(
         atcoder_helper_config_repo=atcoder_helper_repo_mock,
         task_config_repo=task_config_repo_mock,
     )
@@ -82,7 +82,7 @@ def test_init_task(
     contest = "fooContest"
     task = "fooTask"
 
-    sut = InitTaskDirServiceImpl(atcoder_helper_config_repo_mock, task_config_repo_mock)
+    sut = InitTaskDirInteractor(atcoder_helper_config_repo_mock, task_config_repo_mock)
 
     if exception:
         with pytest.raises(exception):

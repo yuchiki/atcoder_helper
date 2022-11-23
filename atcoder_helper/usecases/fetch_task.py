@@ -20,11 +20,11 @@ from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
-from atcoder_helper.services.errors import AtcoderAccessError
-from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import AtcoderAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
 
 
-class FetchTaskService(Protocol):
+class FetchTaskUsecase(Protocol):
     """atcoderサイトからテストケースを取得するサービスのプロトコル."""
 
     def fetch_task(
@@ -44,13 +44,13 @@ class FetchTaskService(Protocol):
         """
 
 
-def get_default_fetch_task_service() -> FetchTaskService:
-    """FetchTaskServiceの標準実装を返す.
+def get_default_fetch_task_usecase() -> FetchTaskUsecase:
+    """FetchTaskUsecaseの標準実装を返す.
 
     Returns:
-        FetchTaskService:
+        FetchTaskUsecase:
     """
-    return FetchTaskServiceImpl(
+    return FetchTaskInteractor(
         task_config_repo=get_default_task_config_repository(),
         test_case_repo=get_default_local_test_case_repository(),
         session_repo=get_default_session_repository(),
@@ -58,7 +58,7 @@ def get_default_fetch_task_service() -> FetchTaskService:
     )
 
 
-class FetchTaskServiceImpl:
+class FetchTaskInteractor:
     """atcoderサイトからテストケースを取得するサービス."""
 
     _task_config_repo: TaskConfigRepository

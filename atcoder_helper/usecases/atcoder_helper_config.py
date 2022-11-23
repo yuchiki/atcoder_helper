@@ -13,12 +13,12 @@ from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigReposit
 from atcoder_helper.repositories.atcoder_helper_config_repo import (
     get_default_config_repository,
 )
-from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.errors import UndefinedLanguage
+from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import UndefinedLanguage
 
 
-class AtCoderHelperConfigService(Protocol):
-    """AtCoderHelperConfigを操作する Serviceのプロトコル."""
+class AtCoderHelperConfigUsecase(Protocol):
+    """AtCoderHelperConfigを操作する Usecaseのプロトコル."""
 
     def config_use(self, language: str) -> None:
         """デフォルト言語を変更する.
@@ -51,20 +51,20 @@ class AtCoderHelperConfigService(Protocol):
     def init_config(
         self,
     ) -> None:
-        """configを初期化するためのservice.
+        """configを初期化するためのusecase.
 
         Raises:
             ConfigAccessError:
         """
 
 
-def get_default_atcoder_helper_config_service() -> AtCoderHelperConfigService:
-    """AtCoderHelperConfigServiceの標準実装を返す.
+def get_default_atcoder_helper_config_usecase() -> AtCoderHelperConfigUsecase:
+    """AtCoderHelperConfigUsecaseの標準実装を返す.
 
     Returns:
-        AtCoderHelperConfigService:
+        AtCoderHelperConfigUsecase:
     """
-    return AtCoderHelperConfigServiceImpl(
+    return AtCoderHelperConfigInteractor(
         config_repo=get_default_config_repository(),
         default_config_repo=ConfigRepositoryImpl(
             os.path.join(
@@ -74,8 +74,8 @@ def get_default_atcoder_helper_config_service() -> AtCoderHelperConfigService:
     )
 
 
-class AtCoderHelperConfigServiceImpl:
-    """AtCoderHelperConfigを操作する Service."""
+class AtCoderHelperConfigInteractor:
+    """AtCoderHelperConfigを操作する Usecase."""
 
     _config_repo: ConfigRepository
     _default_config_repo: ConfigRepository
@@ -148,7 +148,7 @@ class AtCoderHelperConfigServiceImpl:
     def init_config(
         self,
     ) -> None:
-        """configを初期化するためのservice.
+        """configを初期化するためのusecase.
 
         Raises:
             ConfigAccessError:

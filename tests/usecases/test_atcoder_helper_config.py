@@ -12,16 +12,16 @@ from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.services.atcoder_helper_config import AtCoderHelperConfigServiceImpl
-from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.errors import UndefinedLanguage
+from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigInteractor
+from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import UndefinedLanguage
 
 
 def _get_sut(
     config_repo: ConfigRepository = mock.MagicMock(),
     default_config_repo: ConfigRepository = mock.MagicMock(),
-) -> AtCoderHelperConfigServiceImpl:
-    return AtCoderHelperConfigServiceImpl(
+) -> AtCoderHelperConfigInteractor:
+    return AtCoderHelperConfigInteractor(
         config_repo=config_repo, default_config_repo=default_config_repo
     )
 

@@ -9,7 +9,7 @@ from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.services.util import get_atcoder_helper_config_filepath
+from atcoder_helper.usecases.util import get_atcoder_helper_config_filepath
 
 
 class ConfigRepository(Protocol):

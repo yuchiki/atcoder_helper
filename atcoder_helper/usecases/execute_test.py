@@ -19,12 +19,12 @@ from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
 from atcoder_helper.repositories.task_config_repo import (
     get_default_task_config_repository,
 )
-from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
 
 ExecutorBuilder = Callable[[List[str], List[str]], ProgramExecutor]
 
 
-class ExecuteTestService(Protocol):
+class ExecuteTestUsecase(Protocol):
     """テストを実行するサービス."""
 
     def execute_test(self) -> None:
@@ -35,20 +35,20 @@ class ExecuteTestService(Protocol):
         """
 
 
-def get_default_execute_test_service() -> ExecuteTestService:
-    """ExecuteTestServiceの標準実装を返す.
+def get_default_execute_test_usecase() -> ExecuteTestUsecase:
+    """ExecuteTestUsecaseの標準実装を返す.
 
     Returns:
-        ExecuteTestService:
+        ExecuteTestUsecase:
     """
-    return ExecuteTestServiceImpl(
+    return ExecuteTestInteractor(
         task_config_repo=get_default_task_config_repository(),
         test_case_repo=get_default_local_test_case_repository(),
         executor_builder=get_default_program_executor,
     )
 
 
-class ExecuteTestServiceImpl:
+class ExecuteTestInteractor:
     """テストを実行するサービス."""
 
     _task_config_repo: TaskConfigRepository

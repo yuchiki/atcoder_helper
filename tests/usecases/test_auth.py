@@ -1,4 +1,4 @@
-"""Tests for AuthServiceImpl."""
+"""Tests for AuthInteractor."""
 
 
 from typing import Type
@@ -12,17 +12,17 @@ from atcoder_helper.repositories.errors import LoginFailure
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.services.auth import AuthServiceImpl
-from atcoder_helper.services.errors import AtcoderAccessError
-from atcoder_helper.services.errors import ConfigAccessError
+from atcoder_helper.usecases.auth import AuthInteractor
+from atcoder_helper.usecases.errors import AtcoderAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
 
 
 def _get_sut(
     atcoder_session_repo: mock.MagicMock,
     local_session_repo: mock.MagicMock,
     login_status_repo: mock.MagicMock,
-) -> AuthServiceImpl:
-    return AuthServiceImpl(
+) -> AuthInteractor:
+    return AuthInteractor(
         atcoder_session_repo=atcoder_session_repo,
         local_session_repo=local_session_repo,
         login_status_repo=login_status_repo,

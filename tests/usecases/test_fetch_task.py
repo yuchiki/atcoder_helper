@@ -15,9 +15,9 @@ from atcoder_helper.repositories.errors import ConnectionError
 from atcoder_helper.repositories.errors import ParseError
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.errors import WriteError
-from atcoder_helper.services.errors import AtcoderAccessError
-from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.fetch_task import FetchTaskServiceImpl
+from atcoder_helper.usecases.errors import AtcoderAccessError
+from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.fetch_task import FetchTaskInteractor
 
 
 def _default_task_config(
@@ -40,8 +40,8 @@ def _get_sut(
     test_case_repo_mock: mock.MagicMock,
     session_repo_mock: mock.MagicMock,
     atcoder_testcase_repo_mock: mock.MagicMock,
-) -> FetchTaskServiceImpl:
-    return FetchTaskServiceImpl(
+) -> FetchTaskInteractor:
+    return FetchTaskInteractor(
         task_config_repo=task_config_repo_mock,
         test_case_repo=test_case_repo_mock,
         session_repo=session_repo_mock,

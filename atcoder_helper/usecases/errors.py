@@ -1,4 +1,4 @@
-"""service層のエラーたち."""
+"""usecase層のエラーたち."""
 
 
 class AlreadyLoggedIn(Exception):

@@ -13,17 +13,17 @@ from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
 from atcoder_helper.repositories.errors import ReadError
 from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
 from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
-from atcoder_helper.services.errors import ConfigAccessError
-from atcoder_helper.services.execute_test import ExecuteTestServiceImpl
-from atcoder_helper.services.execute_test import ExecutorBuilder
+from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.execute_test import ExecuteTestInteractor
+from atcoder_helper.usecases.execute_test import ExecutorBuilder
 
 
 def _get_sut(
     task_config_repo_mock: TaskConfigRepository = mock.MagicMock(),
     test_case_repo_mock: LocalTestCaseRepository = mock.MagicMock(),
     executor_builder: ExecutorBuilder = mock.MagicMock(),
-) -> ExecuteTestServiceImpl:
-    return ExecuteTestServiceImpl(
+) -> ExecuteTestInteractor:
+    return ExecuteTestInteractor(
         task_config_repo=task_config_repo_mock,
         test_case_repo=test_case_repo_mock,
         executor_builder=executor_builder,
