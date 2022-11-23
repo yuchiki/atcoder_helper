@@ -6,10 +6,10 @@ from typing import Protocol
 import requests
 from bs4 import BeautifulSoup
 
-from atcoder_helper.repositories.errors import ConnectionError
-from atcoder_helper.repositories.errors import LoginFailure
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.utils import AtCoderURLProvider
+from atcoder_helper.infrastructure.errors import ConnectionError
+from atcoder_helper.infrastructure.errors import LoginFailure
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.utils import AtCoderURLProvider
 
 
 class AtCoderLoggedInSessionRepository(Protocol):

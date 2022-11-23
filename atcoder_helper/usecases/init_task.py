@@ -2,16 +2,16 @@
 from typing import Optional
 from typing import Protocol
 
-import atcoder_helper.repositories.errors as repo_errors
+import atcoder_helper.infrastructure.errors as repo_errors
 from atcoder_helper.entities.atcoder_task_config import TaskConfig
-from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.repositories.atcoder_helper_config_repo import (
+from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
+from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
     get_default_config_repository,
 )
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
-from atcoder_helper.repositories.task_config_repo import (
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
+from atcoder_helper.infrastructure.task_config_repo import (
     get_default_task_config_repository,
 )
 from atcoder_helper.usecases.errors import ConfigAccessError

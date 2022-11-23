@@ -3,21 +3,25 @@ from typing import Optional
 from typing import Protocol
 from typing import Tuple
 
-from atcoder_helper.repositories import errors as repository_error
-from atcoder_helper.repositories.atcoder_test_case_repo import AtCoderTestCaseRepository
-from atcoder_helper.repositories.atcoder_test_case_repo import (
+from atcoder_helper.infrastructure import errors as repository_error
+from atcoder_helper.infrastructure.atcoder_test_case_repo import (
+    AtCoderTestCaseRepository,
+)
+from atcoder_helper.infrastructure.atcoder_test_case_repo import (
     get_default_atcoder_test_case_repository,
 )
-from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.repositories.local_test_case_repo import (
+from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
+from atcoder_helper.infrastructure.local_test_case_repo import (
     get_default_local_test_case_repository,
 )
-from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
-from atcoder_helper.repositories.logged_in_session_repo import (
+from atcoder_helper.infrastructure.logged_in_session_repo import (
+    LoggedInSessionRepository,
+)
+from atcoder_helper.infrastructure.logged_in_session_repo import (
     get_default_session_repository,
 )
-from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
-from atcoder_helper.repositories.task_config_repo import (
+from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
+from atcoder_helper.infrastructure.task_config_repo import (
     get_default_task_config_repository,
 )
 from atcoder_helper.usecases.errors import AtcoderAccessError

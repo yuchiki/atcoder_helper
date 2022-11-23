@@ -12,10 +12,12 @@ from pytest import MonkeyPatch
 
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepositoryImpl
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
+    ConfigRepositoryImpl,
+)
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 
 helper_config = AtCoderHelperConfig(
     languages={"foo": LanguageConfig(name="foo", build=[], run=[])},

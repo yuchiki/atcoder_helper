@@ -5,9 +5,9 @@ from typing import Protocol
 import yaml
 
 from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 
 
 class LocalTestCaseRepository(Protocol):

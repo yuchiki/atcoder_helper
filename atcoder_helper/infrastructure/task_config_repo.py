@@ -7,11 +7,11 @@ from typing import Protocol
 import yaml
 
 from atcoder_helper.entities.atcoder_task_config import TaskConfig
-from atcoder_helper.repositories.errors import CopyError
-from atcoder_helper.repositories.errors import DirectoryNotEmpty
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.errors import CopyError
+from atcoder_helper.infrastructure.errors import DirectoryNotEmpty
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 
 
 class TaskConfigRepository(Protocol):

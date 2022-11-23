@@ -8,8 +8,8 @@ from typing import cast
 
 import requests
 
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 
 
 class LoggedInSessionRepository(Protocol):

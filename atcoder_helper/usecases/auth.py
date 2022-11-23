@@ -3,19 +3,23 @@
 
 from typing import Protocol
 
-import atcoder_helper.repositories.errors as repository_error
-from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
+import atcoder_helper.infrastructure.errors as repository_error
+from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
     AtCoderLoggedInSessionRepository,
 )
-from atcoder_helper.repositories.atcoder_logged_in_session_repo import (
+from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
     get_default_atcoder_session_repository,
 )
-from atcoder_helper.repositories.logged_in_session_repo import LoggedInSessionRepository
-from atcoder_helper.repositories.logged_in_session_repo import (
+from atcoder_helper.infrastructure.logged_in_session_repo import (
+    LoggedInSessionRepository,
+)
+from atcoder_helper.infrastructure.logged_in_session_repo import (
     get_default_session_repository,
 )
-from atcoder_helper.repositories.login_status_repo import LoginStatusRepo
-from atcoder_helper.repositories.login_status_repo import get_default_login_status_repo
+from atcoder_helper.infrastructure.login_status_repo import LoginStatusRepo
+from atcoder_helper.infrastructure.login_status_repo import (
+    get_default_login_status_repo,
+)
 from atcoder_helper.usecases.errors import AtcoderAccessError
 from atcoder_helper.usecases.errors import ConfigAccessError
 

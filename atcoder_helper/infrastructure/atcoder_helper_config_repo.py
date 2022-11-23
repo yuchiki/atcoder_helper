@@ -6,9 +6,9 @@ from typing import Protocol
 import yaml
 
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 from atcoder_helper.usecases.util import get_atcoder_helper_config_filepath
 
 

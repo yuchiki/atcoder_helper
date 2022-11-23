@@ -8,17 +8,17 @@ from typing import Protocol
 
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
-from atcoder_helper.program_executor import ProgramExecutor
-from atcoder_helper.program_executor import get_default_program_executor
-from atcoder_helper.repositories import errors as repository_error
-from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.repositories.local_test_case_repo import (
+from atcoder_helper.infrastructure import errors as repository_error
+from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
+from atcoder_helper.infrastructure.local_test_case_repo import (
     get_default_local_test_case_repository,
 )
-from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
-from atcoder_helper.repositories.task_config_repo import (
+from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
+from atcoder_helper.infrastructure.task_config_repo import (
     get_default_task_config_repository,
 )
+from atcoder_helper.program_executor import ProgramExecutor
+from atcoder_helper.program_executor import get_default_program_executor
 from atcoder_helper.usecases.errors import ConfigAccessError
 
 ExecutorBuilder = Callable[[List[str], List[str]], ProgramExecutor]

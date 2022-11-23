@@ -10,9 +10,9 @@ from atcoder_helper.entities.atcoder_task_config import TaskConfig
 from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.repositories.task_config_repo import TaskConfigRepository
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
+from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
 from atcoder_helper.usecases.errors import ConfigAccessError
 from atcoder_helper.usecases.execute_test import ExecuteTestInteractor
 from atcoder_helper.usecases.execute_test import ExecutorBuilder

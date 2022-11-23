@@ -4,8 +4,8 @@ from typing import Protocol
 
 import requests
 
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.utils import AtCoderURLProvider
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.utils import AtCoderURLProvider
 
 
 class LoginStatusRepo(Protocol):

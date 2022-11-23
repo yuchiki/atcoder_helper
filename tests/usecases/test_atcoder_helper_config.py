@@ -9,9 +9,9 @@ import pytest
 
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.repositories.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigInteractor
 from atcoder_helper.usecases.errors import ConfigAccessError
 from atcoder_helper.usecases.errors import UndefinedLanguage

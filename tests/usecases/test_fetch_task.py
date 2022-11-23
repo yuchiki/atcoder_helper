@@ -11,10 +11,10 @@ import requests
 
 from atcoder_helper.entities.atcoder_task_config import TaskConfig
 from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
-from atcoder_helper.repositories.errors import ConnectionError
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.errors import ConnectionError
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 from atcoder_helper.usecases.errors import AtcoderAccessError
 from atcoder_helper.usecases.errors import ConfigAccessError
 from atcoder_helper.usecases.fetch_task import FetchTaskInteractor

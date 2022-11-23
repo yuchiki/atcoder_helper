@@ -8,11 +8,11 @@ import pytest
 
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.repositories.errors import CopyError
-from atcoder_helper.repositories.errors import DirectoryNotEmpty
-from atcoder_helper.repositories.errors import ParseError
-from atcoder_helper.repositories.errors import ReadError
-from atcoder_helper.repositories.errors import WriteError
+from atcoder_helper.infrastructure.errors import CopyError
+from atcoder_helper.infrastructure.errors import DirectoryNotEmpty
+from atcoder_helper.infrastructure.errors import ParseError
+from atcoder_helper.infrastructure.errors import ReadError
+from atcoder_helper.infrastructure.errors import WriteError
 from atcoder_helper.usecases.errors import ConfigAccessError
 from atcoder_helper.usecases.init_task import InitTaskDirInteractor
 
