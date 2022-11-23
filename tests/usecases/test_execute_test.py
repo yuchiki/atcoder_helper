@@ -14,19 +14,19 @@ from atcoder_helper.infrastructure.errors import ReadError
 from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
 from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
 from atcoder_helper.usecases.errors import ConfigAccessError
+from atcoder_helper.usecases.execute_test import ControllerBuilder
 from atcoder_helper.usecases.execute_test import ExecuteTestInteractor
-from atcoder_helper.usecases.execute_test import ExecutorBuilder
 
 
 def _get_sut(
     task_config_repo_mock: TaskConfigRepository = mock.MagicMock(),
     test_case_repo_mock: LocalTestCaseRepository = mock.MagicMock(),
-    executor_builder: ExecutorBuilder = mock.MagicMock(),
+    controller_builder: ControllerBuilder = mock.MagicMock(),
 ) -> ExecuteTestInteractor:
     return ExecuteTestInteractor(
         task_config_repo=task_config_repo_mock,
         test_case_repo=test_case_repo_mock,
-        executor_builder=executor_builder,
+        controller_builder=controller_builder,
     )
 
 
@@ -83,7 +83,7 @@ def test_execute_test(
     sut = _get_sut(
         task_config_repo_mock=task_config_repo_mock,
         test_case_repo_mock=test_case_repo_mock,
-        executor_builder=mock.MagicMock(
+        controller_builder=mock.MagicMock(
             return_value=mock.MagicMock(
                 build=build_mock,
                 execute=execute_mock,

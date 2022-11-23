@@ -1,4 +1,4 @@
-"""Tests for Executor."""
+"""Tests for Controller."""
 
 
 import argparse
@@ -9,7 +9,7 @@ import mock
 import pytest
 
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.scripts.executor import Executor
+from atcoder_helper.scripts.controller import Controller
 from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigUsecase
 from atcoder_helper.usecases.auth import AuthUsecase
 from atcoder_helper.usecases.errors import AlreadyLoggedIn
@@ -28,8 +28,8 @@ def _get_sut(
     execute_test_usecase_mock: ExecuteTestUsecase = mock.MagicMock(),
     fetch_task_usecase_mock: FetchTaskUsecase = mock.MagicMock(),
     init_task_dir_usecase_mock: InitTaskDirUsecase = mock.MagicMock(),
-) -> Executor:
-    return Executor(
+) -> Controller:
+    return Controller(
         auth_usecase=auth_usecase_mock,
         atcoder_helper_config_usecase=atcoder_helper_config_usecase_mock,
         execute_test_usecase=execute_test_usecase_mock,

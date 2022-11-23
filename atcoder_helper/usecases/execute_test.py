@@ -21,7 +21,7 @@ from atcoder_helper.program_executor import ProgramExecutor
 from atcoder_helper.program_executor import get_default_program_executor
 from atcoder_helper.usecases.errors import ConfigAccessError
 
-ExecutorBuilder = Callable[[List[str], List[str]], ProgramExecutor]
+ControllerBuilder = Callable[[List[str], List[str]], ProgramExecutor]
 
 
 class ExecuteTestUsecase(Protocol):
@@ -44,7 +44,7 @@ def get_default_execute_test_usecase() -> ExecuteTestUsecase:
     return ExecuteTestInteractor(
         task_config_repo=get_default_task_config_repository(),
         test_case_repo=get_default_local_test_case_repository(),
-        executor_builder=get_default_program_executor,
+        controller_builder=get_default_program_executor,
     )
 
 
@@ -54,26 +54,26 @@ class ExecuteTestInteractor:
     _task_config_repo: TaskConfigRepository
     _test_case_repo: LocalTestCaseRepository
 
-    # 本当は ExecutorBuilder型なんだがmypyのバグにより型付けに失敗するので Any
+    # 本当は ControllerBuilder型なんだがmypyのバグにより型付けに失敗するので Any
     # see also https://github.com/python/mypy/issues/5485
-    _executor_builder: Any
+    _controller_builder: Any
 
     def __init__(
         self,
         task_config_repo: TaskConfigRepository,
         test_case_repo: LocalTestCaseRepository,
-        executor_builder: ExecutorBuilder,
+        controller_builder: ControllerBuilder,
     ):
         """__init__.
 
         Args:
             task_config_repo (TaskConfigRepository, optional): _
             test_case_repo (TestCaseRepository, optional): _
-            executor_builder (Callable[[List[str], List[str]], ProgramExecutor]): _
+            controller_builder (Callable[[List[str], List[str]], ProgramExecutor]): _
         """
         self._task_config_repo = task_config_repo
         self._test_case_repo = test_case_repo
-        self._executor_builder = executor_builder
+        self._controller_builder = controller_builder
 
     def execute_test(self) -> None:
         """testcaseに基づき、テストを実行する関数.
@@ -87,15 +87,15 @@ class ExecuteTestInteractor:
         except (repository_error.ReadError, repository_error.ParseError):
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました")
 
-        executor = self._executor_builder(task_config.build, task_config.run)
+        controller = self._controller_builder(task_config.build, task_config.run)
 
-        executor.build()  # TODO(ビルド失敗で止まるようにする)
+        controller.build()  # TODO(ビルド失敗で止まるようにする)
 
         results = []
         for test_case in test_cases:
             print("-----------------------------------")
             print(f"executing {test_case.name}...")
-            result = executor.execute(test_case)
+            result = controller.execute(test_case)
             results.append(result)
             self._show_result(result)
         self._show_summary(results)

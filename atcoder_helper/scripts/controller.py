@@ -21,7 +21,7 @@ from atcoder_helper.usecases.init_task import InitTaskDirUsecase
 from atcoder_helper.usecases.init_task import get_default_init_task_dir_usecase
 
 
-class Executor:
+class Controller:
     """実行時に必要な情報を持ちまわるためのクラス."""
 
     _auth_usecase: AuthUsecase
@@ -258,9 +258,9 @@ class Executor:
         print(__version__)
 
 
-def get_default_executor() -> Executor:
-    """標準Executorを返す."""
-    return Executor(
+def get_default_controller() -> Controller:
+    """標準Controllerを返す."""
+    return Controller(
         auth_usecase=get_default_auth_usecase(),
         atcoder_helper_config_usecase=(get_default_atcoder_helper_config_usecase()),
         execute_test_usecase=get_default_execute_test_usecase(),
