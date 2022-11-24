@@ -84,9 +84,11 @@ def test_execute_test(
         task_config_repo_mock=task_config_repo_mock,
         test_case_repo_mock=test_case_repo_mock,
         controller_builder=mock.MagicMock(
-            return_value=mock.MagicMock(
-                build=build_mock,
-                execute=execute_mock,
+            build=mock.MagicMock(
+                return_value=mock.MagicMock(
+                    build=build_mock,
+                    execute=execute_mock,
+                )
             )
         ),
     )

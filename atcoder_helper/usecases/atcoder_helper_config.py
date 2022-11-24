@@ -1,20 +1,14 @@
 """デフォルト言語を変更する."""
 
 
-import os
 from typing import Dict
 from typing import Protocol
 
-import atcoder_helper
+from injector import inject
+
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.infrastructure import errors as repository_errors
 from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
-    ConfigRepositoryImpl,
-)
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
-    get_default_config_repository,
-)
 from atcoder_helper.usecases.errors import ConfigAccessError
 from atcoder_helper.usecases.errors import UndefinedLanguage
 
@@ -60,28 +54,13 @@ class AtCoderHelperConfigUsecase(Protocol):
         """
 
 
-def get_default_atcoder_helper_config_usecase() -> AtCoderHelperConfigUsecase:
-    """AtCoderHelperConfigUsecaseの標準実装を返す.
-
-    Returns:
-        AtCoderHelperConfigUsecase:
-    """
-    return AtCoderHelperConfigInteractor(
-        config_repo=get_default_config_repository(),
-        default_config_repo=ConfigRepositoryImpl(
-            os.path.join(
-                atcoder_helper.__path__[0], "default_configs", "default_config.yaml"
-            )
-        ),
-    )
-
-
 class AtCoderHelperConfigInteractor:
     """AtCoderHelperConfigを操作する Usecase."""
 
     _config_repo: ConfigRepository
     _default_config_repo: ConfigRepository
 
+    @inject
     def __init__(
         self, config_repo: ConfigRepository, default_config_repo: ConfigRepository
     ):
