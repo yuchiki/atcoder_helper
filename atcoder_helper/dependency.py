@@ -56,6 +56,18 @@ from atcoder_helper.usecases.util import get_atcoder_helper_config_filepath
 T = TypeVar("T")
 
 
+testcase_filename = "testcases.yaml"
+default_session_file: Final[str] = os.path.join(
+    os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
+)
+default_task_config_filename = ".atcoder_helper_task_config.yaml"
+default_config_filename = os.path.join(
+    atcoder_helper.__path__[0],
+    "default_configs",
+    "default_config.yaml",
+)
+
+
 class Dependency:
     """依存性の注入を管理する."""
 
@@ -74,13 +86,7 @@ class Dependency:
             AtCoderHelperConfigUsecase,  # type: ignore[type-abstract]
             lambda: AtCoderHelperConfigInteractor(
                 config_repo=ConfigRepositoryImpl(get_atcoder_helper_config_filepath()),
-                default_config_repo=ConfigRepositoryImpl(
-                    os.path.join(
-                        atcoder_helper.__path__[0],
-                        "default_configs",
-                        "default_config.yaml",
-                    )
-                ),
+                default_config_repo=ConfigRepositoryImpl(default_config_filename),
             ),
         )
         binder.bind(
@@ -114,23 +120,18 @@ class Dependency:
         )
         binder.bind(
             LocalTestCaseRepository,  # type: ignore[type-abstract]
-            lambda: LocalTestCaseRepositoryImpl("testcases.yaml"),
+            lambda: LocalTestCaseRepositoryImpl(testcase_filename),
         )
 
-        default_session_file: Final[str] = os.path.join(
-            os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
-        )
         binder.bind(
             LoggedInSessionRepository,  # type: ignore[type-abstract]
             lambda: LoggedInSessionRepositoryImpl(default_session_file),
         )
         binder.bind(LoginStatusRepo, LoginStatusRepoImpl)  # type: ignore[type-abstract]
 
-        default_filename = ".atcoder_helper_task_config.yaml"
-
         binder.bind(
             TaskConfigRepository,  # type: ignore[type-abstract]
-            lambda: TaskConfigRepositoryImpl(default_filename),
+            lambda: TaskConfigRepositoryImpl(default_task_config_filename),
         )
 
     def resolve(self, cls: Type[T]) -> T:
