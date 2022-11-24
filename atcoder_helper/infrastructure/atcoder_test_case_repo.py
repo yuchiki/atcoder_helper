@@ -33,15 +33,6 @@ class AtCoderTestCaseRepository(Protocol):
         """
 
 
-def get_default_atcoder_test_case_repository() -> AtCoderTestCaseRepository:
-    """AtCoderTestCaseRepositoryのデフォルト実装を作成する.
-
-    Returns:
-        AtCoderTestCaseRepository: デフォルト実装
-    """
-    return AtCoderTestCaseRepositoryImpl()
-
-
 class AtCoderTestCaseRepositoryImpl:
     """AtCoderからテストケースを取得するリポジトリ."""
 

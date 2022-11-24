@@ -35,12 +35,6 @@ class LocalTestCaseRepository(Protocol):
         """
 
 
-def get_default_local_test_case_repository() -> LocalTestCaseRepository:
-    """TestCaseRepositoryの標準実装を返す."""
-    default_testcase_file = "testcases.yaml"
-    return LocalTestCaseRepositoryImpl(default_testcase_file)
-
-
 class LocalTestCaseRepositoryImpl:
     """テストケースの永続化を行う."""
 

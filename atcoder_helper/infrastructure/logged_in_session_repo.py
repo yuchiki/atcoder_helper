@@ -2,7 +2,6 @@
 
 import os
 import pickle
-from typing import Final
 from typing import Protocol
 from typing import cast
 
@@ -45,18 +44,6 @@ class LoggedInSessionRepository(Protocol):
         Raises:
             WriteError: _
         """
-
-
-def get_default_session_repository() -> LoggedInSessionRepository:
-    """LoggedInSessionRepositoryの標準実装を返す.
-
-    Returns:
-        LoggedInSessionRepositoryImpl: 標準実装
-    """
-    default_session_file: Final[str] = os.path.join(
-        os.path.expanduser("~"), ".atcoder_helper", "session", "session_dump.pkl"
-    )
-    return LoggedInSessionRepositoryImpl(default_session_file)
 
 
 class LoggedInSessionRepositoryImpl:
