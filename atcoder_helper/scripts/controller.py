@@ -5,6 +5,8 @@ import os
 import sys
 import traceback
 
+from injector import inject
+
 from atcoder_helper._version import __version__
 from atcoder_helper.usecases import errors as usecase_errors
 from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigUsecase
@@ -30,6 +32,7 @@ class Controller:
     _fetch_task_usecase: FetchTaskUsecase
     _init_task_dir_usecase: InitTaskDirUsecase
 
+    @inject
     def __init__(
         self,
         auth_usecase: AuthUsecase,

@@ -6,10 +6,11 @@ black
 isort
 flake8-docstrings
 hacking
-mypy
+mypy >= 0.990
 pytest
 pytest-cov
 twine
 wheel
 mock
 pydantic
+injector
