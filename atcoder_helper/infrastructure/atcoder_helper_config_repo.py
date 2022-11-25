@@ -9,7 +9,6 @@ from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.infrastructure.errors import ParseError
 from atcoder_helper.infrastructure.errors import ReadError
 from atcoder_helper.infrastructure.errors import WriteError
-from atcoder_helper.usecases.util import get_atcoder_helper_config_filepath
 
 
 class ConfigRepository(Protocol):
@@ -38,11 +37,6 @@ class ConfigRepository(Protocol):
         Raises:
             WriteError: 書き込みに失敗した
         """
-
-
-def get_default_config_repository() -> ConfigRepository:
-    """ConfigRepositoryの標準実装を返す."""
-    return ConfigRepositoryImpl(get_atcoder_helper_config_filepath())
 
 
 class ConfigRepositoryImpl:

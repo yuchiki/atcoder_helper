@@ -2,18 +2,14 @@
 from typing import Optional
 from typing import Protocol
 
+from injector import inject
+
 import atcoder_helper.infrastructure.errors as repo_errors
 from atcoder_helper.entities.atcoder_task_config import TaskConfig
 from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
-    get_default_config_repository,
-)
 from atcoder_helper.infrastructure.errors import ParseError
 from atcoder_helper.infrastructure.errors import ReadError
 from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
-from atcoder_helper.infrastructure.task_config_repo import (
-    get_default_task_config_repository,
-)
 from atcoder_helper.usecases.errors import ConfigAccessError
 
 
@@ -34,24 +30,13 @@ class InitTaskDirUsecase(Protocol):
         """
 
 
-def get_default_init_task_dir_usecase() -> InitTaskDirUsecase:
-    """InitTaskDirUsecaseの標準実装を返す.
-
-    Returns:
-        InitTaskDirUsecase: _description_
-    """
-    return InitTaskDirInteractor(
-        atcoder_helper_config_repo=get_default_config_repository(),
-        task_config_repo=get_default_task_config_repository(),
-    )
-
-
 class InitTaskDirInteractor:
     """TaskDirectoryを初期化するサービス."""
 
     _atcoder_helper_config_repo: ConfigRepository
     _task_config_repo: TaskConfigRepository
 
+    @inject
     def __init__(
         self,
         atcoder_helper_config_repo: ConfigRepository,

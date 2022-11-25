@@ -27,7 +27,14 @@ setuptools.setup(
     url=URL,
     download_url=URL,
     python_requires=">=3.10",
-    install_requires=["colorama", "beautifulsoup4", "requests", "pyyaml", "pydantic"],
+    install_requires=[
+        "colorama",
+        "beautifulsoup4",
+        "requests",
+        "pyyaml",
+        "pydantic",
+        "injector",
+    ],
     entry_points={"console_scripts": "atcoder_helper=atcoder_helper.scripts.main:main"},
     packages=setuptools.find_packages(),
     classifiers=[

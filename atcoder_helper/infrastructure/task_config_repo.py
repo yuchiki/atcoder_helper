@@ -52,12 +52,6 @@ class TaskConfigRepository(Protocol):
         """
 
 
-def get_default_task_config_repository() -> TaskConfigRepository:
-    """TaskConfigRepositoryの標準実装."""
-    default_filename = ".atcoder_helper_task_config.yaml"
-    return TaskConfigRepositoryImpl(default_filename)
-
-
 class TaskConfigRepositoryImpl:
     """TaskConfigを取得する.
 

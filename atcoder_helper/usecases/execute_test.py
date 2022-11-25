@@ -1,27 +1,37 @@
 """テストケース実行のためのメソッド."""
 
 from textwrap import indent
-from typing import Any
-from typing import Callable
 from typing import List
 from typing import Protocol
+
+from injector import inject
 
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
 from atcoder_helper.infrastructure import errors as repository_error
 from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.infrastructure.local_test_case_repo import (
-    get_default_local_test_case_repository,
-)
 from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
-from atcoder_helper.infrastructure.task_config_repo import (
-    get_default_task_config_repository,
-)
 from atcoder_helper.program_executor import ProgramExecutor
-from atcoder_helper.program_executor import get_default_program_executor
+from atcoder_helper.program_executor import ProgramExecutorRepoImpl
 from atcoder_helper.usecases.errors import ConfigAccessError
 
-ControllerBuilder = Callable[[List[str], List[str]], ProgramExecutor]
+
+class ControllerBuilder(Protocol):
+    """ControllerBuilder."""
+
+    @staticmethod
+    def build(build_command: List[str], run_command: List[str]) -> ProgramExecutor:
+        """build."""
+        pass
+
+
+class ControllerBuilderImpl:
+    """ControllerBuilderの実装."""
+
+    @staticmethod
+    def build(build_command: List[str], run_command: List[str]) -> ProgramExecutor:
+        """ProgramExecutorRepoの標準実装を返す."""
+        return ProgramExecutorRepoImpl(build_command, run_command)
 
 
 class ExecuteTestUsecase(Protocol):
@@ -35,19 +45,6 @@ class ExecuteTestUsecase(Protocol):
         """
 
 
-def get_default_execute_test_usecase() -> ExecuteTestUsecase:
-    """ExecuteTestUsecaseの標準実装を返す.
-
-    Returns:
-        ExecuteTestUsecase:
-    """
-    return ExecuteTestInteractor(
-        task_config_repo=get_default_task_config_repository(),
-        test_case_repo=get_default_local_test_case_repository(),
-        controller_builder=get_default_program_executor,
-    )
-
-
 class ExecuteTestInteractor:
     """テストを実行するサービス."""
 
@@ -56,8 +53,9 @@ class ExecuteTestInteractor:
 
     # 本当は ControllerBuilder型なんだがmypyのバグにより型付けに失敗するので Any
     # see also https://github.com/python/mypy/issues/5485
-    _controller_builder: Any
+    _controller_builder: ControllerBuilder
 
+    @inject
     def __init__(
         self,
         task_config_repo: TaskConfigRepository,
@@ -87,7 +85,7 @@ class ExecuteTestInteractor:
         except (repository_error.ReadError, repository_error.ParseError):
             raise ConfigAccessError("設定ファイルの読み込みに失敗しました")
 
-        controller = self._controller_builder(task_config.build, task_config.run)
+        controller = self._controller_builder.build(task_config.build, task_config.run)
 
         controller.build()  # TODO(ビルド失敗で止まるようにする)
 

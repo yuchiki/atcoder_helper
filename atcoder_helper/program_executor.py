@@ -32,13 +32,6 @@ class ProgramExecutor(Protocol):
         """
 
 
-def get_default_program_executor(
-    build_command: List[str], run_command: List[str]
-) -> ProgramExecutor:
-    """ProgramExecutorRepoの標準実装を返す."""
-    return ProgramExecutorRepoImpl(build_command, run_command)
-
-
 class ProgramExecutorRepoImpl:
     """プログラム実行のためのロジックを集約させるためのリポジトリ実装."""
 

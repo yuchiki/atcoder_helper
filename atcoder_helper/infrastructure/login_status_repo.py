@@ -22,15 +22,6 @@ class LoginStatusRepo(Protocol):
         """
 
 
-def get_default_login_status_repo() -> LoginStatusRepo:
-    """LoginStatusRepoの標準実装を返す.
-
-    Returns:
-        LoginStatusRepo: 標準実装
-    """
-    return LoginStatusRepoImpl()
-
-
 class LoginStatusRepoImpl:
     """login情報を取得するrepository."""
 

@@ -32,15 +32,6 @@ class AtCoderLoggedInSessionRepository(Protocol):
         """
 
 
-def get_default_atcoder_session_repository() -> AtCoderLoggedInSessionRepository:
-    """AtCoderLoggedInSessionRepositoryのデフォルト実装を返す.
-
-    Returns:
-        AtCoderLoggedInSessionRepository: デフォルト実装
-    """
-    return AtCoderLoggedInSessionRepositoryImpl()
-
-
 class AtCoderLoggedInSessionRepositoryImpl:
     """atcoder からlogin済みのセッションを取得するrepository."""
 

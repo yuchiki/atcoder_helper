@@ -3,27 +3,17 @@ from typing import Optional
 from typing import Protocol
 from typing import Tuple
 
+from injector import inject
+
 from atcoder_helper.infrastructure import errors as repository_error
 from atcoder_helper.infrastructure.atcoder_test_case_repo import (
     AtCoderTestCaseRepository,
 )
-from atcoder_helper.infrastructure.atcoder_test_case_repo import (
-    get_default_atcoder_test_case_repository,
-)
 from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.infrastructure.local_test_case_repo import (
-    get_default_local_test_case_repository,
-)
 from atcoder_helper.infrastructure.logged_in_session_repo import (
     LoggedInSessionRepository,
 )
-from atcoder_helper.infrastructure.logged_in_session_repo import (
-    get_default_session_repository,
-)
 from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
-from atcoder_helper.infrastructure.task_config_repo import (
-    get_default_task_config_repository,
-)
 from atcoder_helper.usecases.errors import AtcoderAccessError
 from atcoder_helper.usecases.errors import ConfigAccessError
 
@@ -48,20 +38,6 @@ class FetchTaskUsecase(Protocol):
         """
 
 
-def get_default_fetch_task_usecase() -> FetchTaskUsecase:
-    """FetchTaskUsecaseの標準実装を返す.
-
-    Returns:
-        FetchTaskUsecase:
-    """
-    return FetchTaskInteractor(
-        task_config_repo=get_default_task_config_repository(),
-        test_case_repo=get_default_local_test_case_repository(),
-        session_repo=get_default_session_repository(),
-        atcoder_testcase_repo=(get_default_atcoder_test_case_repository()),
-    )
-
-
 class FetchTaskInteractor:
     """atcoderサイトからテストケースを取得するサービス."""
 
@@ -70,6 +46,7 @@ class FetchTaskInteractor:
     _session_repo: LoggedInSessionRepository
     _atcoder_testcase_repo: AtCoderTestCaseRepository
 
+    @inject
     def __init__(
         self,
         task_config_repo: TaskConfigRepository,

@@ -5,20 +5,15 @@ import os
 import sys
 import traceback
 
+from injector import inject
+
 from atcoder_helper._version import __version__
 from atcoder_helper.usecases import errors as usecase_errors
 from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigUsecase
-from atcoder_helper.usecases.atcoder_helper_config import (
-    get_default_atcoder_helper_config_usecase,
-)
 from atcoder_helper.usecases.auth import AuthUsecase
-from atcoder_helper.usecases.auth import get_default_auth_usecase
 from atcoder_helper.usecases.execute_test import ExecuteTestUsecase
-from atcoder_helper.usecases.execute_test import get_default_execute_test_usecase
 from atcoder_helper.usecases.fetch_task import FetchTaskUsecase
-from atcoder_helper.usecases.fetch_task import get_default_fetch_task_usecase
 from atcoder_helper.usecases.init_task import InitTaskDirUsecase
-from atcoder_helper.usecases.init_task import get_default_init_task_dir_usecase
 
 
 class Controller:
@@ -30,6 +25,7 @@ class Controller:
     _fetch_task_usecase: FetchTaskUsecase
     _init_task_dir_usecase: InitTaskDirUsecase
 
+    @inject
     def __init__(
         self,
         auth_usecase: AuthUsecase,
@@ -256,14 +252,3 @@ class Controller:
             args (argparse.Namespace): 引数
         """
         print(__version__)
-
-
-def get_default_controller() -> Controller:
-    """標準Controllerを返す."""
-    return Controller(
-        auth_usecase=get_default_auth_usecase(),
-        atcoder_helper_config_usecase=(get_default_atcoder_helper_config_usecase()),
-        execute_test_usecase=get_default_execute_test_usecase(),
-        fetch_task_usecase=get_default_fetch_task_usecase(),
-        init_task_dir_usecase=get_default_init_task_dir_usecase(),
-    )

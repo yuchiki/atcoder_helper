@@ -6,7 +6,7 @@ lint:
 	flake8
 
 type-check:
-	mypy --install-types --non-interactive atcoder_helper tests
+	sh -c 'if [ -e /usr/local/bin/mypy ]; then /usr/local/bin/mypy --install-types --non-interactive atcoder_helper tests; else mypy --install-types --non-interactive atcoder_helper tests; fi'
 
 test:
 	pytest -v tests
