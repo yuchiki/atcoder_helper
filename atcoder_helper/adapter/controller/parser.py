@@ -2,7 +2,7 @@
 
 import argparse
 
-from atcoder_helper.scripts.controller import Controller
+from atcoder_helper.adapter.controller.controller import Controller
 
 
 def get_root_parser() -> argparse.ArgumentParser:

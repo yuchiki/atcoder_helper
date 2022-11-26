@@ -1,5 +1,5 @@
 """Entry Point."""
 
-from atcoder_helper.scripts.main import main
+from atcoder_helper.entrypoint.main import main
 
 main()

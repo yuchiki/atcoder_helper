@@ -8,6 +8,7 @@ from typing import Optional
 import mock
 import pytest
 
+from atcoder_helper.adapter.controller.controller import Controller
 from atcoder_helper.application.usecases.atcoder_helper_config import (
     AtCoderHelperConfigUsecase,
 )
@@ -21,7 +22,6 @@ from atcoder_helper.application.usecases.execute_test import ExecuteTestUsecase
 from atcoder_helper.application.usecases.fetch_task import FetchTaskUsecase
 from atcoder_helper.application.usecases.init_task import InitTaskDirUsecase
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.scripts.controller import Controller
 
 
 def _get_sut(

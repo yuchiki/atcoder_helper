@@ -11,7 +11,7 @@ README.md 記載の方法でpip installすると、atcoder_helperコマンドと
 
 ### エントリーポイント
 
-エントリーポイントはscripts/main.py にあります。 `python atcoder_helper/scripts/main.py` です。
+エントリーポイントはentrypoint/main.py にあります。 `python atcoder_helper/entrypoint/main.py` です。
 プログラムはここから実行されます。
 
 ### script層

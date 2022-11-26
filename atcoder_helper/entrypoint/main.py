@@ -1,8 +1,8 @@
 """atcoder_helperコマンドのエントリポイント."""
 
+from atcoder_helper.adapter.controller.controller import Controller
+from atcoder_helper.adapter.controller.parser import get_root_parser
 from atcoder_helper.dependency import Dependency
-from atcoder_helper.scripts.controller import Controller
-from atcoder_helper.scripts.parser import get_root_parser
 
 
 def main() -> None:
