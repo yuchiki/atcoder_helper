@@ -10,13 +10,15 @@ import pytest
 from atcoder_helper.application.interactors.atcoder_helper_config import (
     AtCoderHelperConfigInteractor,
 )
+from atcoder_helper.application.repositories.atcoder_helper_config_repo import (
+    ConfigRepository,
+)
+from atcoder_helper.application.repositories.errors import ReadError
+from atcoder_helper.application.repositories.errors import WriteError
 from atcoder_helper.application.usecases.errors import ConfigAccessError
 from atcoder_helper.application.usecases.errors import UndefinedLanguage
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.infrastructure.errors import ReadError
-from atcoder_helper.infrastructure.errors import WriteError
 
 
 def _get_sut(

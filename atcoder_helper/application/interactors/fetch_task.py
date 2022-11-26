@@ -4,17 +4,21 @@ from typing import Tuple
 
 from injector import inject
 
-from atcoder_helper.application.usecases.errors import AtcoderAccessError
-from atcoder_helper.application.usecases.errors import ConfigAccessError
-from atcoder_helper.infrastructure import errors as repository_error
-from atcoder_helper.infrastructure.atcoder_test_case_repo import (
+from atcoder_helper.application.repositories import errors as repository_error
+from atcoder_helper.application.repositories.atcoder_test_case_repo import (
     AtCoderTestCaseRepository,
 )
-from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.infrastructure.logged_in_session_repo import (
+from atcoder_helper.application.repositories.local_test_case_repo import (
+    LocalTestCaseRepository,
+)
+from atcoder_helper.application.repositories.logged_in_session_repo import (
     LoggedInSessionRepository,
 )
-from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
+from atcoder_helper.application.repositories.task_config_repo import (
+    TaskConfigRepository,
+)
+from atcoder_helper.application.usecases.errors import AtcoderAccessError
+from atcoder_helper.application.usecases.errors import ConfigAccessError
 
 
 class FetchTaskInteractor:

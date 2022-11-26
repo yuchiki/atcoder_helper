@@ -3,16 +3,16 @@
 
 from injector import inject
 
-import atcoder_helper.infrastructure.errors as repository_error
-from atcoder_helper.application.usecases.errors import AtcoderAccessError
-from atcoder_helper.application.usecases.errors import ConfigAccessError
-from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
+import atcoder_helper.application.repositories.errors as repository_error
+from atcoder_helper.application.repositories.atcoder_logged_in_session_repo import (
     AtCoderLoggedInSessionRepository,
 )
-from atcoder_helper.infrastructure.logged_in_session_repo import (
+from atcoder_helper.application.repositories.logged_in_session_repo import (
     LoggedInSessionRepository,
 )
-from atcoder_helper.infrastructure.login_status_repo import LoginStatusRepo
+from atcoder_helper.application.repositories.login_status_repo import LoginStatusRepo
+from atcoder_helper.application.usecases.errors import AtcoderAccessError
+from atcoder_helper.application.usecases.errors import ConfigAccessError
 
 
 class AuthInteractor:

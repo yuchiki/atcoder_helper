@@ -8,13 +8,13 @@ import pytest
 import requests
 
 from atcoder_helper.application.interactors.auth import AuthInteractor
+from atcoder_helper.application.repositories.errors import ConnectionError
+from atcoder_helper.application.repositories.errors import LoginFailure
+from atcoder_helper.application.repositories.errors import ParseError
+from atcoder_helper.application.repositories.errors import ReadError
+from atcoder_helper.application.repositories.errors import WriteError
 from atcoder_helper.application.usecases.errors import AtcoderAccessError
 from atcoder_helper.application.usecases.errors import ConfigAccessError
-from atcoder_helper.infrastructure.errors import ConnectionError
-from atcoder_helper.infrastructure.errors import LoginFailure
-from atcoder_helper.infrastructure.errors import ParseError
-from atcoder_helper.infrastructure.errors import ReadError
-from atcoder_helper.infrastructure.errors import WriteError
 
 
 def _get_sut(

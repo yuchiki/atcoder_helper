@@ -7,14 +7,14 @@ import mock
 import pytest
 
 from atcoder_helper.application.interactors.init_task import InitTaskDirInteractor
+from atcoder_helper.application.repositories.errors import CopyError
+from atcoder_helper.application.repositories.errors import DirectoryNotEmpty
+from atcoder_helper.application.repositories.errors import ParseError
+from atcoder_helper.application.repositories.errors import ReadError
+from atcoder_helper.application.repositories.errors import WriteError
 from atcoder_helper.application.usecases.errors import ConfigAccessError
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.infrastructure.errors import CopyError
-from atcoder_helper.infrastructure.errors import DirectoryNotEmpty
-from atcoder_helper.infrastructure.errors import ParseError
-from atcoder_helper.infrastructure.errors import ReadError
-from atcoder_helper.infrastructure.errors import WriteError
 
 
 def _get_config() -> AtCoderHelperConfig:

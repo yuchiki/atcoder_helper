@@ -5,11 +5,13 @@ from typing import Dict
 
 from injector import inject
 
+from atcoder_helper.application.repositories import errors as repository_errors
+from atcoder_helper.application.repositories.atcoder_helper_config_repo import (
+    ConfigRepository,
+)
 from atcoder_helper.application.usecases.errors import ConfigAccessError
 from atcoder_helper.application.usecases.errors import UndefinedLanguage
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.infrastructure import errors as repository_errors
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
 
 
 class AtCoderHelperConfigInteractor:

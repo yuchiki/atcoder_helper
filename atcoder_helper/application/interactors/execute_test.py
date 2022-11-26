@@ -6,12 +6,16 @@ from typing import Protocol
 
 from injector import inject
 
+from atcoder_helper.application.repositories import errors as repository_error
+from atcoder_helper.application.repositories.local_test_case_repo import (
+    LocalTestCaseRepository,
+)
+from atcoder_helper.application.repositories.task_config_repo import (
+    TaskConfigRepository,
+)
 from atcoder_helper.application.usecases.errors import ConfigAccessError
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestStatus
-from atcoder_helper.infrastructure import errors as repository_error
-from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
 from atcoder_helper.program_executor import ProgramExecutor
 from atcoder_helper.program_executor import ProgramExecutorRepoImpl
 
