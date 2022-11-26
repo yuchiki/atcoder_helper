@@ -9,23 +9,25 @@ from injector import Binder
 from injector import Injector
 
 import atcoder_helper
-from atcoder_helper.application.usecases.atcoder_helper_config import (
+from atcoder_helper.application.interactors.atcoder_helper_config import (
     AtCoderHelperConfigInteractor,
+)
+from atcoder_helper.application.interactors.auth import AuthInteractor
+from atcoder_helper.application.interactors.execute_test import ControllerBuilder
+from atcoder_helper.application.interactors.execute_test import ControllerBuilderImpl
+from atcoder_helper.application.interactors.execute_test import ExecuteTestInteractor
+from atcoder_helper.application.interactors.fetch_task import FetchTaskInteractor
+from atcoder_helper.application.interactors.init_task import InitTaskDirInteractor
+from atcoder_helper.application.interactors.util import (
+    get_atcoder_helper_config_filepath,
 )
 from atcoder_helper.application.usecases.atcoder_helper_config import (
     AtCoderHelperConfigUsecase,
 )
-from atcoder_helper.application.usecases.auth import AuthInteractor
 from atcoder_helper.application.usecases.auth import AuthUsecase
-from atcoder_helper.application.usecases.execute_test import ControllerBuilder
-from atcoder_helper.application.usecases.execute_test import ControllerBuilderImpl
-from atcoder_helper.application.usecases.execute_test import ExecuteTestInteractor
 from atcoder_helper.application.usecases.execute_test import ExecuteTestUsecase
-from atcoder_helper.application.usecases.fetch_task import FetchTaskInteractor
 from atcoder_helper.application.usecases.fetch_task import FetchTaskUsecase
-from atcoder_helper.application.usecases.init_task import InitTaskDirInteractor
 from atcoder_helper.application.usecases.init_task import InitTaskDirUsecase
-from atcoder_helper.application.usecases.util import get_atcoder_helper_config_filepath
 from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
     ConfigRepositoryImpl,

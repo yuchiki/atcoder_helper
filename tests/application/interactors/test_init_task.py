@@ -6,8 +6,8 @@ from typing import Type
 import mock
 import pytest
 
+from atcoder_helper.application.interactors.init_task import InitTaskDirInteractor
 from atcoder_helper.application.usecases.errors import ConfigAccessError
-from atcoder_helper.application.usecases.init_task import InitTaskDirInteractor
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.infrastructure.errors import CopyError

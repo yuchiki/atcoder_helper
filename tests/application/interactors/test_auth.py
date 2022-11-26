@@ -7,7 +7,7 @@ import mock
 import pytest
 import requests
 
-from atcoder_helper.application.usecases.auth import AuthInteractor
+from atcoder_helper.application.interactors.auth import AuthInteractor
 from atcoder_helper.application.usecases.errors import AtcoderAccessError
 from atcoder_helper.application.usecases.errors import ConfigAccessError
 from atcoder_helper.infrastructure.errors import ConnectionError

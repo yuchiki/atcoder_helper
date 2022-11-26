@@ -7,7 +7,7 @@ from typing import Type
 import mock
 import pytest
 
-from atcoder_helper.application.usecases.atcoder_helper_config import (
+from atcoder_helper.application.interactors.atcoder_helper_config import (
     AtCoderHelperConfigInteractor,
 )
 from atcoder_helper.application.usecases.errors import ConfigAccessError

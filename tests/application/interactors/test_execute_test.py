@@ -6,9 +6,9 @@ from typing import Type
 import mock
 import pytest
 
+from atcoder_helper.application.interactors.execute_test import ControllerBuilder
+from atcoder_helper.application.interactors.execute_test import ExecuteTestInteractor
 from atcoder_helper.application.usecases.errors import ConfigAccessError
-from atcoder_helper.application.usecases.execute_test import ControllerBuilder
-from atcoder_helper.application.usecases.execute_test import ExecuteTestInteractor
 from atcoder_helper.entities.atcoder_task_config import TaskConfig
 from atcoder_helper.entities.atcoder_test_case import AtcoderTestCase
 from atcoder_helper.entities.atcoder_test_case import AtCoderTestResult
