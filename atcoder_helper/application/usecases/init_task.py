@@ -5,12 +5,12 @@ from typing import Protocol
 from injector import inject
 
 import atcoder_helper.infrastructure.errors as repo_errors
+from atcoder_helper.application.usecases.errors import ConfigAccessError
 from atcoder_helper.entities.atcoder_task_config import TaskConfig
 from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
 from atcoder_helper.infrastructure.errors import ParseError
 from atcoder_helper.infrastructure.errors import ReadError
 from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
-from atcoder_helper.usecases.errors import ConfigAccessError
 
 
 class InitTaskDirUsecase(Protocol):

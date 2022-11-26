@@ -8,12 +8,14 @@ import traceback
 from injector import inject
 
 from atcoder_helper._version import __version__
-from atcoder_helper.usecases import errors as usecase_errors
-from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigUsecase
-from atcoder_helper.usecases.auth import AuthUsecase
-from atcoder_helper.usecases.execute_test import ExecuteTestUsecase
-from atcoder_helper.usecases.fetch_task import FetchTaskUsecase
-from atcoder_helper.usecases.init_task import InitTaskDirUsecase
+from atcoder_helper.application.usecases import errors as usecase_errors
+from atcoder_helper.application.usecases.atcoder_helper_config import (
+    AtCoderHelperConfigUsecase,
+)
+from atcoder_helper.application.usecases.auth import AuthUsecase
+from atcoder_helper.application.usecases.execute_test import ExecuteTestUsecase
+from atcoder_helper.application.usecases.fetch_task import FetchTaskUsecase
+from atcoder_helper.application.usecases.init_task import InitTaskDirUsecase
 
 
 class Controller:

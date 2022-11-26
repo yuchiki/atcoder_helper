@@ -6,11 +6,11 @@ from typing import Protocol
 
 from injector import inject
 
+from atcoder_helper.application.usecases.errors import ConfigAccessError
+from atcoder_helper.application.usecases.errors import UndefinedLanguage
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
 from atcoder_helper.infrastructure import errors as repository_errors
 from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.usecases.errors import ConfigAccessError
-from atcoder_helper.usecases.errors import UndefinedLanguage
 
 
 class AtCoderHelperConfigUsecase(Protocol):
