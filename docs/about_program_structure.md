@@ -11,7 +11,7 @@ README.md 記載の方法でpip installすると、atcoder_helperコマンドと
 
 
 | path | 役割 |
-| :-- | :-: |
+| :-- | :-- |
 | entrypoint | エントリーポイント。　`python atcoder_helper/entrypoint/main.py` で実行できる |
 | entities   | やりとりするデータ構造 |
 | application | ロジックのメイン部 |
