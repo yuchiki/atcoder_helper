@@ -9,49 +9,63 @@ from injector import Binder
 from injector import Injector
 
 import atcoder_helper
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import ConfigRepository
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
+from atcoder_helper.adapter.infrastructure.atcoder_helper_config_repo import (
     ConfigRepositoryImpl,
 )
-from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
-    AtCoderLoggedInSessionRepository,
-)
-from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
+from atcoder_helper.adapter.infrastructure.atcoder_logged_in_session_repo import (
     AtCoderLoggedInSessionRepositoryImpl,
 )
-from atcoder_helper.infrastructure.atcoder_test_case_repo import (
-    AtCoderTestCaseRepository,
-)
-from atcoder_helper.infrastructure.atcoder_test_case_repo import (
+from atcoder_helper.adapter.infrastructure.atcoder_test_case_repo import (
     AtCoderTestCaseRepositoryImpl,
 )
-from atcoder_helper.infrastructure.local_test_case_repo import LocalTestCaseRepository
-from atcoder_helper.infrastructure.local_test_case_repo import (
+from atcoder_helper.adapter.infrastructure.local_test_case_repo import (
     LocalTestCaseRepositoryImpl,
 )
-from atcoder_helper.infrastructure.logged_in_session_repo import (
-    LoggedInSessionRepository,
-)
-from atcoder_helper.infrastructure.logged_in_session_repo import (
+from atcoder_helper.adapter.infrastructure.logged_in_session_repo import (
     LoggedInSessionRepositoryImpl,
 )
-from atcoder_helper.infrastructure.login_status_repo import LoginStatusRepo
-from atcoder_helper.infrastructure.login_status_repo import LoginStatusRepoImpl
-from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepository
-from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepositoryImpl
-from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigInteractor
-from atcoder_helper.usecases.atcoder_helper_config import AtCoderHelperConfigUsecase
-from atcoder_helper.usecases.auth import AuthInteractor
-from atcoder_helper.usecases.auth import AuthUsecase
-from atcoder_helper.usecases.execute_test import ControllerBuilder
-from atcoder_helper.usecases.execute_test import ControllerBuilderImpl
-from atcoder_helper.usecases.execute_test import ExecuteTestInteractor
-from atcoder_helper.usecases.execute_test import ExecuteTestUsecase
-from atcoder_helper.usecases.fetch_task import FetchTaskInteractor
-from atcoder_helper.usecases.fetch_task import FetchTaskUsecase
-from atcoder_helper.usecases.init_task import InitTaskDirInteractor
-from atcoder_helper.usecases.init_task import InitTaskDirUsecase
-from atcoder_helper.usecases.util import get_atcoder_helper_config_filepath
+from atcoder_helper.adapter.infrastructure.login_status_repo import LoginStatusRepoImpl
+from atcoder_helper.adapter.infrastructure.task_config_repo import (
+    TaskConfigRepositoryImpl,
+)
+from atcoder_helper.application.interactors.atcoder_helper_config import (
+    AtCoderHelperConfigInteractor,
+)
+from atcoder_helper.application.interactors.auth import AuthInteractor
+from atcoder_helper.application.interactors.execute_test import ControllerBuilder
+from atcoder_helper.application.interactors.execute_test import ControllerBuilderImpl
+from atcoder_helper.application.interactors.execute_test import ExecuteTestInteractor
+from atcoder_helper.application.interactors.fetch_task import FetchTaskInteractor
+from atcoder_helper.application.interactors.init_task import InitTaskDirInteractor
+from atcoder_helper.application.interactors.util import (
+    get_atcoder_helper_config_filepath,
+)
+from atcoder_helper.application.repositories.atcoder_helper_config_repo import (
+    ConfigRepository,
+)
+from atcoder_helper.application.repositories.atcoder_logged_in_session_repo import (
+    AtCoderLoggedInSessionRepository,
+)
+from atcoder_helper.application.repositories.atcoder_test_case_repo import (
+    AtCoderTestCaseRepository,
+)
+from atcoder_helper.application.repositories.local_test_case_repo import (
+    LocalTestCaseRepository,
+)
+from atcoder_helper.application.repositories.logged_in_session_repo import (
+    LoggedInSessionRepository,
+)
+from atcoder_helper.application.repositories.login_status_repo import LoginStatusRepo
+from atcoder_helper.application.repositories.task_config_repo import (
+    TaskConfigRepository,
+)
+from atcoder_helper.application.usecases.atcoder_helper_config import (
+    AtCoderHelperConfigUsecase,
+)
+from atcoder_helper.application.usecases.auth import AuthUsecase
+from atcoder_helper.application.usecases.execute_test import ExecuteTestUsecase
+from atcoder_helper.application.usecases.fetch_task import FetchTaskUsecase
+from atcoder_helper.application.usecases.init_task import InitTaskDirUsecase
 
 T = TypeVar("T")
 
