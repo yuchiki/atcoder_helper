@@ -3,8 +3,8 @@
 
 import requests
 
+from atcoder_helper.adapter.infrastructure.utils import AtCoderURLProvider
 from atcoder_helper.application.repositories.errors import ReadError
-from atcoder_helper.infrastructure.utils import AtCoderURLProvider
 
 
 class LoginStatusRepoImpl:

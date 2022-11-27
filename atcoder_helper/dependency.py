@@ -9,6 +9,25 @@ from injector import Binder
 from injector import Injector
 
 import atcoder_helper
+from atcoder_helper.adapter.infrastructure.atcoder_helper_config_repo import (
+    ConfigRepositoryImpl,
+)
+from atcoder_helper.adapter.infrastructure.atcoder_logged_in_session_repo import (
+    AtCoderLoggedInSessionRepositoryImpl,
+)
+from atcoder_helper.adapter.infrastructure.atcoder_test_case_repo import (
+    AtCoderTestCaseRepositoryImpl,
+)
+from atcoder_helper.adapter.infrastructure.local_test_case_repo import (
+    LocalTestCaseRepositoryImpl,
+)
+from atcoder_helper.adapter.infrastructure.logged_in_session_repo import (
+    LoggedInSessionRepositoryImpl,
+)
+from atcoder_helper.adapter.infrastructure.login_status_repo import LoginStatusRepoImpl
+from atcoder_helper.adapter.infrastructure.task_config_repo import (
+    TaskConfigRepositoryImpl,
+)
 from atcoder_helper.application.interactors.atcoder_helper_config import (
     AtCoderHelperConfigInteractor,
 )
@@ -47,23 +66,6 @@ from atcoder_helper.application.usecases.auth import AuthUsecase
 from atcoder_helper.application.usecases.execute_test import ExecuteTestUsecase
 from atcoder_helper.application.usecases.fetch_task import FetchTaskUsecase
 from atcoder_helper.application.usecases.init_task import InitTaskDirUsecase
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
-    ConfigRepositoryImpl,
-)
-from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
-    AtCoderLoggedInSessionRepositoryImpl,
-)
-from atcoder_helper.infrastructure.atcoder_test_case_repo import (
-    AtCoderTestCaseRepositoryImpl,
-)
-from atcoder_helper.infrastructure.local_test_case_repo import (
-    LocalTestCaseRepositoryImpl,
-)
-from atcoder_helper.infrastructure.logged_in_session_repo import (
-    LoggedInSessionRepositoryImpl,
-)
-from atcoder_helper.infrastructure.login_status_repo import LoginStatusRepoImpl
-from atcoder_helper.infrastructure.task_config_repo import TaskConfigRepositoryImpl
 
 T = TypeVar("T")
 

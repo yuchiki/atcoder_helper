@@ -10,14 +10,14 @@ import yaml
 from mock import ANY
 from pytest import MonkeyPatch
 
+from atcoder_helper.adapter.infrastructure.atcoder_helper_config_repo import (
+    ConfigRepositoryImpl,
+)
 from atcoder_helper.application.repositories.errors import ParseError
 from atcoder_helper.application.repositories.errors import ReadError
 from atcoder_helper.application.repositories.errors import WriteError
 from atcoder_helper.entities.atcoder_helper_config import AtCoderHelperConfig
 from atcoder_helper.entities.atcoder_helper_config import LanguageConfig
-from atcoder_helper.infrastructure.atcoder_helper_config_repo import (
-    ConfigRepositoryImpl,
-)
 
 helper_config = AtCoderHelperConfig(
     languages={"foo": LanguageConfig(name="foo", build=[], run=[])},

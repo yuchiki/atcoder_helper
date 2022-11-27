@@ -7,10 +7,10 @@ import pytest
 import requests
 from pytest import MonkeyPatch
 
-from atcoder_helper.application.repositories.errors import ParseError
-from atcoder_helper.infrastructure.atcoder_test_case_repo import (
+from atcoder_helper.adapter.infrastructure.atcoder_test_case_repo import (
     AtCoderTestCaseRepositoryImpl,
 )
+from atcoder_helper.application.repositories.errors import ParseError
 
 fetch_test_cases_parameters = {
     "OK": [

@@ -4,10 +4,10 @@
 import requests
 from bs4 import BeautifulSoup
 
+from atcoder_helper.adapter.infrastructure.utils import AtCoderURLProvider
 from atcoder_helper.application.repositories.errors import ConnectionError
 from atcoder_helper.application.repositories.errors import LoginFailure
 from atcoder_helper.application.repositories.errors import ParseError
-from atcoder_helper.infrastructure.utils import AtCoderURLProvider
 
 
 class AtCoderLoggedInSessionRepositoryImpl:

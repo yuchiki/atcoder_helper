@@ -35,7 +35,9 @@ setuptools.setup(
         "pydantic",
         "injector",
     ],
-    entry_points={"console_entrypoint": "atcoder_helper=atcoder_helper..main:main"},
+    entry_points={
+        "console_scripts": "atcoder_helper=atcoder_helper.entrypoint.main:main"
+    },
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

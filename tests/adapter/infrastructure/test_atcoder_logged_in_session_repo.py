@@ -8,12 +8,12 @@ import pytest
 import requests
 from pytest import MonkeyPatch
 
+from atcoder_helper.adapter.infrastructure.atcoder_logged_in_session_repo import (
+    AtCoderLoggedInSessionRepositoryImpl,
+)
 from atcoder_helper.application.repositories.errors import ConnectionError
 from atcoder_helper.application.repositories.errors import LoginFailure
 from atcoder_helper.application.repositories.errors import ParseError
-from atcoder_helper.infrastructure.atcoder_logged_in_session_repo import (
-    AtCoderLoggedInSessionRepositoryImpl,
-)
 
 test_read_parameter = {
     "OK": [
